@@ -164,6 +164,7 @@ $this->registerCssFile('@web/css/print.css', ['media' => 'print'], 'css-print');
 ```php
 $options = ['baseUrl' => Yii::$app->request->baseUrl, 'language' => Yii::$app->language];
 $this->registerJs('var appOptions = ' . \yii\helpers\Json::htmlEncode($options) . ';', View::POS_HEAD, 'app-options');
+$this->registerJsVar('appOptions', $options, View::POS_HEAD);   // то же одной строкой (с 2.0.14)
 
 $message = \yii\helpers\Json::htmlEncode(Yii::t('app', 'Button clicked!'));
 $this->registerJs(<<<JS

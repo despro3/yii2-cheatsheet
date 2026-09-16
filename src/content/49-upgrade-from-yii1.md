@@ -37,7 +37,7 @@ Event::on(ActiveRecord::class, ActiveRecord::EVENT_AFTER_INSERT, $handler);   //
 ```
 
 - Свойства через `getX()/setX()` работают так же, но объявляются в `BaseObject`; конструктор принимает `$config` и вызывает `init()`.
-- Поведения — `yii\base\Behavior` с `events()` вместо `CBehavior::events()`... концепция та же, `attachBehavior()` сохранён.
+- Поведения — `yii\base\Behavior` с методом `events()`; концепция та же, что у `CBehavior`, `attachBehavior()` сохранён.
 - Псевдонимы: `application.models.User` → `@app/models/User`; символ `@` обязателен; `Yii::getAlias()`.
 
 ## Представления и виджеты

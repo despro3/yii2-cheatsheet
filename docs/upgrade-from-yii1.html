@@ -176,7 +176,7 @@
 <span class="t-cl">Event</span>::<span class="t-fn">on</span>(<span class="t-cl">ActiveRecord</span>::<span class="t-kw">class</span>, <span class="t-cl">ActiveRecord</span>::<span class="t-ct">EVENT_AFTER_INSERT</span>, <span class="t-va">$handler</span>);   <span class="t-cm">// уровень класса — новое</span></code></pre></figure>
 <ul>
 <li>Свойства через <code>getX()/setX()</code> работают так же, но объявляются в <code>BaseObject</code>; конструктор принимает <code>$config</code> и вызывает <code>init()</code>.</li>
-<li>Поведения — <code>yii\base\Behavior</code> с <code>events()</code> вместо <code>CBehavior::events()</code>... концепция та же, <code>attachBehavior()</code> сохранён.</li>
+<li>Поведения — <code>yii\base\Behavior</code> с методом <code>events()</code>; концепция та же, что у <code>CBehavior</code>, <code>attachBehavior()</code> сохранён.</li>
 <li>Псевдонимы: <code>application.models.User</code> → <code>@app/models/User</code>; символ <code>@</code> обязателен; <code>Yii::getAlias()</code>.</li>
 </ul>
 <h2 id="predstavleniya-i-vidzhety">Представления и виджеты<a class="anchor" href="#predstavleniya-i-vidzhety" aria-label="Ссылка на раздел">#</a></h2>

@@ -59,7 +59,7 @@ sources: tutorial-core-validators
 `integer` — целое; `min`, `max`, `tooSmall`, `tooBig`
 `number` (`double`) — любое число; те же `min`/`max`; `integerPattern`, `numberPattern`
 `boolean` — `trueValue`/`falseValue` (по умолчанию `1`/`0`), `strict`. Не преобразует значение
-`compare` — сравнить с другим атрибутом `compareAttribute` или значением `compareValue`; `operator` (`==`, `===`, `!=`, `!==`, `>`, `>=`, `<`, `<=`); `type` (`string`, `number`, `datetime` с 2.0.35?) — тип сравнения
+`compare` — сравнить с другим атрибутом `compareAttribute` или значением `compareValue`; `operator` (`==`, `===`, `!=`, `!==`, `>`, `>=`, `<`, `<=`); `type` — как сравнивать: `string` (побайтово, по умолчанию) или `number`
 `in` — значение из `range`; `strict`, `not`, `allowArray` (проверить каждый элемент массива)
 :::
 
@@ -117,8 +117,8 @@ sources: tutorial-core-validators
 ```php
 ['a1', 'exist'],                                                  // столбец a1 в таблице модели
 ['category_id', 'exist', 'targetClass' => Category::class, 'targetAttribute' => 'id'],
-['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],               // пара (a1, a2) существует
-['a1', 'exist', 'targetAttribute' => ['a2' => 'a1']],             // a1 существует в столбце… см. документацию: [значение атрибута => столбец]
+['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],               // пара (a1, a2) должна существовать; ошибка — только у a1
+['a1', 'exist', 'targetAttribute' => ['a2' => 'a1']],             // значение a2 ищется в столбце a1: [атрибут модели => столбец таблицы]
 ['a1', 'exist', 'filter' => ['status' => 1]],
 ['user_id', 'exist', 'targetRelation' => 'user'],
 
