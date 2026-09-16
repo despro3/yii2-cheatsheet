@@ -3,6 +3,7 @@ id: concepts
 title: Ключевые концепции
 icon: 💡
 summary: Компоненты, свойства через геттеры, события, поведения, конфигурации, алиасы, автозагрузка, Service Locator, DI.
+sources: concept-components, concept-properties, concept-events, concept-behaviors, concept-configurations, concept-aliases, concept-autoloading, concept-service-locator, concept-di-container
 ---
 
 # Ключевые концепции Yii

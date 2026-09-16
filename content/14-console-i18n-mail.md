@@ -3,6 +3,7 @@ id: console
 title: Консоль, i18n, почта
 icon: 🛠️
 summary: Консольные команды, переводы и множественные формы, отправка писем.
+sources: tutorial-console, tutorial-i18n, tutorial-mailing
 ---
 
 # Консоль, интернационализация, почта

@@ -3,6 +3,7 @@ id: intro
 title: Старт
 icon: 🚀
 summary: Что такое Yii2, установка, структура каталогов, входной скрипт, режимы окружения.
+sources: intro-yii, start-prerequisites, start-installation, start-workflow, start-hello, start-forms, start-databases, start-gii, start-looking-ahead, structure-overview
 ---
 
 # Старт: установка и первый запуск

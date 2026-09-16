@@ -3,6 +3,7 @@ id: lifecycle
 title: Запрос и ответ
 icon: 🔄
 summary: Маршрутизация и ЧПУ, Request, Response, сессии и куки, обработка ошибок, логирование.
+sources: runtime-overview, runtime-bootstrapping, runtime-routing, runtime-requests, runtime-responses, runtime-sessions-cookies, runtime-handling-errors, runtime-logging
 ---
 
 # Обработка запроса: роутинг, request, response

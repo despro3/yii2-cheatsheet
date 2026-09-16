@@ -3,6 +3,7 @@ id: ar
 title: Active Record
 icon: 🧬
 summary: Поиск, сохранение, события, транзакции, оптимистичная блокировка, связи, жадная загрузка.
+sources: db-active-record
 ---
 
 # Active Record

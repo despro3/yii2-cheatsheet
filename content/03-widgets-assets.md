@@ -3,6 +3,7 @@ id: widgets
 title: Виджеты, фильтры, ресурсы
 icon: 🧩
 summary: Виджеты, стандартные фильтры (ACF, VerbFilter, CORS, кеш), asset bundles, расширения.
+sources: structure-widgets, structure-filters, structure-assets, structure-extensions
 ---
 
 # Виджеты, фильтры и ресурсы

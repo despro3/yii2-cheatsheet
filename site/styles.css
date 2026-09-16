@@ -565,6 +565,41 @@ td code { white-space: nowrap; }
 .rail a.is-active { color: var(--accent); border-left-color: var(--accent); }
 .rail a.lvl3 { padding-left: 20px; font-size: 12.4px; }
 
+/* источники в руководстве */
+.sources {
+  margin-top: 40px;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+.sources-label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: .12em;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+.sources-label span { color: var(--muted-2); letter-spacing: .08em; }
+.sources-list { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip {
+  display: inline-block;
+  max-width: 100%;
+  padding: 3px 9px;
+  font-size: 12.8px;
+  color: var(--accent);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  text-decoration: none;
+}
+.chip:hover { border-color: var(--accent); background: var(--accent-tint); text-decoration: none; }
+
 /* prev / next */
 .pager {
   display: grid;

@@ -3,6 +3,7 @@ id: helpers
 title: Хелперы
 icon: 🧰
 summary: ArrayHelper, Html, Url, Json, StringHelper, FileHelper, Inflector и другие.
+sources: helper-overview, helper-array, helper-html, helper-json, helper-url
 ---
 
 # Хелперы

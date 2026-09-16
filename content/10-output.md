@@ -3,6 +3,7 @@ id: output
 title: Вывод данных
 icon: 📊
 summary: Форматтер, пагинация, сортировка, провайдеры данных, GridView/ListView/DetailView, JS/CSS, темы.
+sources: output-formatting, output-pagination, output-sorting, output-data-providers, output-data-widgets, output-client-scripts, output-theming
 ---
 
 # Вывод данных

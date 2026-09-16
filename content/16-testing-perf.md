@@ -3,6 +3,7 @@ id: testing
 title: Тесты и производительность
 icon: 🚀
 summary: Codeception и фикстуры, оптимизация, деплой, Docker, микро-фреймворк, шаблонизаторы.
+sources: test-overview, test-environment-setup, test-unit, test-functional, test-acceptance, test-fixtures, tutorial-performance-tuning, tutorial-shared-hosting, tutorial-docker, tutorial-template-engines, tutorial-yii-as-micro-framework, tutorial-yii-integration, tutorial-start-from-scratch
 ---
 
 # Тестирование, производительность, эксплуатация

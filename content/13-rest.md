@@ -3,6 +3,7 @@ id: rest
 title: REST API
 icon: 🌐
 summary: ActiveController, маршруты, ресурсы и поля, форматы ответа, аутентификация, лимиты, версии, ошибки.
+sources: rest-quick-start, rest-resources, rest-controllers, rest-routing, rest-response-formatting, rest-authentication, rest-rate-limiting, rest-versioning, rest-error-handling, rest-filtering-collections
 ---
 
 # REST API

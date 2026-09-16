@@ -3,6 +3,7 @@ id: caching
 title: Кеширование
 icon: ⚡
 summary: Кеш данных, зависимости, кеш запросов, фрагменты, страницы, HTTP-кеш.
+sources: caching-overview, caching-data, caching-fragment, caching-page, caching-http
 ---
 
 # Кеширование

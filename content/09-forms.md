@@ -3,6 +3,7 @@ id: forms
 title: Формы и валидация
 icon: 📝
 summary: ActiveForm, поля ввода, все встроенные валидаторы, свои валидаторы, AJAX-валидация, загрузка файлов.
+sources: input-forms, input-validation, tutorial-core-validators, input-file-upload, input-tabular-input, input-multiple-models, input-form-javascript
 ---
 
 # Формы и проверка данных

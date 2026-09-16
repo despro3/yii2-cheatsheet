@@ -3,6 +3,7 @@ id: cheatsheet
 title: Быстрая шпаргалка
 icon: ⌨️
 summary: Yii::$app, частые сниппеты, консольные команды, структура проекта — всё на одной странице.
+sources: glossary, intro-upgrade-from-v1
 ---
 
 # Быстрая шпаргалка

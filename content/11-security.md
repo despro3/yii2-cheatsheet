@@ -3,6 +3,7 @@ id: security
 title: Безопасность
 icon: 🔐
 summary: Аутентификация, ACF и RBAC, пароли, криптография, защита от SQL-инъекций, XSS, CSRF.
+sources: security-overview, security-authentication, security-authorization, security-passwords, security-cryptography, security-best-practices
 ---
 
 # Безопасность

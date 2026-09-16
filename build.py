@@ -14,6 +14,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 CONTENT = os.path.join(ROOT, 'content')
 SITE = os.path.join(ROOT, 'site')
 OUT = os.path.join(ROOT, 'index.html')
+GUIDE_MAP = os.path.join(CONTENT, 'guide-map.json')
+GUIDE_URL = 'https://www.yiiframework.com/doc/guide/2.0/ru/%s'
 
 LANG_MAP = {
     'php': 'php', 'bash': 'bash', 'sh': 'bash', 'shell': 'bash', 'console': 'bash',
@@ -283,6 +285,22 @@ def render_list(block, base_indent):
 
 # ---------------------------------------------------------------- сборка
 
+def render_sources(slugs, guide):
+    """Блок со ссылками на главы руководства, из которых собран раздел."""
+    if not slugs:
+        return ''
+    chips = []
+    for slug in slugs:
+        if slug not in guide:
+            raise SystemExit('неизвестная глава руководства: %s' % slug)
+        chips.append('<a class="chip" href="%s" target="_blank" rel="noopener">%s</a>'
+                     % (GUIDE_URL % slug, html.escape(guide[slug], quote=False)))
+    word = 'глава' if len(slugs) == 1 else ('главы' if len(slugs) < 5 else 'глав')
+    return ('<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0'
+            '<span>· %d %s</span></div><div class="sources-list">%s</div></aside>'
+            % (len(slugs), word, ''.join(chips)))
+
+
 def read_front_matter(text):
     meta = {}
     if text.startswith('---'):
@@ -297,6 +315,9 @@ def read_front_matter(text):
 
 
 def main():
+    with open(GUIDE_MAP, encoding='utf-8') as fh:
+        guide = json.load(fh)
+
     files = sorted(f for f in os.listdir(CONTENT) if f.endswith('.md'))
     if not files:
         sys.exit('content/*.md не найдены')
@@ -317,6 +338,7 @@ def main():
         h1 = re.search(r'^#\s+(.*)$', md, re.M)
         heading_text = h1.group(1).strip() if h1 else title
 
+        slugs = [x.strip() for x in meta.get('sources', '').split(',') if x.strip()]
         sections.append({'id': sec_id, 'num': num, 'title': title, 'summary': summary})
         index.append({'s': pos, 'a': sec_id, 't': title, 'd': 1,
                       'x': plain(summary + ' ' + heading_text)})
@@ -324,7 +346,8 @@ def main():
             entry['s'] = pos
             index.append(entry)
         bodies.append({'id': sec_id, 'num': num, 'title': title, 'summary': summary,
-                       'heading': heading_text, 'body': body})
+                       'heading': heading_text, 'body': body,
+                       'sources': render_sources(slugs, guide)})
 
     # навигация
     nav = []
@@ -347,11 +370,11 @@ def main():
         rendered.append(
             '<section id="%s" data-sec="%s"%s>\n'
             '<header class="sec-head"><div class="eyebrow"><span>раздел %s</span></div>'
-            '<h1>%s</h1>%s</header>\n%s\n<nav class="pager">%s</nav>\n</section>'
+            '<h1>%s</h1>%s</header>\n%s\n%s<nav class="pager">%s</nav>\n</section>'
             % (sec['id'], sec['id'], '' if pos == 0 else ' hidden', sec['num'],
                inline(sec['heading']),
                ('<p class="sec-summary">%s</p>' % inline(sec['summary'])) if sec['summary'] else '',
-               sec['body'], ''.join(pager)))
+               sec['body'], sec['sources'], ''.join(pager)))
 
     with open(os.path.join(SITE, 'styles.css'), encoding='utf-8') as fh:
         styles = fh.read()

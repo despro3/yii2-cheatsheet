@@ -3,6 +3,7 @@ id: structure
 title: Структура (MVC)
 icon: 🏛️
 summary: Приложение и его конфиг, компоненты, контроллеры, модели, представления, layout, модули.
+sources: structure-entry-scripts, structure-applications, structure-application-components, structure-controllers, structure-models, structure-views, structure-modules
 ---
 
 # Структура приложения: MVC по-Yii-евски
