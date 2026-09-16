@@ -1,0 +1,355 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Query Builder · Yii 2 — шпаргалка</title>
+<meta name="description" content="Построение SQL-запросов методами yii\db\Query — select/from/where/join/orderBy/limit, форматы условий (строка, хеш, оператор, объект), filterWhere, агрегаты, пакетная выборка batch/each, подзапросы и Expression.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+(function(){try{var t=localStorage.getItem('yii2:theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+</head>
+<body class="page" data-page="query-builder">
+<a class="skip" href="#content">К содержимому</a>
+<header class="topbar">
+  <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html" aria-label="Yii 2 — шпаргалка — на главную">
+    <span class="brand-mark" aria-hidden="true">Yii</span>
+    <span class="brand-text">2 · шпаргалка</span>
+  </a>
+  <button type="button" class="search-btn" id="search-btn" aria-label="Поиск по шпаргалке">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="search-btn-text">Поиск</span>
+    <kbd class="search-kbd">Ctrl K</kbd>
+  </button>
+  <div class="topbar-right">
+    <a class="progress-pill" id="progress-pill" href="index.html#progress" title="Ваш прогресс">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+      <span class="progress-text"><span id="progress-num">0</span>%</span>
+    </a>
+    <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему" title="Тема: системная">
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+    <a class="icon-btn gh" href="https://github.com/yiisoft/yii2" target="_blank" rel="noopener" aria-label="Yii 2 на GitHub" title="yiisoft/yii2">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav" aria-label="Разделы">
+<a class="nav-home" href="index.html">Главная</a>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🚀</span>Старт</div><ul>
+<li><a href="intro.html" class="nav-link" data-page="intro"><span class="nav-num">01</span><span class="nav-text">Что такое Yii 2</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="install.html" class="nav-link" data-page="install"><span class="nav-num">02</span><span class="nav-text">Установка и запуск</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="first-app.html" class="nav-link" data-page="first-app"><span class="nav-num">03</span><span class="nav-text">Первое приложение</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🏗</span>Структура приложения</div><ul>
+<li><a href="app.html" class="nav-link" data-page="app"><span class="nav-num">04</span><span class="nav-text">Приложение и его компоненты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="controllers.html" class="nav-link" data-page="controllers"><span class="nav-num">05</span><span class="nav-text">Контроллеры и действия</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="models.html" class="nav-link" data-page="models"><span class="nav-num">06</span><span class="nav-text">Модели</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="views.html" class="nav-link" data-page="views"><span class="nav-num">07</span><span class="nav-text">Представления и шаблоны</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="modules.html" class="nav-link" data-page="modules"><span class="nav-num">08</span><span class="nav-text">Модули</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="filters.html" class="nav-link" data-page="filters"><span class="nav-num">09</span><span class="nav-text">Фильтры</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="widgets.html" class="nav-link" data-page="widgets"><span class="nav-num">10</span><span class="nav-text">Виджеты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="assets.html" class="nav-link" data-page="assets"><span class="nav-num">11</span><span class="nav-text">Ресурсы и клиентские скрипты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="extensions.html" class="nav-link" data-page="extensions"><span class="nav-num">12</span><span class="nav-text">Расширения и сторонний код</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔁</span>Обработка запроса</div><ul>
+<li><a href="lifecycle.html" class="nav-link" data-page="lifecycle"><span class="nav-num">13</span><span class="nav-text">Жизненный цикл запроса</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="routing.html" class="nav-link" data-page="routing"><span class="nav-num">14</span><span class="nav-text">Маршрутизация и URL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="request-response.html" class="nav-link" data-page="request-response"><span class="nav-num">15</span><span class="nav-text">Запрос и ответ</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="sessions.html" class="nav-link" data-page="sessions"><span class="nav-num">16</span><span class="nav-text">Сессии и куки</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="errors-logging.html" class="nav-link" data-page="errors-logging"><span class="nav-num">17</span><span class="nav-text">Ошибки и логирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧠</span>Ключевые концепции</div><ul>
+<li><a href="components.html" class="nav-link" data-page="components"><span class="nav-num">18</span><span class="nav-text">Компоненты и свойства</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="events.html" class="nav-link" data-page="events"><span class="nav-num">19</span><span class="nav-text">События</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="behaviors.html" class="nav-link" data-page="behaviors"><span class="nav-num">20</span><span class="nav-text">Поведения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="configurations.html" class="nav-link" data-page="configurations"><span class="nav-num">21</span><span class="nav-text">Конфигурации, псевдонимы, автозагрузка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="di.html" class="nav-link" data-page="di"><span class="nav-num">22</span><span class="nav-text">Service Locator и DI-контейнер</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🗄</span>Базы данных</div><ul>
+<li><a href="dao.html" class="nav-link" data-page="dao"><span class="nav-num">23</span><span class="nav-text">DAO — работа с SQL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="query-builder.html" class="nav-link active" data-page="query-builder" aria-current="page"><span class="nav-num">24</span><span class="nav-text">Query Builder</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="active-record.html" class="nav-link" data-page="active-record"><span class="nav-num">25</span><span class="nav-text">Active Record</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="migrations.html" class="nav-link" data-page="migrations"><span class="nav-num">26</span><span class="nav-text">Миграции</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📝</span>Формы и валидация</div><ul>
+<li><a href="forms.html" class="nav-link" data-page="forms"><span class="nav-num">27</span><span class="nav-text">Формы и ввод</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validation.html" class="nav-link" data-page="validation"><span class="nav-num">28</span><span class="nav-text">Валидация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validators.html" class="nav-link" data-page="validators"><span class="nav-num">29</span><span class="nav-text">Встроенные валидаторы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📊</span>Вывод данных</div><ul>
+<li><a href="formatting.html" class="nav-link" data-page="formatting"><span class="nav-num">30</span><span class="nav-text">Форматирование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-providers.html" class="nav-link" data-page="data-providers"><span class="nav-num">31</span><span class="nav-text">Провайдеры данных, пагинация, сортировка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-widgets.html" class="nav-link" data-page="data-widgets"><span class="nav-num">32</span><span class="nav-text">Виджеты данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔐</span>Безопасность</div><ul>
+<li><a href="authentication.html" class="nav-link" data-page="authentication"><span class="nav-num">33</span><span class="nav-text">Аутентификация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="authorization.html" class="nav-link" data-page="authorization"><span class="nav-num">34</span><span class="nav-text">Авторизация: ACF и RBAC</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="security.html" class="nav-link" data-page="security"><span class="nav-num">35</span><span class="nav-text">Безопасность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⚡</span>Кеширование</div><ul>
+<li><a href="caching.html" class="nav-link" data-page="caching"><span class="nav-num">36</span><span class="nav-text">Кэширование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="caching-output.html" class="nav-link" data-page="caching-output"><span class="nav-num">37</span><span class="nav-text">Кэширование фрагментов, страниц и HTTP</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔌</span>REST API</div><ul>
+<li><a href="rest.html" class="nav-link" data-page="rest"><span class="nav-num">38</span><span class="nav-text">REST API — быстрый старт</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="rest-advanced.html" class="nav-link" data-page="rest-advanced"><span class="nav-num">39</span><span class="nav-text">REST API — форматы, аутентификация, версии</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧰</span>Инструменты и тесты</div><ul>
+<li><a href="console.html" class="nav-link" data-page="console"><span class="nav-num">40</span><span class="nav-text">Консольные приложения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="testing.html" class="nav-link" data-page="testing"><span class="nav-num">41</span><span class="nav-text">Тестирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="dev-tools.html" class="nav-link" data-page="dev-tools"><span class="nav-num">42</span><span class="nav-text">Gii, отладчик и другие инструменты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧩</span>Специальные темы</div><ul>
+<li><a href="i18n.html" class="nav-link" data-page="i18n"><span class="nav-num">43</span><span class="nav-text">Интернационализация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="mailing.html" class="nav-link" data-page="mailing"><span class="nav-num">44</span><span class="nav-text">Отправка почты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="performance.html" class="nav-link" data-page="performance"><span class="nav-num">45</span><span class="nav-text">Производительность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="helpers.html" class="nav-link" data-page="helpers"><span class="nav-num">46</span><span class="nav-text">Хелперы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📌</span>Справочник</div><ul>
+<li><a href="cheatsheet.html" class="nav-link" data-page="cheatsheet"><span class="nav-num">47</span><span class="nav-text">Шпаргалка на одну страницу</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="glossary.html" class="nav-link" data-page="glossary"><span class="nav-num">48</span><span class="nav-text">Глоссарий</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="upgrade-from-yii1.html" class="nav-link" data-page="upgrade-from-yii1"><span class="nav-num">49</span><span class="nav-text">Переход с Yii 1.1</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⌘</span>Ещё</div><ul>
+<li><a href="all.html" class="nav-link" data-page="all"><span class="nav-num">∞</span><span class="nav-text">Всё одной страницей</span></a></li>
+</ul></div></nav>
+    <div class="sidebar-foot">
+      <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">Полное руководство ↗</a>
+      <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Справочник API ↗</a>
+      <button type="button" class="link-btn" id="reset-progress">Сбросить прогресс</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main" id="content">
+    <article class="doc">
+  <header class="doc-head">
+    <div class="crumbs"><a href="index.html">Главная</a><span>/</span><span class="crumb-part"><span class="crumb-icon">🗄</span>Базы данных</span></div>
+    <h1><span class="doc-num">24</span>Query Builder</h1>
+    <p class="doc-summary">Построение SQL-запросов методами yii\db\Query — select/from/where/join/orderBy/limit, форматы условий (строка, хеш, оператор, объект), filterWhere, агрегаты, пакетная выборка batch/each, подзапросы и Expression.</p>
+    <div class="doc-meta">
+      <span class="meta-item" title="Примерное время чтения">⏱ ~6 мин</span>
+      <span class="meta-item" title="Сколько глав руководства сжато в этот раздел">📚 1 глава руководства</span>
+      <label class="learned"><input type="checkbox" class="learned-box" data-page="query-builder"><span>Изучено</span></label>
+    </div>
+  </header>
+
+  <div class="doc-body">
+<div class="lead"><p><code>yii\db\Query</code> собирает запрос объектно и независимо от СУБД: вы описываете <em>что</em> нужно, а построитель сам экранирует имена, привязывает параметры и генерирует SQL под конкретную базу. Тот же API используют <code>ActiveQuery</code> и Active Record, так что выучить его придётся один раз.</p></div>
+<h2 id="skelet-zaprosa">Скелет запроса<a class="anchor" href="#skelet-zaprosa" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\db\Query</span>;
+
+<span class="t-va">$rows</span> = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())
+    -&gt;<span class="t-fn">select</span>([<span class="t-st">'id'</span>, <span class="t-st">'email'</span>])
+    -&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)
+    -&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>])
+    -&gt;<span class="t-fn">orderBy</span>(<span class="t-st">'id'</span>)
+    -&gt;<span class="t-fn">limit</span>(<span class="t-nu">10</span>)
+    -&gt;<span class="t-fn">all</span>();                 <span class="t-cm">// массив строк; -&gt;all($db2) — через другое соединение</span>
+
+<span class="t-cm">// посмотреть, что получилось</span>
+<span class="t-va">$sql</span> = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)-&gt;<span class="t-fn">createCommand</span>()-&gt;<span class="t-fn">getRawSql</span>();</code></pre></figure>
+<p>Методы построения возвращают <code>$this</code> — цепочка в любом порядке. Выполнение: <code>all()</code>, <code>one()</code>, <code>column()</code>, <code>scalar()</code>, <code>exists()</code>, <code>count()</code>, <code>sum('col')</code>, <code>average()</code>, <code>max()</code>, <code>min()</code>.</p>
+<h2 id="select-i-from">SELECT и FROM<a class="anchor" href="#select-i-from" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$query</span>-&gt;<span class="t-fn">select</span>(<span class="t-st">'id, email'</span>);                              <span class="t-cm">// строка — в простых случаях</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">select</span>([<span class="t-st">'id'</span>, <span class="t-st">'email'</span>]);                          <span class="t-cm">// массив — безопаснее, всё экранируется</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">select</span>([<span class="t-st">'user_id'</span> =&gt; <span class="t-st">'user.id'</span>, <span class="t-st">'email'</span>]);        <span class="t-cm">// псевдоним столбца</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">select</span>([<span class="t-st">'user.id AS user_id'</span>, <span class="t-st">'email'</span>]);          <span class="t-cm">// так тоже можно</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">select</span>([<span class="t-st">"CONCAT(first_name, ' ', last_name) AS full_name"</span>, <span class="t-st">'email'</span>]);   <span class="t-cm">// выражения не экранируются</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">select</span>([<span class="t-st">'id'</span>, <span class="t-st">'count'</span> =&gt; <span class="t-va">$subQuery</span>]);             <span class="t-cm">// подзапрос как столбец</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">select</span>(<span class="t-st">'user_id'</span>)-&gt;<span class="t-fn">distinct</span>();                    <span class="t-cm">// DISTINCT</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">addSelect</span>([<span class="t-st">'email'</span>]);                             <span class="t-cm">// добавить к выбранным</span>
+
+<span class="t-va">$query</span>-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">from</span>([<span class="t-st">'public.user u'</span>, <span class="t-st">'public.post p'</span>]);          <span class="t-cm">// несколько таблиц с псевдонимами</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">from</span>([<span class="t-st">'u'</span> =&gt; <span class="t-st">'public.user'</span>, <span class="t-st">'p'</span> =&gt; <span class="t-st">'public.post'</span>]);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">from</span>([<span class="t-st">'u'</span> =&gt; <span class="t-va">$subQuery</span>]);                         <span class="t-cm">// подзапрос в FROM</span></code></pre></figure>
+<p>Если <code>select()</code> не вызван, будет <code>SELECT *</code>.</p>
+<h2 id="where-tri-formata-usloviy">WHERE — три формата условий<a class="anchor" href="#where-tri-formata-usloviy" aria-label="Ссылка на раздел">#</a></h2>
+<h3 id="strokovyy">Строковый<a class="anchor" href="#strokovyy" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>(<span class="t-st">'status=1'</span>);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>(<span class="t-st">'status=:status'</span>, [<span class="t-st">':status'</span> =&gt; <span class="t-va">$status</span>]);          <span class="t-cm">// параметры обязательно через плейсхолдеры</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>(<span class="t-st">'YEAR(somedate) = 2015'</span>);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>(<span class="t-st">'status=:status'</span>)-&gt;<span class="t-fn">addParams</span>([<span class="t-st">':status'</span> =&gt; <span class="t-va">$status</span>]);</code></pre></figure>
+<h3 id="hesh-stolbec-znachenie">Хеш — «столбец → значение»<a class="anchor" href="#hesh-stolbec-znachenie" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>([
+    <span class="t-st">'status'</span> =&gt; <span class="t-nu">10</span>,
+    <span class="t-st">'type'</span> =&gt; <span class="t-lt">null</span>,               <span class="t-cm">// → type IS NULL</span>
+    <span class="t-st">'id'</span> =&gt; [<span class="t-nu">4</span>, <span class="t-nu">8</span>, <span class="t-nu">15</span>],           <span class="t-cm">// → id IN (4, 8, 15)</span>
+]);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>([<span class="t-st">'id'</span> =&gt; <span class="t-va">$userQuery</span>]);   <span class="t-cm">// → id IN (SELECT id FROM user WHERE …)</span></code></pre></figure>
+<p>Все значения привязываются параметрами. Нужен именно этот формат, когда данные пришли от пользователя.</p>
+<h3 id="operatornyy-operator-operand1-operand2">Операторный — <code>[оператор, операнд1, операнд2, …]</code><a class="anchor" href="#operatornyy-operator-operand1-operand2" aria-label="Ссылка на раздел">#</a></h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Оператор</th>
+<th>Пример</th>
+<th>SQL</th>
+</tr></thead><tbody>
+<tr><td><code>and</code>, <code>or</code></td><td><code>['and', 'id=1', 'id=2']</code></td><td><code>id=1 AND id=2</code></td></tr>
+<tr><td><code>not</code></td><td><code>['not', ['status' =&gt; 1]]</code></td><td><code>NOT (status=1)</code></td></tr>
+<tr><td><code>between</code>, <code>not between</code></td><td><code>['between', 'id', 1, 10]</code></td><td><code>id BETWEEN 1 AND 10</code></td></tr>
+<tr><td><code>in</code>, <code>not in</code></td><td><code>['in', 'id', [1, 2, 3]]</code></td><td><code>id IN (1, 2, 3)</code></td></tr>
+<tr><td><code>in</code> по составному ключу</td><td><code>['in', ['id', 'name'], [['id' =&gt; 1, 'name' =&gt; 'a']]]</code></td><td><code>(id, name) IN ((1, 'a'))</code></td></tr>
+<tr><td><code>like</code>, <code>not like</code></td><td><code>['like', 'name', 'tester']</code></td><td><code>name LIKE '%tester%'</code></td></tr>
+<tr><td><code>like</code> c массивом</td><td><code>['like', 'name', ['test', 'sample']]</code></td><td><code>name LIKE '%test%' AND name LIKE '%sample%'</code></td></tr>
+<tr><td><code>like</code> без <code>%</code></td><td><code>['like', 'name', '%tester', false]</code></td><td><code>name LIKE '%tester'</code> (экранирование выключено)</td></tr>
+<tr><td><code>or like</code>, <code>or not like</code></td><td><code>['or like', 'name', ['a', 'b']]</code></td><td><code>name LIKE '%a%' OR name LIKE '%b%'</code></td></tr>
+<tr><td><code>exists</code>, <code>not exists</code></td><td><code>['exists', $subQuery]</code></td><td><code>EXISTS (SELECT …)</code></td></tr>
+<tr><td><code>&gt;</code>, <code>&lt;</code>, <code>=</code>, <code>!=</code>, <code>&gt;=</code>, …</td><td><code>['&gt;=', 'id', 10]</code></td><td><code>id &gt;= 10</code></td></tr>
+</tbody></table></div>
+<p>Операнды <code>and</code>/<code>or</code> могут быть вложенными массивами любого формата:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>([
+    <span class="t-st">'and'</span>,
+    [<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>],
+    [<span class="t-st">'or'</span>, [<span class="t-st">'type'</span> =&gt; <span class="t-nu">1</span>], [<span class="t-st">'&gt;'</span>, <span class="t-st">'created_at'</span>, <span class="t-va">$ts</span>]],
+]);</code></pre></figure>
+<h3 id="obektnyy-s-2-0-14">Объектный (с 2.0.14)<a class="anchor" href="#obektnyy-s-2-0-14" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\db\conditions</span>\{<span class="t-cl">AndCondition</span>, <span class="t-cl">BetweenCondition</span>, <span class="t-cl">InCondition</span>, <span class="t-cl">LikeCondition</span>};
+
+<span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>(<span class="t-kw">new</span> <span class="t-cl">AndCondition</span>([
+    <span class="t-kw">new</span> <span class="t-cl">InCondition</span>(<span class="t-st">'id'</span>, <span class="t-st">'in'</span>, [<span class="t-nu">1</span>, <span class="t-nu">2</span>, <span class="t-nu">3</span>]),
+    <span class="t-kw">new</span> <span class="t-cl">BetweenCondition</span>(<span class="t-st">'created_at'</span>, <span class="t-st">'between'</span>, <span class="t-va">$from</span>, <span class="t-va">$to</span>),
+]));</code></pre></figure>
+<p>Каждому оператору соответствует класс в <code>yii\db\conditions\*</code>; они удобны для программной сборки и расширяемы через <code>QueryBuilder::conditionClasses</code>.</p>
+<h2 id="dostraivanie-usloviy">Достраивание условий<a class="anchor" href="#dostraivanie-usloviy" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>])
+      -&gt;<span class="t-fn">andWhere</span>([<span class="t-st">'&gt;'</span>, <span class="t-st">'id'</span>, <span class="t-nu">100</span>])      <span class="t-cm">// AND (…)</span>
+      -&gt;<span class="t-fn">orWhere</span>([<span class="t-st">'type'</span> =&gt; <span class="t-nu">2</span>]);         <span class="t-cm">// OR (…)</span>
+
+<span class="t-cm">// фильтр: пустые значения ('' , ' ', null, []) просто пропускаются</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">filterWhere</span>([<span class="t-st">'username'</span> =&gt; <span class="t-va">$username</span>, <span class="t-st">'email'</span> =&gt; <span class="t-va">$email</span>]);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">andFilterWhere</span>([<span class="t-st">'like'</span>, <span class="t-st">'title'</span>, <span class="t-va">$search</span>]);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">andFilterCompare</span>(<span class="t-st">'price'</span>, <span class="t-st">'&gt;=100'</span>);   <span class="t-cm">// разбирает оператор из строки: '&gt;=100' → price &gt;= 100</span></code></pre></figure>
+<p><code>filterWhere</code> — идеальный инструмент для поисковых форм: <code>WHERE username=:u</code> появится, только если поле заполнено.</p>
+<h2 id="ostalnye-chasti">Остальные части<a class="anchor" href="#ostalnye-chasti" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$query</span>-&gt;<span class="t-fn">orderBy</span>([<span class="t-st">'id'</span> =&gt; <span class="t-ct">SORT_ASC</span>, <span class="t-st">'name'</span> =&gt; <span class="t-ct">SORT_DESC</span>]);   <span class="t-cm">// или строка 'id ASC, name DESC'</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">orderBy</span>(<span class="t-kw">new</span> <span class="t-cl">Expression</span>(<span class="t-st">'RAND()'</span>));
+<span class="t-va">$query</span>-&gt;<span class="t-fn">addOrderBy</span>(<span class="t-st">'created_at'</span>);
+
+<span class="t-va">$query</span>-&gt;<span class="t-fn">groupBy</span>([<span class="t-st">'id'</span>, <span class="t-st">'status'</span>])-&gt;<span class="t-fn">addGroupBy</span>(<span class="t-st">'type'</span>);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">having</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>])-&gt;<span class="t-fn">andHaving</span>([<span class="t-st">'&gt;'</span>, <span class="t-st">'age'</span>, <span class="t-nu">30</span>]);   <span class="t-cm">// те же форматы, что у where</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">filterHaving</span>([...]);
+
+<span class="t-va">$query</span>-&gt;<span class="t-fn">limit</span>(<span class="t-nu">10</span>)-&gt;<span class="t-fn">offset</span>(<span class="t-nu">20</span>);   <span class="t-cm">// отрицательные/null — без ограничения</span>
+
+<span class="t-va">$query</span>-&gt;<span class="t-fn">join</span>(<span class="t-st">'LEFT JOIN'</span>, <span class="t-st">'post'</span>, <span class="t-st">'post.user_id = user.id'</span>);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">leftJoin</span>(<span class="t-st">'post'</span>, <span class="t-st">'post.user_id = user.id'</span>);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">innerJoin</span>([<span class="t-st">'p'</span> =&gt; <span class="t-va">$subQuery</span>], <span class="t-st">'p.user_id = user.id'</span>);   <span class="t-cm">// rightJoin тоже есть</span>
+
+<span class="t-va">$query1</span>-&gt;<span class="t-fn">union</span>(<span class="t-va">$query2</span>);              <span class="t-cm">// UNION; union($q, true) — UNION ALL</span>
+
+<span class="t-va">$query</span>-&gt;<span class="t-fn">withQuery</span>(<span class="t-va">$cte</span>, <span class="t-st">'posts'</span>, <span class="t-va">$recursive</span> = <span class="t-lt">false</span>);   <span class="t-cm">// WITH posts AS (…) — общие табличные выражения (2.0.35)</span></code></pre></figure>
+<h2 id="vypolnenie-i-rezultat">Выполнение и результат<a class="anchor" href="#vypolnenie-i-rezultat" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$rows</span>  = <span class="t-va">$query</span>-&gt;<span class="t-fn">all</span>();                     <span class="t-cm">// все строки</span>
+<span class="t-va">$row</span>   = <span class="t-va">$query</span>-&gt;<span class="t-fn">one</span>();                     <span class="t-cm">// первая строка или false (добавляет LIMIT 1)</span>
+<span class="t-va">$col</span>   = <span class="t-va">$query</span>-&gt;<span class="t-fn">column</span>();                  <span class="t-cm">// массив значений первого столбца</span>
+<span class="t-va">$value</span> = <span class="t-va">$query</span>-&gt;<span class="t-fn">scalar</span>();                  <span class="t-cm">// первый столбец первой строки</span>
+<span class="t-va">$bool</span>  = <span class="t-va">$query</span>-&gt;<span class="t-fn">exists</span>();
+<span class="t-va">$n</span>     = <span class="t-va">$query</span>-&gt;<span class="t-fn">count</span>();                   <span class="t-cm">// SELECT COUNT(*) — с учётом where/join, без limit/orderBy</span>
+<span class="t-va">$sum</span>   = <span class="t-va">$query</span>-&gt;<span class="t-fn">sum</span>(<span class="t-st">'amount'</span>); <span class="t-va">$avg</span> = <span class="t-va">$query</span>-&gt;<span class="t-fn">average</span>(<span class="t-st">'amount'</span>);   <span class="t-cm">// max(), min()</span>
+
+<span class="t-cm">// индексировать результат столбцом или замыканием</span>
+<span class="t-va">$users</span> = <span class="t-va">$query</span>-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)-&gt;<span class="t-fn">indexBy</span>(<span class="t-st">'id'</span>)-&gt;<span class="t-fn">all</span>();                 <span class="t-cm">// ['id' =&gt; row]</span>
+<span class="t-va">$users</span> = <span class="t-va">$query</span>-&gt;<span class="t-fn">indexBy</span>(<span class="t-kw">function</span> (<span class="t-va">$row</span>) { <span class="t-kw">return</span> <span class="t-va">$row</span>[<span class="t-st">'id'</span>] . <span class="t-va">$row</span>[<span class="t-st">'username'</span>]; })-&gt;<span class="t-fn">all</span>();</code></pre></figure>
+<p><code>count()</code> и другие агрегаты сохраняют условия исходного запроса, но игнорируют <code>orderBy</code>, <code>limit</code>, <code>offset</code> — это удобно для пагинации.</p>
+<aside class="callout gotcha"><div class="callout-title">Грабли</div><div class="callout-body"><p><code>one()</code> <strong>не</strong> проверяет, что строк действительно одна, а просто добавляет <code>LIMIT 1</code>. И если в <code>select()</code> указаны только выражения без имён столбцов, <code>indexBy</code> не найдёт ключ — давайте псевдонимы.</p></div></aside>
+<h2 id="paketnaya-vyborka">Пакетная выборка<a class="anchor" href="#paketnaya-vyborka" aria-label="Ссылка на раздел">#</a></h2>
+<p>Миллион строк через <code>all()</code> не влезет в память. <code>batch()</code>/<code>each()</code> читают курсором порциями:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$query</span> = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)-&gt;<span class="t-fn">orderBy</span>(<span class="t-st">'id'</span>);
+
+<span class="t-kw">foreach</span> (<span class="t-va">$query</span>-&gt;<span class="t-fn">batch</span>() <span class="t-kw">as</span> <span class="t-va">$users</span>) {        <span class="t-cm">// по 100 строк за итерацию</span>
+    <span class="t-cm">// $users — массив из ≤100 строк</span>
+}
+
+<span class="t-kw">foreach</span> (<span class="t-va">$query</span>-&gt;<span class="t-fn">each</span>(<span class="t-nu">500</span>) <span class="t-kw">as</span> <span class="t-va">$user</span>) {       <span class="t-cm">// по одной строке, порция 500</span>
+    <span class="t-cm">// $user — одна строка</span>
+}
+
+<span class="t-cm">// с indexBy ключи внутри порции сохраняются</span>
+<span class="t-kw">foreach</span> (<span class="t-va">$query</span>-&gt;<span class="t-fn">indexBy</span>(<span class="t-st">'username'</span>)-&gt;<span class="t-fn">batch</span>() <span class="t-kw">as</span> <span class="t-va">$users</span>) { }</code></pre></figure>
+<aside class="callout warning"><div class="callout-title">MySQL и буферизация</div><div class="callout-body"><p>В MySQL пакетная выборка работает по-настоящему только с небуферизованным соединением: <code>PDO::MYSQL_ATTR_USE_BUFFERED_QUERY =&gt; false</code>. Но пока такой курсор открыт, на этом соединении нельзя выполнять другие запросы — заведите второе <code>Connection</code> (например, <code>unbufferedDb</code>) специально для batch. Для PostgreSQL параметр <code>fetchMode</code>/лимит настраивать не нужно.</p></div></aside>
+<h2 id="vyrazheniya-i-podzaprosy">Выражения и подзапросы<a class="anchor" href="#vyrazheniya-i-podzaprosy" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\db\Expression</span>;
+
+<span class="t-va">$query</span>-&gt;<span class="t-fn">select</span>([<span class="t-st">'id'</span>, <span class="t-kw">new</span> <span class="t-cl">Expression</span>(<span class="t-st">'NOW() AS now'</span>)]);
+<span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>(<span class="t-kw">new</span> <span class="t-cl">Expression</span>(<span class="t-st">'YEAR(created_at) = :y'</span>, [<span class="t-st">':y'</span> =&gt; <span class="t-nu">2024</span>]));
+<span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>([<span class="t-st">'&gt;'</span>, <span class="t-st">'expires'</span>, <span class="t-kw">new</span> <span class="t-cl">Expression</span>(<span class="t-st">'NOW()'</span>)]);
+
+<span class="t-va">$sub</span> = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">select</span>(<span class="t-st">'user_id'</span>)-&gt;<span class="t-fn">from</span>(<span class="t-st">'post'</span>)-&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>]);
+<span class="t-va">$q</span>   = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)-&gt;<span class="t-fn">where</span>([<span class="t-st">'id'</span> =&gt; <span class="t-va">$sub</span>]);   <span class="t-cm">// WHERE id IN (SELECT user_id FROM post WHERE status=1)</span></code></pre></figure>
+<p><code>Expression</code> вставляется в SQL как есть — никогда не подставляйте в него пользовательские данные без параметров.</p>
+<h2 id="query-kak-stroitel-dlya-dao">Query как строитель для DAO<a class="anchor" href="#query-kak-stroitel-dlya-dao" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$command</span> = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)-&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>])-&gt;<span class="t-fn">createCommand</span>();
+<span class="t-kw">echo</span> <span class="t-va">$command</span>-&gt;sql;         <span class="t-cm">// SELECT * FROM `user` WHERE `status`=:qp0</span>
+<span class="t-va">$command</span>-&gt;params;           <span class="t-cm">// [':qp0' =&gt; 1]</span>
+<span class="t-va">$rows</span> = <span class="t-va">$command</span>-&gt;<span class="t-fn">queryAll</span>();</code></pre></figure>
+<p>Так можно применить построитель, но выполнить запрос вручную — например, через другое соединение или с дополнительной обработкой.</p>
+<div class="quiz"><div class="quiz-head"><span class="quiz-title">Проверь себя</span><span class="quiz-count">5</span><button type="button" class="quiz-all">Раскрыть все</button></div><div class="quiz-cards"><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">1</span><span class="qcard-text"><p>Какой формат <code>where()</code> выбрать, если значения пришли из формы поиска?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Хеш или операторный формат с <code>filterWhere()</code>: значения привязываются параметрами, а пустые поля игнорируются.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">2</span><span class="qcard-text"><p>Что вернёт <code>['id' =&gt; [4, 8, 15]]</code> внутри <code>where()</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>id IN (4, 8, 15)</code>; <code>null</code> в значении даст <code>IS NULL</code>.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">3</span><span class="qcard-text"><p>Чем <code>andFilterWhere()</code> отличается от <code>andWhere()</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>andFilterWhere()</code> пропускает условия с пустыми значениями (<code>''</code>, <code>' '</code>, <code>null</code>, <code>[]</code>), <code>andWhere()</code> добавляет всегда.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">4</span><span class="qcard-text"><p>Как выбрать миллион строк, не исчерпав память?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>foreach ($query-&gt;batch(1000) as $rows)</code> или <code>each()</code>; в MySQL — с небуферизованным соединением.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">5</span><span class="qcard-text"><p>Учитывает ли <code>count()</code> вызванный ранее <code>limit(10)</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Нет — агрегаты игнорируют <code>limit</code>, <code>offset</code> и <code>orderBy</code>, но сохраняют <code>where</code>, <code>join</code>, <code>groupBy</code>.</p></div></div></div></div>
+  </div>
+
+  <footer class="doc-foot">
+<details class="sources"><summary>Источник: главы официального руководства</summary><ul><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/db-query-builder" target="_blank" rel="noopener"><span class="src-part">Работа с базами данных</span>Построитель запросов</a></li></ul></details>
+    <div class="learned-cta">
+      <label class="learned big"><input type="checkbox" class="learned-box" data-page="query-builder"><span>Отметить раздел изученным</span></label>
+    </div>
+    <nav class="pager" aria-label="Соседние разделы"><a class="pager-link prev" href="dao.html"><span class="pager-label">← Назад</span><span class="pager-title">DAO — работа с SQL</span></a><a class="pager-link next" href="active-record.html"><span class="pager-label">Дальше →</span><span class="pager-title">Active Record</span></a></nav>
+  </footer>
+</article>
+
+  </main>
+
+  <aside class="toc" id="toc" aria-label="Содержание страницы">
+    <div class="toc-title">На этой странице</div><ul class="toc-list">
+<li class="toc-l2"><a href="#skelet-zaprosa">Скелет запроса</a></li>
+<li class="toc-l2"><a href="#select-i-from">SELECT и FROM</a></li>
+<li class="toc-l2"><a href="#where-tri-formata-usloviy">WHERE — три формата условий</a></li>
+<li class="toc-l3"><a href="#strokovyy">Строковый</a></li>
+<li class="toc-l3"><a href="#hesh-stolbec-znachenie">Хеш — «столбец → значение»</a></li>
+<li class="toc-l3"><a href="#operatornyy-operator-operand1-operand2">Операторный — [оператор, операнд1, операнд2, …]</a></li>
+<li class="toc-l3"><a href="#obektnyy-s-2-0-14">Объектный (с 2.0.14)</a></li>
+<li class="toc-l2"><a href="#dostraivanie-usloviy">Достраивание условий</a></li>
+<li class="toc-l2"><a href="#ostalnye-chasti">Остальные части</a></li>
+<li class="toc-l2"><a href="#vypolnenie-i-rezultat">Выполнение и результат</a></li>
+<li class="toc-l2"><a href="#paketnaya-vyborka">Пакетная выборка</a></li>
+<li class="toc-l2"><a href="#vyrazheniya-i-podzaprosy">Выражения и подзапросы</a></li>
+<li class="toc-l2"><a href="#query-kak-stroitel-dlya-dao">Query как строитель для DAO</a></li>
+</ul>
+  </aside>
+</div>
+
+<button type="button" class="to-top" id="to-top" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="search" id="search" hidden>
+  <div class="search-backdrop" data-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Поиск">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="search-input" placeholder="Что ищем? Например: findOne, RBAC, миграции…" autocomplete="off" spellcheck="false" aria-label="Поисковый запрос">
+      <button type="button" class="search-close" data-close aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results" id="search-results" role="listbox"></div>
+    <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> выбрать <kbd>Enter</kbd> открыть <kbd>Esc</kbd> закрыть</div>
+  </div>
+</div>
+
+<script src="assets/search-index.js" defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

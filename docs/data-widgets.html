@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Виджеты данных · Yii 2 — шпаргалка</title>
+<meta name="description" content="DetailView для одной модели, ListView со своим шаблоном элемента, GridView с колонками DataColumn/ActionColumn/CheckboxColumn/SerialColumn, фильтрами, сортировкой и форматами; работа со связями (joinWith), Pjax, несколько таблиц на странице.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+(function(){try{var t=localStorage.getItem('yii2:theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+</head>
+<body class="page" data-page="data-widgets">
+<a class="skip" href="#content">К содержимому</a>
+<header class="topbar">
+  <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html" aria-label="Yii 2 — шпаргалка — на главную">
+    <span class="brand-mark" aria-hidden="true">Yii</span>
+    <span class="brand-text">2 · шпаргалка</span>
+  </a>
+  <button type="button" class="search-btn" id="search-btn" aria-label="Поиск по шпаргалке">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="search-btn-text">Поиск</span>
+    <kbd class="search-kbd">Ctrl K</kbd>
+  </button>
+  <div class="topbar-right">
+    <a class="progress-pill" id="progress-pill" href="index.html#progress" title="Ваш прогресс">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+      <span class="progress-text"><span id="progress-num">0</span>%</span>
+    </a>
+    <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему" title="Тема: системная">
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+    <a class="icon-btn gh" href="https://github.com/yiisoft/yii2" target="_blank" rel="noopener" aria-label="Yii 2 на GitHub" title="yiisoft/yii2">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav" aria-label="Разделы">
+<a class="nav-home" href="index.html">Главная</a>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🚀</span>Старт</div><ul>
+<li><a href="intro.html" class="nav-link" data-page="intro"><span class="nav-num">01</span><span class="nav-text">Что такое Yii 2</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="install.html" class="nav-link" data-page="install"><span class="nav-num">02</span><span class="nav-text">Установка и запуск</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="first-app.html" class="nav-link" data-page="first-app"><span class="nav-num">03</span><span class="nav-text">Первое приложение</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🏗</span>Структура приложения</div><ul>
+<li><a href="app.html" class="nav-link" data-page="app"><span class="nav-num">04</span><span class="nav-text">Приложение и его компоненты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="controllers.html" class="nav-link" data-page="controllers"><span class="nav-num">05</span><span class="nav-text">Контроллеры и действия</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="models.html" class="nav-link" data-page="models"><span class="nav-num">06</span><span class="nav-text">Модели</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="views.html" class="nav-link" data-page="views"><span class="nav-num">07</span><span class="nav-text">Представления и шаблоны</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="modules.html" class="nav-link" data-page="modules"><span class="nav-num">08</span><span class="nav-text">Модули</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="filters.html" class="nav-link" data-page="filters"><span class="nav-num">09</span><span class="nav-text">Фильтры</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="widgets.html" class="nav-link" data-page="widgets"><span class="nav-num">10</span><span class="nav-text">Виджеты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="assets.html" class="nav-link" data-page="assets"><span class="nav-num">11</span><span class="nav-text">Ресурсы и клиентские скрипты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="extensions.html" class="nav-link" data-page="extensions"><span class="nav-num">12</span><span class="nav-text">Расширения и сторонний код</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔁</span>Обработка запроса</div><ul>
+<li><a href="lifecycle.html" class="nav-link" data-page="lifecycle"><span class="nav-num">13</span><span class="nav-text">Жизненный цикл запроса</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="routing.html" class="nav-link" data-page="routing"><span class="nav-num">14</span><span class="nav-text">Маршрутизация и URL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="request-response.html" class="nav-link" data-page="request-response"><span class="nav-num">15</span><span class="nav-text">Запрос и ответ</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="sessions.html" class="nav-link" data-page="sessions"><span class="nav-num">16</span><span class="nav-text">Сессии и куки</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="errors-logging.html" class="nav-link" data-page="errors-logging"><span class="nav-num">17</span><span class="nav-text">Ошибки и логирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧠</span>Ключевые концепции</div><ul>
+<li><a href="components.html" class="nav-link" data-page="components"><span class="nav-num">18</span><span class="nav-text">Компоненты и свойства</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="events.html" class="nav-link" data-page="events"><span class="nav-num">19</span><span class="nav-text">События</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="behaviors.html" class="nav-link" data-page="behaviors"><span class="nav-num">20</span><span class="nav-text">Поведения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="configurations.html" class="nav-link" data-page="configurations"><span class="nav-num">21</span><span class="nav-text">Конфигурации, псевдонимы, автозагрузка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="di.html" class="nav-link" data-page="di"><span class="nav-num">22</span><span class="nav-text">Service Locator и DI-контейнер</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🗄</span>Базы данных</div><ul>
+<li><a href="dao.html" class="nav-link" data-page="dao"><span class="nav-num">23</span><span class="nav-text">DAO — работа с SQL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="query-builder.html" class="nav-link" data-page="query-builder"><span class="nav-num">24</span><span class="nav-text">Query Builder</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="active-record.html" class="nav-link" data-page="active-record"><span class="nav-num">25</span><span class="nav-text">Active Record</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="migrations.html" class="nav-link" data-page="migrations"><span class="nav-num">26</span><span class="nav-text">Миграции</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📝</span>Формы и валидация</div><ul>
+<li><a href="forms.html" class="nav-link" data-page="forms"><span class="nav-num">27</span><span class="nav-text">Формы и ввод</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validation.html" class="nav-link" data-page="validation"><span class="nav-num">28</span><span class="nav-text">Валидация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validators.html" class="nav-link" data-page="validators"><span class="nav-num">29</span><span class="nav-text">Встроенные валидаторы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📊</span>Вывод данных</div><ul>
+<li><a href="formatting.html" class="nav-link" data-page="formatting"><span class="nav-num">30</span><span class="nav-text">Форматирование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-providers.html" class="nav-link" data-page="data-providers"><span class="nav-num">31</span><span class="nav-text">Провайдеры данных, пагинация, сортировка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-widgets.html" class="nav-link active" data-page="data-widgets" aria-current="page"><span class="nav-num">32</span><span class="nav-text">Виджеты данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔐</span>Безопасность</div><ul>
+<li><a href="authentication.html" class="nav-link" data-page="authentication"><span class="nav-num">33</span><span class="nav-text">Аутентификация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="authorization.html" class="nav-link" data-page="authorization"><span class="nav-num">34</span><span class="nav-text">Авторизация: ACF и RBAC</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="security.html" class="nav-link" data-page="security"><span class="nav-num">35</span><span class="nav-text">Безопасность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⚡</span>Кеширование</div><ul>
+<li><a href="caching.html" class="nav-link" data-page="caching"><span class="nav-num">36</span><span class="nav-text">Кэширование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="caching-output.html" class="nav-link" data-page="caching-output"><span class="nav-num">37</span><span class="nav-text">Кэширование фрагментов, страниц и HTTP</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔌</span>REST API</div><ul>
+<li><a href="rest.html" class="nav-link" data-page="rest"><span class="nav-num">38</span><span class="nav-text">REST API — быстрый старт</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="rest-advanced.html" class="nav-link" data-page="rest-advanced"><span class="nav-num">39</span><span class="nav-text">REST API — форматы, аутентификация, версии</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧰</span>Инструменты и тесты</div><ul>
+<li><a href="console.html" class="nav-link" data-page="console"><span class="nav-num">40</span><span class="nav-text">Консольные приложения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="testing.html" class="nav-link" data-page="testing"><span class="nav-num">41</span><span class="nav-text">Тестирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="dev-tools.html" class="nav-link" data-page="dev-tools"><span class="nav-num">42</span><span class="nav-text">Gii, отладчик и другие инструменты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧩</span>Специальные темы</div><ul>
+<li><a href="i18n.html" class="nav-link" data-page="i18n"><span class="nav-num">43</span><span class="nav-text">Интернационализация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="mailing.html" class="nav-link" data-page="mailing"><span class="nav-num">44</span><span class="nav-text">Отправка почты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="performance.html" class="nav-link" data-page="performance"><span class="nav-num">45</span><span class="nav-text">Производительность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="helpers.html" class="nav-link" data-page="helpers"><span class="nav-num">46</span><span class="nav-text">Хелперы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📌</span>Справочник</div><ul>
+<li><a href="cheatsheet.html" class="nav-link" data-page="cheatsheet"><span class="nav-num">47</span><span class="nav-text">Шпаргалка на одну страницу</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="glossary.html" class="nav-link" data-page="glossary"><span class="nav-num">48</span><span class="nav-text">Глоссарий</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="upgrade-from-yii1.html" class="nav-link" data-page="upgrade-from-yii1"><span class="nav-num">49</span><span class="nav-text">Переход с Yii 1.1</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⌘</span>Ещё</div><ul>
+<li><a href="all.html" class="nav-link" data-page="all"><span class="nav-num">∞</span><span class="nav-text">Всё одной страницей</span></a></li>
+</ul></div></nav>
+    <div class="sidebar-foot">
+      <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">Полное руководство ↗</a>
+      <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Справочник API ↗</a>
+      <button type="button" class="link-btn" id="reset-progress">Сбросить прогресс</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main" id="content">
+    <article class="doc">
+  <header class="doc-head">
+    <div class="crumbs"><a href="index.html">Главная</a><span>/</span><span class="crumb-part"><span class="crumb-icon">📊</span>Вывод данных</span></div>
+    <h1><span class="doc-num">32</span>Виджеты данных</h1>
+    <p class="doc-summary">DetailView для одной модели, ListView со своим шаблоном элемента, GridView с колонками DataColumn/ActionColumn/CheckboxColumn/SerialColumn, фильтрами, сортировкой и форматами; работа со связями (joinWith), Pjax, несколько таблиц на странице.</p>
+    <div class="doc-meta">
+      <span class="meta-item" title="Примерное время чтения">⏱ ~6 мин</span>
+      <span class="meta-item" title="Сколько глав руководства сжато в этот раздел">📚 1 глава руководства</span>
+      <label class="learned"><input type="checkbox" class="learned-box" data-page="data-widgets"><span>Изучено</span></label>
+    </div>
+  </header>
+
+  <div class="doc-body">
+<div class="lead"><p>Три виджета, которые закрывают 90% вывода данных: <code>DetailView</code> — карточка одной записи, <code>ListView</code> — список произвольной вёрстки, <code>GridView</code> — таблица с сортировкой, фильтрами и пагинацией. Все берут данные из <a href="data-providers.html" class="int">провайдера</a> и форматируют через <a href="formatting.html" class="int">formatter</a>.</p></div>
+<h2 id="detailview">DetailView<a class="anchor" href="#detailview" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\widgets\DetailView</span>;
+
+<span class="t-kw">echo</span> <span class="t-cl">DetailView</span>::<span class="t-fn">widget</span>([
+    <span class="t-st">'model'</span> =&gt; <span class="t-va">$model</span>,
+    <span class="t-st">'attributes'</span> =&gt; [
+        <span class="t-st">'title'</span>,                                    <span class="t-cm">// атрибут как есть (формат text)</span>
+        <span class="t-st">'description:html'</span>,                         <span class="t-cm">// атрибут:формат</span>
+        <span class="t-st">'created_at:datetime'</span>,
+        [
+            <span class="t-st">'label'</span> =&gt; <span class="t-st">'Владелец'</span>,
+            <span class="t-st">'value'</span> =&gt; <span class="t-va">$model</span>-&gt;owner-&gt;name,          <span class="t-cm">// значение или замыкание function ($model, $widget)</span>
+        ],
+        [
+            <span class="t-st">'attribute'</span> =&gt; <span class="t-st">'status'</span>,
+            <span class="t-st">'format'</span> =&gt; <span class="t-st">'raw'</span>,
+            <span class="t-st">'value'</span> =&gt; <span class="t-va">$model</span>-&gt;status ? <span class="t-st">'&lt;span class="badge"&gt;активен&lt;/span&gt;'</span> : <span class="t-st">'нет'</span>,
+        ],
+        <span class="t-st">'owner.email'</span>,                              <span class="t-cm">// через связь — вложенное свойство</span>
+        [<span class="t-st">'attribute'</span> =&gt; <span class="t-st">'secret'</span>, <span class="t-st">'visible'</span> =&gt; <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">can</span>(<span class="t-st">'admin'</span>)],
+    ],
+    <span class="t-st">'template'</span> =&gt; <span class="t-st">'&lt;tr&gt;&lt;th&gt;{label}&lt;/th&gt;&lt;td&gt;{value}&lt;/td&gt;&lt;/tr&gt;'</span>,
+    <span class="t-st">'options'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'table table-striped'</span>],
+]);</code></pre></figure>
+<p><code>model</code> может быть объектом или массивом. Форматы — любые из <code>Formatter</code>.</p>
+<h2 id="listview">ListView<a class="anchor" href="#listview" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\widgets\ListView</span>;
+
+<span class="t-kw">echo</span> <span class="t-cl">ListView</span>::<span class="t-fn">widget</span>([
+    <span class="t-st">'dataProvider'</span> =&gt; <span class="t-va">$dataProvider</span>,
+    <span class="t-st">'itemView'</span> =&gt; <span class="t-st">'_post'</span>,                          <span class="t-cm">// views/post/_post.php, получает $model, $key, $index, $widget</span>
+    <span class="t-cm">// 'itemView' =&gt; function ($model, $key, $index, $widget) { return Html::tag('div', $model-&gt;title); },</span>
+    <span class="t-st">'viewParams'</span> =&gt; [<span class="t-st">'fullView'</span> =&gt; <span class="t-lt">true</span>],           <span class="t-cm">// дополнительно в $itemView</span>
+    <span class="t-st">'itemOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'item'</span>],
+    <span class="t-st">'layout'</span> =&gt; <span class="t-st">"{summary}\n{items}\n{pager}"</span>,      <span class="t-cm">// также {sorter}</span>
+    <span class="t-st">'summary'</span> =&gt; <span class="t-st">'Показано {begin}–{end} из {totalCount}'</span>,
+    <span class="t-st">'emptyText'</span> =&gt; <span class="t-st">'Ничего не найдено'</span>,
+    <span class="t-st">'pager'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-cl">LinkPager</span>::<span class="t-kw">class</span>, <span class="t-st">'maxButtonCount'</span> =&gt; <span class="t-nu">5</span>],
+    <span class="t-st">'sorter'</span> =&gt; [<span class="t-st">'attributes'</span> =&gt; [<span class="t-st">'title'</span>, <span class="t-st">'created_at'</span>]],
+]);</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">views/post/_post.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;article</span><span class="t-tg">&gt;</span>
+    <span class="t-tg">&lt;h2</span><span class="t-tg">&gt;</span><span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$model</span>-&gt;title), [<span class="t-st">'view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-va">$model</span>-&gt;id]) <span class="t-tg">?&gt;</span><span class="t-tg">&lt;/h2</span><span class="t-tg">&gt;</span>
+    <span class="t-tg">&lt;?=</span> <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;formatter-&gt;<span class="t-fn">asDate</span>(<span class="t-va">$model</span>-&gt;created_at) <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;/article</span><span class="t-tg">&gt;</span></code></pre></figure>
+<h2 id="gridview">GridView<a class="anchor" href="#gridview" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\grid\GridView</span>;
+
+<span class="t-kw">echo</span> <span class="t-cl">GridView</span>::<span class="t-fn">widget</span>([
+    <span class="t-st">'dataProvider'</span> =&gt; <span class="t-va">$dataProvider</span>,
+    <span class="t-st">'filterModel'</span> =&gt; <span class="t-va">$searchModel</span>,                  <span class="t-cm">// строка фильтров над таблицей</span>
+    <span class="t-st">'columns'</span> =&gt; [
+        [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\grid\SerialColumn'</span>],       <span class="t-cm">// №</span>
+        <span class="t-st">'id'</span>,
+        <span class="t-st">'name'</span>,
+        <span class="t-st">'email:email'</span>,
+        <span class="t-st">'created_at:date'</span>,
+        [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\grid\ActionColumn'</span>],       <span class="t-cm">// просмотр / правка / удаление</span>
+    ],
+    <span class="t-st">'layout'</span> =&gt; <span class="t-st">"{summary}\n{items}\n{pager}"</span>,
+    <span class="t-st">'tableOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'table table-striped'</span>],
+    <span class="t-st">'rowOptions'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$model</span>, <span class="t-va">$key</span>, <span class="t-va">$index</span>, <span class="t-va">$grid</span>) {
+        <span class="t-kw">return</span> [<span class="t-st">'class'</span> =&gt; <span class="t-va">$model</span>-&gt;is_deleted ? <span class="t-st">'text-muted'</span> : <span class="t-st">''</span>];
+    },
+]);</code></pre></figure>
+<p>Без <code>columns</code> виджет покажет все атрибуты модели.</p>
+<h3 id="datacolumn-obychnaya-kolonka">DataColumn — обычная колонка<a class="anchor" href="#datacolumn-obychnaya-kolonka" aria-label="Ссылка на раздел">#</a></h3>
+<p>Строка <code>'name:format:label'</code> или массив:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>[
+    <span class="t-st">'attribute'</span> =&gt; <span class="t-st">'price'</span>,
+    <span class="t-st">'label'</span> =&gt; <span class="t-st">'Цена'</span>,
+    <span class="t-st">'format'</span> =&gt; [<span class="t-st">'currency'</span>, <span class="t-st">'RUB'</span>],
+    <span class="t-st">'value'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$model</span>, <span class="t-va">$key</span>, <span class="t-va">$index</span>, <span class="t-va">$column</span>) { <span class="t-kw">return</span> <span class="t-va">$model</span>-&gt;price / <span class="t-nu">100</span>; },   <span class="t-cm">// или 'owner.name'</span>
+    <span class="t-st">'contentOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'text-end'</span>],
+    <span class="t-st">'headerOptions'</span> =&gt; [<span class="t-st">'style'</span> =&gt; <span class="t-st">'width: 100px'</span>],
+    <span class="t-st">'enableSorting'</span> =&gt; <span class="t-lt">true</span>,
+    <span class="t-st">'filter'</span> =&gt; [<span class="t-st">'1'</span> =&gt; <span class="t-st">'Активен'</span>, <span class="t-st">'0'</span> =&gt; <span class="t-st">'Заблокирован'</span>],   <span class="t-cm">// &lt;select&gt; вместо текстового поля; false — без фильтра</span>
+    <span class="t-st">'filterInputOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'form-control'</span>, <span class="t-st">'placeholder'</span> =&gt; <span class="t-st">'Поиск'</span>],
+    <span class="t-st">'visible'</span> =&gt; !<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;isGuest,
+    <span class="t-st">'content'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$model</span>) { … },   <span class="t-cm">// полностью свой HTML (не экранируется)</span>
+],</code></pre></figure>
+<p><code>format =&gt; 'raw'</code> выводит HTML без экранирования — только для доверенного содержимого.</p>
+<h3 id="actioncolumn">ActionColumn<a class="anchor" href="#actioncolumn" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>[
+    <span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\grid\ActionColumn'</span>,
+    <span class="t-st">'template'</span> =&gt; <span class="t-st">'{view} {update} {delete} {custom}'</span>,
+    <span class="t-st">'controller'</span> =&gt; <span class="t-st">'admin/user'</span>,                   <span class="t-cm">// другой контроллер (по умолчанию текущий)</span>
+    <span class="t-st">'buttons'</span> =&gt; [
+        <span class="t-st">'custom'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$url</span>, <span class="t-va">$model</span>, <span class="t-va">$key</span>) {
+            <span class="t-kw">return</span> <span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-st">'&lt;i class="bi bi-star"&gt;&lt;/i&gt;'</span>, <span class="t-va">$url</span>, [<span class="t-st">'title'</span> =&gt; <span class="t-st">'Избранное'</span>]);
+        },
+    ],
+    <span class="t-st">'urlCreator'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$action</span>, <span class="t-va">$model</span>, <span class="t-va">$key</span>, <span class="t-va">$index</span>) {
+        <span class="t-kw">return</span> <span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-va">$action</span>, <span class="t-st">'id'</span> =&gt; <span class="t-va">$model</span>-&gt;id, <span class="t-st">'slug'</span> =&gt; <span class="t-va">$model</span>-&gt;slug]);
+    },
+    <span class="t-st">'visibleButtons'</span> =&gt; [<span class="t-st">'delete'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$model</span>, <span class="t-va">$key</span>, <span class="t-va">$index</span>) { <span class="t-kw">return</span> <span class="t-va">$model</span>-&gt;<span class="t-fn">canDelete</span>(); }],
+],</code></pre></figure>
+<p>Кнопка <code>delete</code> уже имеет <code>data-confirm</code> и <code>data-method="post"</code> — обрабатывается <code>yii.js</code>.</p>
+<h3 id="checkboxcolumn">CheckboxColumn<a class="anchor" href="#checkboxcolumn" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>[<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\grid\CheckboxColumn'</span>, <span class="t-st">'checkboxOptions'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$model</span>) { <span class="t-kw">return</span> [<span class="t-st">'value'</span> =&gt; <span class="t-va">$model</span>-&gt;id]; }],</code></pre></figure>
+<figure class="code" data-lang="js"><div class="code-head"><span class="code-lang">JavaScript</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">var</span> keys = <span class="t-va">$</span>(<span class="t-st">'#grid'</span>).<span class="t-fn">yiiGridView</span>(<span class="t-st">'getSelectedRows'</span>);   <span class="t-cm">// массив ключей отмеченных строк</span></code></pre></figure>
+<p>Чекбокс в заголовке отмечает всё. Имя поля — <code>selection[]</code> (<code>name</code> колонки).</p>
+<h3 id="serialcolumn">SerialColumn<a class="anchor" href="#serialcolumn" aria-label="Ссылка на раздел">#</a></h3>
+<p>Порядковый номер строки с учётом страницы.</p>
+<h2 id="filtraciya-i-poiskovaya-model">Фильтрация и поисковая модель<a class="anchor" href="#filtraciya-i-poiskovaya-model" aria-label="Ссылка на раздел">#</a></h2>
+<p>Стандартный паттерн (Gii генерирует именно так):</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">models/PostSearch.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">PostSearch</span> <span class="t-kw">extends</span> <span class="t-cl">Post</span>
+{
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">rules</span>()
+    {
+        <span class="t-kw">return</span> [[[<span class="t-st">'id'</span>, <span class="t-st">'status'</span>], <span class="t-st">'integer'</span>], [[<span class="t-st">'title'</span>, <span class="t-st">'author.name'</span>], <span class="t-st">'safe'</span>]];
+    }
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">search</span>(<span class="t-va">$params</span>)
+    {
+        <span class="t-va">$query</span> = <span class="t-cl">Post</span>::<span class="t-fn">find</span>();
+        <span class="t-va">$dataProvider</span> = <span class="t-kw">new</span> <span class="t-cl">ActiveDataProvider</span>([<span class="t-st">'query'</span> =&gt; <span class="t-va">$query</span>]);
+
+        <span class="t-kw">if</span> (!(<span class="t-va">$this</span>-&gt;<span class="t-fn">load</span>(<span class="t-va">$params</span>) &amp;&amp; <span class="t-va">$this</span>-&gt;<span class="t-fn">validate</span>())) {
+            <span class="t-kw">return</span> <span class="t-va">$dataProvider</span>;
+        }
+
+        <span class="t-va">$query</span>-&gt;<span class="t-fn">andFilterWhere</span>([<span class="t-st">'id'</span> =&gt; <span class="t-va">$this</span>-&gt;id, <span class="t-st">'status'</span> =&gt; <span class="t-va">$this</span>-&gt;status])
+              -&gt;<span class="t-fn">andFilterWhere</span>([<span class="t-st">'like'</span>, <span class="t-st">'title'</span>, <span class="t-va">$this</span>-&gt;title]);
+
+        <span class="t-kw">return</span> <span class="t-va">$dataProvider</span>;
+    }
+}</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">controllers/PostController.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionIndex</span>()
+{
+    <span class="t-va">$searchModel</span> = <span class="t-kw">new</span> <span class="t-cl">PostSearch</span>();
+    <span class="t-va">$dataProvider</span> = <span class="t-va">$searchModel</span>-&gt;<span class="t-fn">search</span>(<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;queryParams);
+    <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">render</span>(<span class="t-st">'index'</span>, <span class="t-fn">compact</span>(<span class="t-st">'searchModel'</span>, <span class="t-st">'dataProvider'</span>));
+}</code></pre></figure>
+<p><code>filterModel</code> рисует поля фильтров по атрибутам с правилами; <code>andFilterWhere</code> игнорирует пустые — фильтр работает «как есть».</p>
+<h3 id="filtr-i-sortirovka-po-svyazi">Фильтр и сортировка по связи<a class="anchor" href="#filtr-i-sortirovka-po-svyazi" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">models/PostSearch.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-va">$authorName</span>;                       <span class="t-cm">// виртуальный атрибут для фильтра</span>
+
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">rules</span>() { <span class="t-kw">return</span> [[[<span class="t-st">'authorName'</span>], <span class="t-st">'safe'</span>], …]; }
+
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">search</span>(<span class="t-va">$params</span>)
+{
+    <span class="t-va">$query</span> = <span class="t-cl">Post</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">joinWith</span>([<span class="t-st">'author'</span>]);          <span class="t-cm">// JOIN нужен для where по чужой таблице</span>
+    <span class="t-va">$dataProvider</span> = <span class="t-kw">new</span> <span class="t-cl">ActiveDataProvider</span>([<span class="t-st">'query'</span> =&gt; <span class="t-va">$query</span>]);
+
+    <span class="t-va">$dataProvider</span>-&gt;sort-&gt;attributes[<span class="t-st">'authorName'</span>] = [
+        <span class="t-st">'asc'</span> =&gt; [<span class="t-st">'user.name'</span> =&gt; <span class="t-ct">SORT_ASC</span>],
+        <span class="t-st">'desc'</span> =&gt; [<span class="t-st">'user.name'</span> =&gt; <span class="t-ct">SORT_DESC</span>],
+    ];
+
+    <span class="t-va">$this</span>-&gt;<span class="t-fn">load</span>(<span class="t-va">$params</span>);
+    <span class="t-va">$query</span>-&gt;<span class="t-fn">andFilterWhere</span>([<span class="t-st">'like'</span>, <span class="t-st">'user.name'</span>, <span class="t-va">$this</span>-&gt;authorName]);
+    <span class="t-kw">return</span> <span class="t-va">$dataProvider</span>;
+}</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// колонка</span>
+[<span class="t-st">'attribute'</span> =&gt; <span class="t-st">'authorName'</span>, <span class="t-st">'value'</span> =&gt; <span class="t-st">'author.name'</span>, <span class="t-st">'label'</span> =&gt; <span class="t-st">'Автор'</span>],</code></pre></figure>
+<p>Для <code>hasMany</code> при <code>joinWith</code> строки дублируются — добавьте <code>-&gt;groupBy('post.id')</code> или используйте <code>-&gt;with()</code> + подзапрос <code>exists</code>. Чтобы оптимизировать, <code>joinWith('author', false)</code> + <code>with('author')</code>.</p>
+<h2 id="pjax-tablica-bez-perezagruzki">Pjax — таблица без перезагрузки<a class="anchor" href="#pjax-tablica-bez-perezagruzki" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span> <span class="t-cl">Pjax</span>::<span class="t-fn">begin</span>([<span class="t-st">'id'</span> =&gt; <span class="t-st">'post-grid'</span>]) <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?=</span> <span class="t-cl">GridView</span>::<span class="t-fn">widget</span>([...]) <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-cl">Pjax</span>::<span class="t-fn">end</span>() <span class="t-tg">?&gt;</span></code></pre></figure>
+<p>Пагинация, сортировка и фильтры внутри работают через AJAX. Кнопки <code>ActionColumn</code> тоже, но после <code>delete</code> нужно обновить: <code>$.pjax.reload({container: '#post-grid'})</code>. Ссылки, которые не должны идти через Pjax, помечайте <code>data-pjax="0"</code>.</p>
+<h2 id="neskolko-gridview-na-stranice">Несколько GridView на странице<a class="anchor" href="#neskolko-gridview-na-stranice" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$userProvider</span>-&gt;pagination-&gt;pageParam = <span class="t-st">'user-page'</span>;
+<span class="t-va">$userProvider</span>-&gt;sort-&gt;sortParam = <span class="t-st">'user-sort'</span>;
+<span class="t-va">$postProvider</span>-&gt;pagination-&gt;pageParam = <span class="t-st">'post-page'</span>;
+<span class="t-va">$postProvider</span>-&gt;sort-&gt;sortParam = <span class="t-st">'post-sort'</span>;</code></pre></figure>
+<p>Иначе страницы и сортировка будут делить одни и те же GET-параметры.</p>
+<h2 id="bystryy-recept-crud-spiska">Быстрый рецепт CRUD-списка<a class="anchor" href="#bystryy-recept-crud-spiska" aria-label="Ссылка на раздел">#</a></h2>
+<div class="steps"><ol>
+<li><code>PostSearch extends Post</code> с <code>search($params)</code> — <code>ActiveDataProvider</code> + <code>andFilterWhere</code>.</li>
+<li>В действии: <code>$dataProvider = $searchModel-&gt;search(Yii::$app-&gt;request-&gt;queryParams)</code>.</li>
+<li><code>GridView</code> с <code>filterModel</code>, колонками и <code>ActionColumn</code>; обернуть в <code>Pjax</code>.</li>
+<li>Для связей — <code>joinWith</code> + виртуальный атрибут + <code>sort-&gt;attributes</code>.</li>
+<li>Массовые действия — <code>CheckboxColumn</code> + <code>yiiGridView('getSelectedRows')</code>.</li>
+</ol></div>
+<div class="quiz"><div class="quiz-head"><span class="quiz-title">Проверь себя</span><span class="quiz-count">5</span><button type="button" class="quiz-all">Раскрыть все</button></div><div class="quiz-cards"><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">1</span><span class="qcard-text"><p>Что означает <code>'created_at:datetime:Создано'</code> в списке колонок?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Атрибут <code>created_at</code>, формат <code>datetime</code>, заголовок «Создано».</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">2</span><span class="qcard-text"><p>Зачем поисковой модели наследовать AR-модель?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Чтобы получить атрибуты, подписи и типы; <code>rules()</code> переопределяются под фильтр, а <code>search()</code> строит провайдер.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">3</span><span class="qcard-text"><p>Почему фильтр по <code>author.name</code> не работает без <code>joinWith</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Условие <code>where</code> на столбец другой таблицы требует JOIN; <code>with()</code> делает отдельный запрос и не подходит.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">4</span><span class="qcard-text"><p>Как получить ключи отмеченных строк <code>CheckboxColumn</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>$('#grid').yiiGridView('getSelectedRows')</code> в JS или <code>selection[]</code> из POST.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">5</span><span class="qcard-text"><p>Что даёт обёртка GridView в <code>Pjax</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Пагинация, сортировка и фильтрация обновляют только таблицу без перезагрузки страницы.</p></div></div></div></div>
+  </div>
+
+  <footer class="doc-foot">
+<details class="sources"><summary>Источник: главы официального руководства</summary><ul><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/output-data-widgets" target="_blank" rel="noopener"><span class="src-part">Отображение данных</span>Виджеты для данных</a></li></ul></details>
+    <div class="learned-cta">
+      <label class="learned big"><input type="checkbox" class="learned-box" data-page="data-widgets"><span>Отметить раздел изученным</span></label>
+    </div>
+    <nav class="pager" aria-label="Соседние разделы"><a class="pager-link prev" href="data-providers.html"><span class="pager-label">← Назад</span><span class="pager-title">Провайдеры данных, пагинация, сортировка</span></a><a class="pager-link next" href="authentication.html"><span class="pager-label">Дальше →</span><span class="pager-title">Аутентификация</span></a></nav>
+  </footer>
+</article>
+
+  </main>
+
+  <aside class="toc" id="toc" aria-label="Содержание страницы">
+    <div class="toc-title">На этой странице</div><ul class="toc-list">
+<li class="toc-l2"><a href="#detailview">DetailView</a></li>
+<li class="toc-l2"><a href="#listview">ListView</a></li>
+<li class="toc-l2"><a href="#gridview">GridView</a></li>
+<li class="toc-l3"><a href="#datacolumn-obychnaya-kolonka">DataColumn — обычная колонка</a></li>
+<li class="toc-l3"><a href="#actioncolumn">ActionColumn</a></li>
+<li class="toc-l3"><a href="#checkboxcolumn">CheckboxColumn</a></li>
+<li class="toc-l3"><a href="#serialcolumn">SerialColumn</a></li>
+<li class="toc-l2"><a href="#filtraciya-i-poiskovaya-model">Фильтрация и поисковая модель</a></li>
+<li class="toc-l3"><a href="#filtr-i-sortirovka-po-svyazi">Фильтр и сортировка по связи</a></li>
+<li class="toc-l2"><a href="#pjax-tablica-bez-perezagruzki">Pjax — таблица без перезагрузки</a></li>
+<li class="toc-l2"><a href="#neskolko-gridview-na-stranice">Несколько GridView на странице</a></li>
+<li class="toc-l2"><a href="#bystryy-recept-crud-spiska">Быстрый рецепт CRUD-списка</a></li>
+</ul>
+  </aside>
+</div>
+
+<button type="button" class="to-top" id="to-top" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="search" id="search" hidden>
+  <div class="search-backdrop" data-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Поиск">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="search-input" placeholder="Что ищем? Например: findOne, RBAC, миграции…" autocomplete="off" spellcheck="false" aria-label="Поисковый запрос">
+      <button type="button" class="search-close" data-close aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results" id="search-results" role="listbox"></div>
+    <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> выбрать <kbd>Enter</kbd> открыть <kbd>Esc</kbd> закрыть</div>
+  </div>
+</div>
+
+<script src="assets/search-index.js" defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

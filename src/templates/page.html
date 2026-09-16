@@ -1,0 +1,24 @@
+<article class="doc">
+  <header class="doc-head">
+    <div class="crumbs"><a href="index.html">Главная</a><span>/</span><span class="crumb-part"><span class="crumb-icon">{{part_icon}}</span>{{part_title}}</span></div>
+    <h1><span class="doc-num">{{num}}</span>{{title}}</h1>
+    <p class="doc-summary">{{summary}}</p>
+    <div class="doc-meta">
+      <span class="meta-item" title="Примерное время чтения">⏱ ~{{minutes}} мин</span>
+      {{chapters_meta}}
+      <label class="learned"><input type="checkbox" class="learned-box" data-page="{{page_id}}"><span>Изучено</span></label>
+    </div>
+  </header>
+
+  <div class="doc-body">
+{{body}}
+  </div>
+
+  <footer class="doc-foot">
+{{sources_block}}
+    <div class="learned-cta">
+      <label class="learned big"><input type="checkbox" class="learned-box" data-page="{{page_id}}"><span>Отметить раздел изученным</span></label>
+    </div>
+    <nav class="pager" aria-label="Соседние разделы">{{prev}}{{next}}</nav>
+  </footer>
+</article>

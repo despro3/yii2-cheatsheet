@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Представления и шаблоны · Yii 2 — шпаргалка</title>
+<meta name="description" content="PHP-шаблоны, правила поиска файлов, передача данных, layouts и блоки, компонент view, темизация и подключение Twig/Smarty.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+(function(){try{var t=localStorage.getItem('yii2:theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+</head>
+<body class="page" data-page="views">
+<a class="skip" href="#content">К содержимому</a>
+<header class="topbar">
+  <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html" aria-label="Yii 2 — шпаргалка — на главную">
+    <span class="brand-mark" aria-hidden="true">Yii</span>
+    <span class="brand-text">2 · шпаргалка</span>
+  </a>
+  <button type="button" class="search-btn" id="search-btn" aria-label="Поиск по шпаргалке">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="search-btn-text">Поиск</span>
+    <kbd class="search-kbd">Ctrl K</kbd>
+  </button>
+  <div class="topbar-right">
+    <a class="progress-pill" id="progress-pill" href="index.html#progress" title="Ваш прогресс">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+      <span class="progress-text"><span id="progress-num">0</span>%</span>
+    </a>
+    <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему" title="Тема: системная">
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+    <a class="icon-btn gh" href="https://github.com/yiisoft/yii2" target="_blank" rel="noopener" aria-label="Yii 2 на GitHub" title="yiisoft/yii2">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav" aria-label="Разделы">
+<a class="nav-home" href="index.html">Главная</a>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🚀</span>Старт</div><ul>
+<li><a href="intro.html" class="nav-link" data-page="intro"><span class="nav-num">01</span><span class="nav-text">Что такое Yii 2</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="install.html" class="nav-link" data-page="install"><span class="nav-num">02</span><span class="nav-text">Установка и запуск</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="first-app.html" class="nav-link" data-page="first-app"><span class="nav-num">03</span><span class="nav-text">Первое приложение</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🏗</span>Структура приложения</div><ul>
+<li><a href="app.html" class="nav-link" data-page="app"><span class="nav-num">04</span><span class="nav-text">Приложение и его компоненты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="controllers.html" class="nav-link" data-page="controllers"><span class="nav-num">05</span><span class="nav-text">Контроллеры и действия</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="models.html" class="nav-link" data-page="models"><span class="nav-num">06</span><span class="nav-text">Модели</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="views.html" class="nav-link active" data-page="views" aria-current="page"><span class="nav-num">07</span><span class="nav-text">Представления и шаблоны</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="modules.html" class="nav-link" data-page="modules"><span class="nav-num">08</span><span class="nav-text">Модули</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="filters.html" class="nav-link" data-page="filters"><span class="nav-num">09</span><span class="nav-text">Фильтры</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="widgets.html" class="nav-link" data-page="widgets"><span class="nav-num">10</span><span class="nav-text">Виджеты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="assets.html" class="nav-link" data-page="assets"><span class="nav-num">11</span><span class="nav-text">Ресурсы и клиентские скрипты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="extensions.html" class="nav-link" data-page="extensions"><span class="nav-num">12</span><span class="nav-text">Расширения и сторонний код</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔁</span>Обработка запроса</div><ul>
+<li><a href="lifecycle.html" class="nav-link" data-page="lifecycle"><span class="nav-num">13</span><span class="nav-text">Жизненный цикл запроса</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="routing.html" class="nav-link" data-page="routing"><span class="nav-num">14</span><span class="nav-text">Маршрутизация и URL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="request-response.html" class="nav-link" data-page="request-response"><span class="nav-num">15</span><span class="nav-text">Запрос и ответ</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="sessions.html" class="nav-link" data-page="sessions"><span class="nav-num">16</span><span class="nav-text">Сессии и куки</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="errors-logging.html" class="nav-link" data-page="errors-logging"><span class="nav-num">17</span><span class="nav-text">Ошибки и логирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧠</span>Ключевые концепции</div><ul>
+<li><a href="components.html" class="nav-link" data-page="components"><span class="nav-num">18</span><span class="nav-text">Компоненты и свойства</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="events.html" class="nav-link" data-page="events"><span class="nav-num">19</span><span class="nav-text">События</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="behaviors.html" class="nav-link" data-page="behaviors"><span class="nav-num">20</span><span class="nav-text">Поведения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="configurations.html" class="nav-link" data-page="configurations"><span class="nav-num">21</span><span class="nav-text">Конфигурации, псевдонимы, автозагрузка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="di.html" class="nav-link" data-page="di"><span class="nav-num">22</span><span class="nav-text">Service Locator и DI-контейнер</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🗄</span>Базы данных</div><ul>
+<li><a href="dao.html" class="nav-link" data-page="dao"><span class="nav-num">23</span><span class="nav-text">DAO — работа с SQL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="query-builder.html" class="nav-link" data-page="query-builder"><span class="nav-num">24</span><span class="nav-text">Query Builder</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="active-record.html" class="nav-link" data-page="active-record"><span class="nav-num">25</span><span class="nav-text">Active Record</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="migrations.html" class="nav-link" data-page="migrations"><span class="nav-num">26</span><span class="nav-text">Миграции</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📝</span>Формы и валидация</div><ul>
+<li><a href="forms.html" class="nav-link" data-page="forms"><span class="nav-num">27</span><span class="nav-text">Формы и ввод</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validation.html" class="nav-link" data-page="validation"><span class="nav-num">28</span><span class="nav-text">Валидация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validators.html" class="nav-link" data-page="validators"><span class="nav-num">29</span><span class="nav-text">Встроенные валидаторы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📊</span>Вывод данных</div><ul>
+<li><a href="formatting.html" class="nav-link" data-page="formatting"><span class="nav-num">30</span><span class="nav-text">Форматирование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-providers.html" class="nav-link" data-page="data-providers"><span class="nav-num">31</span><span class="nav-text">Провайдеры данных, пагинация, сортировка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-widgets.html" class="nav-link" data-page="data-widgets"><span class="nav-num">32</span><span class="nav-text">Виджеты данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔐</span>Безопасность</div><ul>
+<li><a href="authentication.html" class="nav-link" data-page="authentication"><span class="nav-num">33</span><span class="nav-text">Аутентификация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="authorization.html" class="nav-link" data-page="authorization"><span class="nav-num">34</span><span class="nav-text">Авторизация: ACF и RBAC</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="security.html" class="nav-link" data-page="security"><span class="nav-num">35</span><span class="nav-text">Безопасность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⚡</span>Кеширование</div><ul>
+<li><a href="caching.html" class="nav-link" data-page="caching"><span class="nav-num">36</span><span class="nav-text">Кэширование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="caching-output.html" class="nav-link" data-page="caching-output"><span class="nav-num">37</span><span class="nav-text">Кэширование фрагментов, страниц и HTTP</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔌</span>REST API</div><ul>
+<li><a href="rest.html" class="nav-link" data-page="rest"><span class="nav-num">38</span><span class="nav-text">REST API — быстрый старт</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="rest-advanced.html" class="nav-link" data-page="rest-advanced"><span class="nav-num">39</span><span class="nav-text">REST API — форматы, аутентификация, версии</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧰</span>Инструменты и тесты</div><ul>
+<li><a href="console.html" class="nav-link" data-page="console"><span class="nav-num">40</span><span class="nav-text">Консольные приложения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="testing.html" class="nav-link" data-page="testing"><span class="nav-num">41</span><span class="nav-text">Тестирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="dev-tools.html" class="nav-link" data-page="dev-tools"><span class="nav-num">42</span><span class="nav-text">Gii, отладчик и другие инструменты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧩</span>Специальные темы</div><ul>
+<li><a href="i18n.html" class="nav-link" data-page="i18n"><span class="nav-num">43</span><span class="nav-text">Интернационализация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="mailing.html" class="nav-link" data-page="mailing"><span class="nav-num">44</span><span class="nav-text">Отправка почты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="performance.html" class="nav-link" data-page="performance"><span class="nav-num">45</span><span class="nav-text">Производительность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="helpers.html" class="nav-link" data-page="helpers"><span class="nav-num">46</span><span class="nav-text">Хелперы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📌</span>Справочник</div><ul>
+<li><a href="cheatsheet.html" class="nav-link" data-page="cheatsheet"><span class="nav-num">47</span><span class="nav-text">Шпаргалка на одну страницу</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="glossary.html" class="nav-link" data-page="glossary"><span class="nav-num">48</span><span class="nav-text">Глоссарий</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="upgrade-from-yii1.html" class="nav-link" data-page="upgrade-from-yii1"><span class="nav-num">49</span><span class="nav-text">Переход с Yii 1.1</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⌘</span>Ещё</div><ul>
+<li><a href="all.html" class="nav-link" data-page="all"><span class="nav-num">∞</span><span class="nav-text">Всё одной страницей</span></a></li>
+</ul></div></nav>
+    <div class="sidebar-foot">
+      <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">Полное руководство ↗</a>
+      <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Справочник API ↗</a>
+      <button type="button" class="link-btn" id="reset-progress">Сбросить прогресс</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main" id="content">
+    <article class="doc">
+  <header class="doc-head">
+    <div class="crumbs"><a href="index.html">Главная</a><span>/</span><span class="crumb-part"><span class="crumb-icon">🏗</span>Структура приложения</span></div>
+    <h1><span class="doc-num">07</span>Представления и шаблоны</h1>
+    <p class="doc-summary">PHP-шаблоны, правила поиска файлов, передача данных, layouts и блоки, компонент view, темизация и подключение Twig/Smarty.</p>
+    <div class="doc-meta">
+      <span class="meta-item" title="Примерное время чтения">⏱ ~7 мин</span>
+      <span class="meta-item" title="Сколько глав руководства сжато в этот раздел">📚 3 главы руководства</span>
+      <label class="learned"><input type="checkbox" class="learned-box" data-page="views"><span>Изучено</span></label>
+    </div>
+  </header>
+
+  <div class="doc-body">
+<div class="lead"><p>Представление — обычный PHP-файл с HTML, в котором <code>$this</code> — это компонент <code>yii\web\View</code>. Контроллер вызывает <code>render()</code>, результат оборачивается в шаблон (layout) и уходит в ответ. Главное правило: всё пользовательское — через <code>Html::encode()</code>.</p></div>
+<h2 id="kak-vyglyadit-predstavlenie">Как выглядит представление<a class="anchor" href="#kak-vyglyadit-predstavlenie" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">views/site/login.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span>
+<span class="t-kw">use</span> <span class="t-cl">yii\helpers\Html</span>;
+<span class="t-kw">use</span> <span class="t-cl">yii\widgets\ActiveForm</span>;
+
+<span class="t-cm">/** @var \yii\web\View $this */</span>
+<span class="t-cm">/** @var \app\models\LoginForm $model */</span>
+
+<span class="t-va">$this</span>-&gt;title = <span class="t-st">'Вход'</span>;
+<span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;h1</span><span class="t-tg">&gt;</span><span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$this</span>-&gt;title) <span class="t-tg">?&gt;</span><span class="t-tg">&lt;/h1</span><span class="t-tg">&gt;</span>
+
+<span class="t-tg">&lt;?php</span> <span class="t-va">$form</span> = <span class="t-cl">ActiveForm</span>::<span class="t-fn">begin</span>(); <span class="t-tg">?&gt;</span>
+    <span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'username'</span>) <span class="t-tg">?&gt;</span>
+    <span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'password'</span>)-&gt;<span class="t-fn">passwordInput</span>() <span class="t-tg">?&gt;</span>
+    <span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">submitButton</span>(<span class="t-st">'Войти'</span>) <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-cl">ActiveForm</span>::<span class="t-fn">end</span>(); <span class="t-tg">?&gt;</span></code></pre></figure>
+<p>Переменные (<code>$model</code>, <code>$form</code>) приходят из контроллера. Докблок с <code>@var</code> в начале файла — не обязателен, но даёт автодополнение в IDE.</p>
+<aside class="callout gotcha"><div class="callout-title">Грабли</div><div class="callout-body"><p>В Yii 1 <code>$this</code> в представлении был контроллером. В Yii 2 это объект <code>View</code>; контроллер доступен как <code>$this-&gt;context</code>.</p></div></aside>
+<h3 id="bezopasnost-vyvoda">Безопасность вывода<a class="anchor" href="#bezopasnost-vyvoda" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$user</span>-&gt;name) <span class="t-tg">?&gt;</span>              <span class="t-cm">&lt;!-- текст: экранируем &lt; &gt; &amp; " ' --&gt;</span>
+<span class="t-tg">&lt;?=</span> <span class="t-cl">HtmlPurifier</span>::<span class="t-fn">process</span>(<span class="t-va">$post</span>-&gt;text) <span class="t-tg">?&gt;</span>     <span class="t-cm">&lt;!-- HTML от пользователя: вырезаем опасное --&gt;</span></code></pre></figure>
+<p><code>HtmlPurifier</code> надёжен, но медленный — результат стоит <a href="caching-output.html" class="int">кешировать</a>.</p>
+<h2 id="gde-lezhat-fayly">Где лежат файлы<a class="anchor" href="#gde-lezhat-fayly" aria-label="Ссылка на раздел">#</a></h2>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Кто рендерит</th>
+<th>Папка по умолчанию</th>
+</tr></thead><tbody>
+<tr><td>контроллер <code>PostController</code></td><td><code>@app/views/post/</code></td></tr>
+<tr><td>контроллер <code>PostCommentController</code></td><td><code>@app/views/post-comment/</code></td></tr>
+<tr><td>контроллер модуля</td><td><code>views/post/</code> внутри папки модуля</td></tr>
+<tr><td>виджет</td><td><code>views/</code> рядом с классом виджета</td></tr>
+</tbody></table></div>
+<p>Изменить папку можно, переопределив <code>getViewPath()</code> контроллера или виджета.</p>
+<h2 id="kak-renderit">Как рендерить<a class="anchor" href="#kak-renderit" aria-label="Ссылка на раздел">#</a></h2>
+<div class="kv"><div class="kv-row"><div class="kv-key"><code>$this-&gt;render('view', $params)</code></div><div class="kv-val">в контроллере: представление + шаблон</div></div><div class="kv-row"><div class="kv-key"><code>$this-&gt;renderPartial('_item', $params)</code></div><div class="kv-val">в контроллере: без шаблона (фрагменты, AJAX)</div></div><div class="kv-row"><div class="kv-key"><code>$this-&gt;renderAjax('form', $params)</code></div><div class="kv-val">без шаблона, но с зарегистрированными JS/CSS — для подгрузки модалок</div></div><div class="kv-row"><div class="kv-key"><code>$this-&gt;renderFile('@app/views/site/license.php')</code></div><div class="kv-val">по пути или псевдониму</div></div><div class="kv-row"><div class="kv-key"><code>$this-&gt;render('_overview')</code></div><div class="kv-val">внутри представления: <code>$this</code> уже <code>View</code>, ищет рядом с текущим файлом</div></div><div class="kv-row"><div class="kv-key"><code>Yii::$app-&gt;view-&gt;renderFile(...)</code></div><div class="kv-val">откуда угодно (письма, консоль)</div></div></div>
+<h3 id="kak-razreshaetsya-imya-predstavleniya">Как разрешается имя представления<a class="anchor" href="#kak-razreshaetsya-imya-predstavleniya" aria-label="Ссылка на раздел">#</a></h3>
+<div class="table-wrap"><table>
+<thead><tr>
+<th>Имя</th>
+<th>Где ищется</th>
+</tr></thead><tbody>
+<tr><td><code>about</code></td><td>в папке контекста: <code>@app/views/site/about.php</code> для <code>SiteController</code></td></tr>
+<tr><td><code>_item</code> из <code>views/post/index.php</code></td><td>рядом: <code>views/post/_item.php</code></td></tr>
+<tr><td><code>/site/about</code></td><td>в <code>viewPath</code> текущего модуля (или приложения)</td></tr>
+<tr><td><code>//site/about</code></td><td>всегда в <code>@app/views/site/about.php</code></td></tr>
+<tr><td><code>@app/views/site/about</code></td><td>псевдоним — как есть</td></tr>
+</tbody></table></div>
+<p>Расширение <code>.php</code> можно не писать.</p>
+<h2 id="dannye-v-predstavlenii">Данные в представлении<a class="anchor" href="#dannye-v-predstavlenii" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>// явно — через второй параметр: массив превращается в переменные через extract()
+return $this-&gt;render('report', ['foo' =&gt; 1, 'bar' =&gt; 2]);
+
+// из контекста
+ID контроллера: <span class="t-tg">&lt;?=</span> <span class="t-va">$this</span>-&gt;context-&gt;id <span class="t-tg">?&gt;</span>
+
+// общие данные между представлением и шаблоном
+$this-&gt;params['breadcrumbs'][] = 'О нас';     // в представлении
+Breadcrumbs::widget(['links' =&gt; $this-&gt;params['breadcrumbs'] ?? []]);   // в шаблоне</code></pre></figure>
+<p>Явная передача предпочтительнее: представление не зависит от того, кто его вызвал.</p>
+<h2 id="shablony-layouts">Шаблоны (layouts)<a class="anchor" href="#shablony-layouts" aria-label="Ссылка на раздел">#</a></h2>
+<p>Шаблон — тоже представление; в нём <code>$content</code> — результат рендеринга страницы. Лежат в <code>@app/views/layouts</code>, по умолчанию используется <code>main</code>.</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">views/layouts/main.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span>
+<span class="t-kw">use</span> <span class="t-cl">yii\helpers\Html</span>;
+<span class="t-kw">use</span> <span class="t-cl">app\assets\AppAsset</span>;
+
+<span class="t-cl">AppAsset</span>::<span class="t-fn">register</span>(<span class="t-va">$this</span>);
+<span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">beginPage</span>() <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;!DOCTYPE html&gt;</span>
+&lt;html lang="<span class="t-tg">&lt;?=</span> <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;language <span class="t-tg">?&gt;</span>"&gt;
+<span class="t-tg">&lt;head</span><span class="t-tg">&gt;</span>
+    &lt;meta charset="<span class="t-tg">&lt;?=</span> <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;charset <span class="t-tg">?&gt;</span>"&gt;
+    <span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">csrfMetaTags</span>() <span class="t-tg">?&gt;</span>
+    <span class="t-tg">&lt;title</span><span class="t-tg">&gt;</span><span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$this</span>-&gt;title) <span class="t-tg">?&gt;</span><span class="t-tg">&lt;/title</span><span class="t-tg">&gt;</span>
+    <span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">head</span>() <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;/head</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;body</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">beginBody</span>() <span class="t-tg">?&gt;</span>
+    <span class="t-tg">&lt;header</span><span class="t-tg">&gt;</span>Моя компания<span class="t-tg">&lt;/header</span><span class="t-tg">&gt;</span>
+    <span class="t-tg">&lt;?=</span> <span class="t-va">$content</span> <span class="t-tg">?&gt;</span>
+    <span class="t-tg">&lt;footer</span><span class="t-tg">&gt;</span>&amp;copy; <span class="t-tg">&lt;?=</span> <span class="t-fn">date</span>(<span class="t-st">'Y'</span>) <span class="t-tg">?&gt;</span><span class="t-tg">&lt;/footer</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">endBody</span>() <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;/body</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;/html</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">endPage</span>() <span class="t-tg">?&gt;</span></code></pre></figure>
+<p>Пять служебных вызовов обязательны: <code>beginPage()</code>/<code>endPage()</code> оборачивают страницу, <code>head()</code> — место для мета-тегов и CSS, <code>beginBody()</code>/<code>endBody()</code> — для скриптов в начале и конце <code>&lt;body&gt;</code>. Без них зарегистрированные ресурсы не появятся.</p>
+<h3 id="kakoy-shablon-primenitsya">Какой шаблон применится<a class="anchor" href="#kakoy-shablon-primenitsya" aria-label="Ссылка на раздел">#</a></h3>
+<ol>
+<li><code>layout</code> контроллера, если не <code>null</code>; иначе — первый не-<code>null</code> <code>layout</code> по цепочке модулей вверх до приложения.</li>
+<li>Значение трактуется как: псевдоним (<code>@app/views/layouts/main</code>), абсолютный путь от папки шаблонов приложения (<code>/main</code>), относительный — от папки шаблонов модуля-контекста (<code>main</code>), либо <code>false</code> — без шаблона.</li>
+</ol>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">PostController</span> <span class="t-kw">extends</span> <span class="t-cl">Controller</span>
+{
+    <span class="t-kw">public</span> <span class="t-va">$layout</span> = <span class="t-st">'post'</span>;       <span class="t-cm">// @app/views/layouts/post.php только для этого контроллера</span>
+}</code></pre></figure>
+<h3 id="vlozhennye-shablony-i-bloki">Вложенные шаблоны и блоки<a class="anchor" href="#vlozhennye-shablony-i-bloki" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">views/layouts/column2.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">beginContent</span>(<span class="t-st">'@app/views/layouts/main.php'</span>); <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;div</span> <span class="t-at">class</span>=<span class="t-st">"row"</span><span class="t-tg">&gt;</span>
+    <span class="t-tg">&lt;div</span> <span class="t-at">class</span>=<span class="t-st">"col-8"</span><span class="t-tg">&gt;</span><span class="t-tg">&lt;?=</span> <span class="t-va">$content</span> <span class="t-tg">?&gt;</span><span class="t-tg">&lt;/div</span><span class="t-tg">&gt;</span>
+    <span class="t-tg">&lt;div</span> <span class="t-at">class</span>=<span class="t-st">"col-4"</span><span class="t-tg">&gt;</span><span class="t-tg">&lt;?=</span> <span class="t-va">$this</span>-&gt;blocks[<span class="t-st">'sidebar'</span>] ?? <span class="t-st">'Боковая панель по умолчанию'</span> <span class="t-tg">?&gt;</span><span class="t-tg">&lt;/div</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;/div</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">endContent</span>(); <span class="t-tg">?&gt;</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">views/post/view.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">beginBlock</span>(<span class="t-st">'sidebar'</span>); <span class="t-tg">?&gt;</span>
+    <span class="t-tg">&lt;h3</span><span class="t-tg">&gt;</span>Похожие статьи<span class="t-tg">&lt;/h3</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">endBlock</span>(); <span class="t-tg">?&gt;</span></code></pre></figure>
+<p>Блок «записывается» в представлении и выводится в шаблоне — так страница управляет частями общей разметки.</p>
+<h2 id="komponent-view">Компонент view<a class="anchor" href="#komponent-view" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$this</span>-&gt;title = <span class="t-st">'Заголовок'</span>;                                             <span class="t-cm">// → &lt;title&gt; в шаблоне</span>
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerMetaTag</span>([<span class="t-st">'name'</span> =&gt; <span class="t-st">'description'</span>, <span class="t-st">'content'</span> =&gt; <span class="t-st">'…'</span>], <span class="t-st">'description'</span>);   <span class="t-cm">// ключ = без дублей</span>
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerLinkTag</span>([<span class="t-st">'rel'</span> =&gt; <span class="t-st">'alternate'</span>, <span class="t-st">'type'</span> =&gt; <span class="t-st">'application/rss+xml'</span>, <span class="t-st">'href'</span> =&gt; <span class="t-st">'/rss'</span>]);
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerCss</span>(<span class="t-st">'body { background: #fff }'</span>);
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerJs</span>(<span class="t-st">"$('#btn').on('click', …);"</span>, <span class="t-cl">View</span>::<span class="t-ct">POS_READY</span>, <span class="t-st">'btn-handler'</span>);
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerCssFile</span>(<span class="t-st">'@web/css/print.css'</span>, [<span class="t-st">'media'</span> =&gt; <span class="t-st">'print'</span>]);
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerJsFile</span>(<span class="t-st">'@web/js/main.js'</span>, [<span class="t-st">'depends'</span> =&gt; [<span class="t-cl">JqueryAsset</span>::<span class="t-kw">class</span>]]);
+<span class="t-cl">AppAsset</span>::<span class="t-fn">register</span>(<span class="t-va">$this</span>);                                              <span class="t-cm">// лучший способ: пакеты ресурсов</span></code></pre></figure>
+<p>Подробно о скриптах и стилях — в разделе <a href="assets.html" class="int">Ресурсы и клиентские скрипты</a>.</p>
+<p>События <code>View</code>: <code>beforeRender</code>/<code>afterRender</code> (можно отменить или изменить вывод через <code>$event-&gt;output</code>), <code>beginPage</code>, <code>endPage</code>, <code>beginBody</code>, <code>endBody</code>:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;view-&gt;<span class="t-fn">on</span>(<span class="t-cl">View</span>::<span class="t-ct">EVENT_END_BODY</span>, <span class="t-kw">function</span> () {
+    <span class="t-kw">echo</span> <span class="t-st">'&lt;!-- rendered '</span> . <span class="t-fn">date</span>(<span class="t-st">'c'</span>) . <span class="t-st">' --&gt;'</span>;
+});</code></pre></figure>
+<h3 id="staticheskie-stranicy">Статические страницы<a class="anchor" href="#staticheskie-stranicy" aria-label="Ссылка на раздел">#</a></h3>
+<p>Вместо десятка одинаковых <code>actionAbout()</code> — одно отдельное действие:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actions</span>()
+{
+    <span class="t-kw">return</span> [<span class="t-st">'page'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\web\ViewAction'</span>]];   <span class="t-cm">// ?r=site/page&amp;view=about → views/site/pages/about.php</span>
+}</code></pre></figure>
+<h2 id="temizaciya">Темизация<a class="anchor" href="#temizaciya" aria-label="Ссылка на раздел">#</a></h2>
+<p>Тема подменяет файлы представлений без правки кода. Настраивается у компонента <code>view</code>:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'view'</span> =&gt; [
+    <span class="t-st">'theme'</span> =&gt; [
+        <span class="t-st">'basePath'</span> =&gt; <span class="t-st">'@app/themes/basic'</span>,
+        <span class="t-st">'baseUrl'</span> =&gt; <span class="t-st">'@web/themes/basic'</span>,
+        <span class="t-st">'pathMap'</span> =&gt; [
+            <span class="t-st">'@app/views'</span> =&gt; <span class="t-st">'@app/themes/basic'</span>,                   <span class="t-cm">// views/site/about.php → themes/basic/site/about.php</span>
+            <span class="t-st">'@app/modules'</span> =&gt; <span class="t-st">'@app/themes/basic/modules'</span>,         <span class="t-cm">// темизация модулей</span>
+            <span class="t-st">'@app/widgets'</span> =&gt; <span class="t-st">'@app/themes/basic/widgets'</span>,         <span class="t-cm">// темизация виджетов</span>
+        ],
+    ],
+],</code></pre></figure>
+<p>Замена идёт по префиксу пути. Несколько значений в <code>pathMap</code> дают наследование тем — берётся первый существующий файл:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'@app/views'</span> =&gt; [<span class="t-st">'@app/themes/christmas'</span>, <span class="t-st">'@app/themes/basic'</span>],</code></pre></figure>
+<p>В представлении тема доступна как <code>$this-&gt;theme</code>: <code>$theme-&gt;getUrl('img/logo.png')</code>, <code>$theme-&gt;getPath(...)</code>.</p>
+<h2 id="twig-i-smarty">Twig и Smarty<a class="anchor" href="#twig-i-smarty" aria-label="Ссылка на раздел">#</a></h2>
+<p>Шаблонизаторы подключаются расширениями <code>yiisoft/yii2-twig</code> и <code>yiisoft/yii2-smarty</code> через рендереры по расширению файла:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'view'</span> =&gt; [
+    <span class="t-st">'renderers'</span> =&gt; [
+        <span class="t-st">'twig'</span> =&gt; [
+            <span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\twig\ViewRenderer'</span>,
+            <span class="t-st">'cachePath'</span> =&gt; <span class="t-st">'@runtime/Twig/cache'</span>,
+            <span class="t-st">'options'</span> =&gt; [<span class="t-st">'auto_reload'</span> =&gt; <span class="t-lt">true</span>],
+            <span class="t-st">'globals'</span> =&gt; [<span class="t-st">'html'</span> =&gt; <span class="t-st">'\yii\helpers\Html'</span>],
+        ],
+        <span class="t-st">'tpl'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\smarty\ViewRenderer'</span>],
+    ],
+],</code></pre></figure>
+<p>После этого <code>$this-&gt;render('index')</code> найдёт <code>index.twig</code> или <code>index.tpl</code>; файлы <code>.php</code> продолжают работать как раньше.</p>
+<h2 id="luchshie-praktiki">Лучшие практики<a class="anchor" href="#luchshie-praktiki" aria-label="Ссылка на раздел">#</a></h2>
+<ul>
+<li>В представлении — только разметка и простой PHP для вывода; никаких запросов к БД и доступа к <code>$_GET</code>.</li>
+<li>Читать свойства моделей можно, менять — нет.</li>
+<li>Крупные представления дробите на части (<code>_item.php</code>, <code>_form.php</code>) и виджеты; форматирование выносите в хелперы.</li>
+</ul>
+<div class="quiz"><div class="quiz-head"><span class="quiz-title">Проверь себя</span><span class="quiz-count">5</span><button type="button" class="quiz-all">Раскрыть все</button></div><div class="quiz-cards"><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">1</span><span class="qcard-text"><p>Чем <code>renderPartial()</code> отличается от <code>renderAjax()</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Оба не применяют шаблон, но <code>renderAjax()</code> дополнительно выводит зарегистрированные JS/CSS — нужен для фрагментов, которые подгружаются по AJAX и содержат виджеты.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">2</span><span class="qcard-text"><p>Куда попадёт файл, если вызвать <code>$this-&gt;render('//site/error')</code> из контроллера модуля <code>admin</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Двойной слеш всегда означает папку представлений приложения: <code>@app/views/site/error.php</code>, минуя модуль.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">3</span><span class="qcard-text"><p>Зачем в шаблоне вызывать <code>$this-&gt;head()</code>, <code>beginBody()</code> и <code>endBody()</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Это точки, куда фреймворк подставляет зарегистрированные мета-теги, CSS и JS. Без них ресурсы, зарегистрированные представлениями и виджетами, на страницу не попадут.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">4</span><span class="qcard-text"><p>Как одному контроллеру дать другой шаблон, а одному действию — вовсе отключить его?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>public $layout = 'post';</code> в классе контроллера; для действия — <code>$this-&gt;layout = false;</code> перед <code>render()</code> или вернуть <code>renderPartial()</code>.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">5</span><span class="qcard-text"><p>Как передать заголовок и хлебные крошки из представления в шаблон?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Через <code>$this-&gt;title</code> и <code>$this-&gt;params['breadcrumbs']</code> — оба свойства компонента <code>View</code>, общего для представления и шаблона.</p></div></div></div></div>
+  </div>
+
+  <footer class="doc-foot">
+<details class="sources"><summary>Источник: главы официального руководства</summary><ul><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-views" target="_blank" rel="noopener"><span class="src-part">Структура приложения</span>Представления</a></li><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/output-theming" target="_blank" rel="noopener"><span class="src-part">Отображение данных</span>Темизация</a></li><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-template-engines" target="_blank" rel="noopener"><span class="src-part">Специальные темы</span>Шаблонизаторы</a></li></ul></details>
+    <div class="learned-cta">
+      <label class="learned big"><input type="checkbox" class="learned-box" data-page="views"><span>Отметить раздел изученным</span></label>
+    </div>
+    <nav class="pager" aria-label="Соседние разделы"><a class="pager-link prev" href="models.html"><span class="pager-label">← Назад</span><span class="pager-title">Модели</span></a><a class="pager-link next" href="modules.html"><span class="pager-label">Дальше →</span><span class="pager-title">Модули</span></a></nav>
+  </footer>
+</article>
+
+  </main>
+
+  <aside class="toc" id="toc" aria-label="Содержание страницы">
+    <div class="toc-title">На этой странице</div><ul class="toc-list">
+<li class="toc-l2"><a href="#kak-vyglyadit-predstavlenie">Как выглядит представление</a></li>
+<li class="toc-l3"><a href="#bezopasnost-vyvoda">Безопасность вывода</a></li>
+<li class="toc-l2"><a href="#gde-lezhat-fayly">Где лежат файлы</a></li>
+<li class="toc-l2"><a href="#kak-renderit">Как рендерить</a></li>
+<li class="toc-l3"><a href="#kak-razreshaetsya-imya-predstavleniya">Как разрешается имя представления</a></li>
+<li class="toc-l2"><a href="#dannye-v-predstavlenii">Данные в представлении</a></li>
+<li class="toc-l2"><a href="#shablony-layouts">Шаблоны (layouts)</a></li>
+<li class="toc-l3"><a href="#kakoy-shablon-primenitsya">Какой шаблон применится</a></li>
+<li class="toc-l3"><a href="#vlozhennye-shablony-i-bloki">Вложенные шаблоны и блоки</a></li>
+<li class="toc-l2"><a href="#komponent-view">Компонент view</a></li>
+<li class="toc-l3"><a href="#staticheskie-stranicy">Статические страницы</a></li>
+<li class="toc-l2"><a href="#temizaciya">Темизация</a></li>
+<li class="toc-l2"><a href="#twig-i-smarty">Twig и Smarty</a></li>
+<li class="toc-l2"><a href="#luchshie-praktiki">Лучшие практики</a></li>
+</ul>
+  </aside>
+</div>
+
+<button type="button" class="to-top" id="to-top" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="search" id="search" hidden>
+  <div class="search-backdrop" data-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Поиск">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="search-input" placeholder="Что ищем? Например: findOne, RBAC, миграции…" autocomplete="off" spellcheck="false" aria-label="Поисковый запрос">
+      <button type="button" class="search-close" data-close aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results" id="search-results" role="listbox"></div>
+    <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> выбрать <kbd>Enter</kbd> открыть <kbd>Esc</kbd> закрыть</div>
+  </div>
+</div>
+
+<script src="assets/search-index.js" defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

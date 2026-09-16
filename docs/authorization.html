@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Авторизация: ACF и RBAC · Yii 2 — шпаргалка</title>
+<meta name="description" content="Фильтр AccessControl с правилами allow/deny по ролям, IP, методам и колбэкам; RBAC — роли, разрешения, иерархия, правила (Rule), PhpManager и DbManager, консольная инициализация, назначение ролей, проверка can(), роли по умолчанию.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+(function(){try{var t=localStorage.getItem('yii2:theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+</head>
+<body class="page" data-page="authorization">
+<a class="skip" href="#content">К содержимому</a>
+<header class="topbar">
+  <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html" aria-label="Yii 2 — шпаргалка — на главную">
+    <span class="brand-mark" aria-hidden="true">Yii</span>
+    <span class="brand-text">2 · шпаргалка</span>
+  </a>
+  <button type="button" class="search-btn" id="search-btn" aria-label="Поиск по шпаргалке">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="search-btn-text">Поиск</span>
+    <kbd class="search-kbd">Ctrl K</kbd>
+  </button>
+  <div class="topbar-right">
+    <a class="progress-pill" id="progress-pill" href="index.html#progress" title="Ваш прогресс">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+      <span class="progress-text"><span id="progress-num">0</span>%</span>
+    </a>
+    <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему" title="Тема: системная">
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+    <a class="icon-btn gh" href="https://github.com/yiisoft/yii2" target="_blank" rel="noopener" aria-label="Yii 2 на GitHub" title="yiisoft/yii2">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav" aria-label="Разделы">
+<a class="nav-home" href="index.html">Главная</a>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🚀</span>Старт</div><ul>
+<li><a href="intro.html" class="nav-link" data-page="intro"><span class="nav-num">01</span><span class="nav-text">Что такое Yii 2</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="install.html" class="nav-link" data-page="install"><span class="nav-num">02</span><span class="nav-text">Установка и запуск</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="first-app.html" class="nav-link" data-page="first-app"><span class="nav-num">03</span><span class="nav-text">Первое приложение</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🏗</span>Структура приложения</div><ul>
+<li><a href="app.html" class="nav-link" data-page="app"><span class="nav-num">04</span><span class="nav-text">Приложение и его компоненты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="controllers.html" class="nav-link" data-page="controllers"><span class="nav-num">05</span><span class="nav-text">Контроллеры и действия</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="models.html" class="nav-link" data-page="models"><span class="nav-num">06</span><span class="nav-text">Модели</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="views.html" class="nav-link" data-page="views"><span class="nav-num">07</span><span class="nav-text">Представления и шаблоны</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="modules.html" class="nav-link" data-page="modules"><span class="nav-num">08</span><span class="nav-text">Модули</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="filters.html" class="nav-link" data-page="filters"><span class="nav-num">09</span><span class="nav-text">Фильтры</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="widgets.html" class="nav-link" data-page="widgets"><span class="nav-num">10</span><span class="nav-text">Виджеты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="assets.html" class="nav-link" data-page="assets"><span class="nav-num">11</span><span class="nav-text">Ресурсы и клиентские скрипты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="extensions.html" class="nav-link" data-page="extensions"><span class="nav-num">12</span><span class="nav-text">Расширения и сторонний код</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔁</span>Обработка запроса</div><ul>
+<li><a href="lifecycle.html" class="nav-link" data-page="lifecycle"><span class="nav-num">13</span><span class="nav-text">Жизненный цикл запроса</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="routing.html" class="nav-link" data-page="routing"><span class="nav-num">14</span><span class="nav-text">Маршрутизация и URL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="request-response.html" class="nav-link" data-page="request-response"><span class="nav-num">15</span><span class="nav-text">Запрос и ответ</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="sessions.html" class="nav-link" data-page="sessions"><span class="nav-num">16</span><span class="nav-text">Сессии и куки</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="errors-logging.html" class="nav-link" data-page="errors-logging"><span class="nav-num">17</span><span class="nav-text">Ошибки и логирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧠</span>Ключевые концепции</div><ul>
+<li><a href="components.html" class="nav-link" data-page="components"><span class="nav-num">18</span><span class="nav-text">Компоненты и свойства</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="events.html" class="nav-link" data-page="events"><span class="nav-num">19</span><span class="nav-text">События</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="behaviors.html" class="nav-link" data-page="behaviors"><span class="nav-num">20</span><span class="nav-text">Поведения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="configurations.html" class="nav-link" data-page="configurations"><span class="nav-num">21</span><span class="nav-text">Конфигурации, псевдонимы, автозагрузка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="di.html" class="nav-link" data-page="di"><span class="nav-num">22</span><span class="nav-text">Service Locator и DI-контейнер</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🗄</span>Базы данных</div><ul>
+<li><a href="dao.html" class="nav-link" data-page="dao"><span class="nav-num">23</span><span class="nav-text">DAO — работа с SQL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="query-builder.html" class="nav-link" data-page="query-builder"><span class="nav-num">24</span><span class="nav-text">Query Builder</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="active-record.html" class="nav-link" data-page="active-record"><span class="nav-num">25</span><span class="nav-text">Active Record</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="migrations.html" class="nav-link" data-page="migrations"><span class="nav-num">26</span><span class="nav-text">Миграции</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📝</span>Формы и валидация</div><ul>
+<li><a href="forms.html" class="nav-link" data-page="forms"><span class="nav-num">27</span><span class="nav-text">Формы и ввод</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validation.html" class="nav-link" data-page="validation"><span class="nav-num">28</span><span class="nav-text">Валидация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validators.html" class="nav-link" data-page="validators"><span class="nav-num">29</span><span class="nav-text">Встроенные валидаторы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📊</span>Вывод данных</div><ul>
+<li><a href="formatting.html" class="nav-link" data-page="formatting"><span class="nav-num">30</span><span class="nav-text">Форматирование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-providers.html" class="nav-link" data-page="data-providers"><span class="nav-num">31</span><span class="nav-text">Провайдеры данных, пагинация, сортировка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-widgets.html" class="nav-link" data-page="data-widgets"><span class="nav-num">32</span><span class="nav-text">Виджеты данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔐</span>Безопасность</div><ul>
+<li><a href="authentication.html" class="nav-link" data-page="authentication"><span class="nav-num">33</span><span class="nav-text">Аутентификация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="authorization.html" class="nav-link active" data-page="authorization" aria-current="page"><span class="nav-num">34</span><span class="nav-text">Авторизация: ACF и RBAC</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="security.html" class="nav-link" data-page="security"><span class="nav-num">35</span><span class="nav-text">Безопасность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⚡</span>Кеширование</div><ul>
+<li><a href="caching.html" class="nav-link" data-page="caching"><span class="nav-num">36</span><span class="nav-text">Кэширование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="caching-output.html" class="nav-link" data-page="caching-output"><span class="nav-num">37</span><span class="nav-text">Кэширование фрагментов, страниц и HTTP</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔌</span>REST API</div><ul>
+<li><a href="rest.html" class="nav-link" data-page="rest"><span class="nav-num">38</span><span class="nav-text">REST API — быстрый старт</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="rest-advanced.html" class="nav-link" data-page="rest-advanced"><span class="nav-num">39</span><span class="nav-text">REST API — форматы, аутентификация, версии</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧰</span>Инструменты и тесты</div><ul>
+<li><a href="console.html" class="nav-link" data-page="console"><span class="nav-num">40</span><span class="nav-text">Консольные приложения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="testing.html" class="nav-link" data-page="testing"><span class="nav-num">41</span><span class="nav-text">Тестирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="dev-tools.html" class="nav-link" data-page="dev-tools"><span class="nav-num">42</span><span class="nav-text">Gii, отладчик и другие инструменты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧩</span>Специальные темы</div><ul>
+<li><a href="i18n.html" class="nav-link" data-page="i18n"><span class="nav-num">43</span><span class="nav-text">Интернационализация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="mailing.html" class="nav-link" data-page="mailing"><span class="nav-num">44</span><span class="nav-text">Отправка почты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="performance.html" class="nav-link" data-page="performance"><span class="nav-num">45</span><span class="nav-text">Производительность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="helpers.html" class="nav-link" data-page="helpers"><span class="nav-num">46</span><span class="nav-text">Хелперы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📌</span>Справочник</div><ul>
+<li><a href="cheatsheet.html" class="nav-link" data-page="cheatsheet"><span class="nav-num">47</span><span class="nav-text">Шпаргалка на одну страницу</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="glossary.html" class="nav-link" data-page="glossary"><span class="nav-num">48</span><span class="nav-text">Глоссарий</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="upgrade-from-yii1.html" class="nav-link" data-page="upgrade-from-yii1"><span class="nav-num">49</span><span class="nav-text">Переход с Yii 1.1</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⌘</span>Ещё</div><ul>
+<li><a href="all.html" class="nav-link" data-page="all"><span class="nav-num">∞</span><span class="nav-text">Всё одной страницей</span></a></li>
+</ul></div></nav>
+    <div class="sidebar-foot">
+      <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">Полное руководство ↗</a>
+      <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Справочник API ↗</a>
+      <button type="button" class="link-btn" id="reset-progress">Сбросить прогресс</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main" id="content">
+    <article class="doc">
+  <header class="doc-head">
+    <div class="crumbs"><a href="index.html">Главная</a><span>/</span><span class="crumb-part"><span class="crumb-icon">🔐</span>Безопасность</span></div>
+    <h1><span class="doc-num">34</span>Авторизация: ACF и RBAC</h1>
+    <p class="doc-summary">Фильтр AccessControl с правилами allow/deny по ролям, IP, методам и колбэкам; RBAC — роли, разрешения, иерархия, правила (Rule), PhpManager и DbManager, консольная инициализация, назначение ролей, проверка can(), роли по умолчанию.</p>
+    <div class="doc-meta">
+      <span class="meta-item" title="Примерное время чтения">⏱ ~6 мин</span>
+      <span class="meta-item" title="Сколько глав руководства сжато в этот раздел">📚 1 глава руководства</span>
+      <label class="learned"><input type="checkbox" class="learned-box" data-page="authorization"><span>Изучено</span></label>
+    </div>
+  </header>
+
+  <div class="doc-body">
+<div class="lead"><p>Аутентификация сказала, <em>кто</em> пользователь; авторизация решает, <em>что ему можно</em>. Два инструмента: <strong>ACF</strong> (Access Control Filter) — простые правила у контроллера, и <strong>RBAC</strong> — управление доступом на основе ролей с иерархией и правилами, когда прав много и они зависят от данных.</p></div>
+<h2 id="access-control-filter">Access Control Filter<a class="anchor" href="#access-control-filter" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\filters\AccessControl</span>;
+
+<span class="t-kw">class</span> <span class="t-cl">SiteController</span> <span class="t-kw">extends</span> <span class="t-cl">Controller</span>
+{
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">behaviors</span>()
+    {
+        <span class="t-kw">return</span> [
+            <span class="t-st">'access'</span> =&gt; [
+                <span class="t-st">'class'</span> =&gt; <span class="t-cl">AccessControl</span>::<span class="t-kw">class</span>,
+                <span class="t-st">'only'</span> =&gt; [<span class="t-st">'login'</span>, <span class="t-st">'logout'</span>, <span class="t-st">'signup'</span>],   <span class="t-cm">// к каким действиям применять</span>
+                <span class="t-st">'rules'</span> =&gt; [
+                    [
+                        <span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>,
+                        <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'login'</span>, <span class="t-st">'signup'</span>],
+                        <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'?'</span>],                   <span class="t-cm">// только гости</span>
+                    ],
+                    [
+                        <span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>,
+                        <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'logout'</span>],
+                        <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'@'</span>],                   <span class="t-cm">// только вошедшие</span>
+                    ],
+                ],
+                <span class="t-st">'denyCallback'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$rule</span>, <span class="t-va">$action</span>) {
+                    <span class="t-kw">throw</span> <span class="t-kw">new</span> \<span class="t-cl">Exception</span>(<span class="t-st">'Вам сюда нельзя'</span>);
+                },
+            ],
+        ];
+    }
+}</code></pre></figure>
+<p>Правила проверяются <strong>сверху вниз до первого совпадения</strong>. Совпало <code>allow</code> — пропустить, <code>deny</code> — запретить. Ни одно не совпало — <strong>запретить</strong> (гостю — редирект на логин, вошедшему — 403).</p>
+<h3 id="opcii-pravila">Опции правила<a class="anchor" href="#opcii-pravila" aria-label="Ссылка на раздел">#</a></h3>
+<div class="kv"><div class="kv-row"><div class="kv-key"><code>allow</code></div><div class="kv-val"><code>true</code> разрешить / <code>false</code> запретить</div></div><div class="kv-row"><div class="kv-key"><code>actions</code></div><div class="kv-val">ID действий; пусто — все</div></div><div class="kv-row"><div class="kv-key"><code>controllers</code></div><div class="kv-val">ID контроллеров (с модулем: <code>admin/user</code>); пусто — текущий</div></div><div class="kv-row"><div class="kv-key"><code>roles</code></div><div class="kv-val"><code>?</code> гость, <code>@</code> аутентифицирован, иначе — роль/разрешение RBAC (<code>Yii::$app-&gt;user-&gt;can()</code>)</div></div><div class="kv-row"><div class="kv-key"><code>roleParams</code></div><div class="kv-val">параметры для <code>can()</code> (массив или замыкание)</div></div><div class="kv-row"><div class="kv-key"><code>ips</code></div><div class="kv-val">IP клиента, с <code>*</code> в конце (<code>192.168.*</code>)</div></div><div class="kv-row"><div class="kv-key"><code>verbs</code></div><div class="kv-val">HTTP-методы (<code>GET</code>, <code>POST</code>)</div></div><div class="kv-row"><div class="kv-key"><code>matchCallback</code></div><div class="kv-val"><code>function ($rule, $action)</code> — любое условие</div></div><div class="kv-row"><div class="kv-key"><code>denyCallback</code></div><div class="kv-val">что делать при запрете (переопределяет общий)</div></div></div>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>[
+    <span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>,
+    <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'special-callback'</span>],
+    <span class="t-st">'matchCallback'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$rule</span>, <span class="t-va">$action</span>) {
+        <span class="t-kw">return</span> <span class="t-fn">date</span>(<span class="t-st">'d-m'</span>) === <span class="t-st">'31-10'</span>;   <span class="t-cm">// только в Хэллоуин</span>
+    },
+],
+[
+    <span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>,
+    <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'update'</span>],
+    <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'updatePost'</span>],
+    <span class="t-st">'roleParams'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$rule</span>) {
+        <span class="t-kw">return</span> [<span class="t-st">'post'</span> =&gt; <span class="t-cl">Post</span>::<span class="t-fn">findOne</span>([<span class="t-st">'id'</span> =&gt; <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;<span class="t-fn">get</span>(<span class="t-st">'id'</span>)])];
+    },
+],</code></pre></figure>
+<h2 id="rbac">RBAC<a class="anchor" href="#rbac" aria-label="Ссылка на раздел">#</a></h2>
+<p>Модель: <strong>разрешение</strong> (permission) — действие («создать пост»), <strong>роль</strong> (role) — набор разрешений и других ролей, <strong>правило</strong> (rule) — дополнительная проверка с параметрами («автор ли пользователь этого поста»). Пользователю назначаются роли/разрешения; проверка — <code>Yii::$app-&gt;user-&gt;can('updatePost', ['post' =&gt; $post])</code>.</p>
+<h3 id="nastroyka">Настройка<a class="anchor" href="#nastroyka" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'components'</span> =&gt; [
+    <span class="t-st">'authManager'</span> =&gt; [
+        <span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\rbac\DbManager'</span>,     <span class="t-cm">// таблицы: auth_item, auth_item_child, auth_assignment, auth_rule</span>
+        <span class="t-cm">// 'class' =&gt; 'yii\rbac\PhpManager', // файлы в @app/rbac — для небольших статичных схем</span>
+        <span class="t-cm">// 'defaultRoles' =&gt; ['guest'],</span>
+        <span class="t-cm">// 'cache' =&gt; 'cache',               // кэшировать иерархию (DbManager)</span>
+    ],
+],</code></pre></figure>
+<p>Для <code>DbManager</code>: <code>./yii migrate --migrationPath=@yii/rbac/migrations</code>. Компонент должен быть в <strong>обеих</strong> конфигурациях — web и console.</p>
+<h3 id="postroenie-ierarhii">Построение иерархии<a class="anchor" href="#postroenie-ierarhii" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">commands/RbacController.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">RbacController</span> <span class="t-kw">extends</span> <span class="t-cl">\yii\console\Controller</span>
+{
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionInit</span>()
+    {
+        <span class="t-va">$auth</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;authManager;
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">removeAll</span>();
+
+        <span class="t-cm">// разрешения</span>
+        <span class="t-va">$createPost</span> = <span class="t-va">$auth</span>-&gt;<span class="t-fn">createPermission</span>(<span class="t-st">'createPost'</span>);
+        <span class="t-va">$createPost</span>-&gt;description = <span class="t-st">'Создание постов'</span>;
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">add</span>(<span class="t-va">$createPost</span>);
+
+        <span class="t-va">$updatePost</span> = <span class="t-va">$auth</span>-&gt;<span class="t-fn">createPermission</span>(<span class="t-st">'updatePost'</span>);
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">add</span>(<span class="t-va">$updatePost</span>);
+
+        <span class="t-cm">// роли</span>
+        <span class="t-va">$author</span> = <span class="t-va">$auth</span>-&gt;<span class="t-fn">createRole</span>(<span class="t-st">'author'</span>);
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">add</span>(<span class="t-va">$author</span>);
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">addChild</span>(<span class="t-va">$author</span>, <span class="t-va">$createPost</span>);
+
+        <span class="t-va">$admin</span> = <span class="t-va">$auth</span>-&gt;<span class="t-fn">createRole</span>(<span class="t-st">'admin'</span>);
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">add</span>(<span class="t-va">$admin</span>);
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">addChild</span>(<span class="t-va">$admin</span>, <span class="t-va">$updatePost</span>);
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">addChild</span>(<span class="t-va">$admin</span>, <span class="t-va">$author</span>);          <span class="t-cm">// admin наследует всё от author</span>
+
+        <span class="t-cm">// назначения (обычно — при регистрации)</span>
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">assign</span>(<span class="t-va">$author</span>, <span class="t-nu">2</span>);
+        <span class="t-va">$auth</span>-&gt;<span class="t-fn">assign</span>(<span class="t-va">$admin</span>, <span class="t-nu">1</span>);
+    }
+}</code></pre></figure>
+<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">./yii</span> rbac/init</code></pre></figure>
+<p>Иерархия: <code>admin</code> → <code>author</code> → <code>createPost</code>; <code>admin</code> → <code>updatePost</code>. <code>can('createPost')</code> для admin вернёт <code>true</code> через цепочку.</p>
+<h3 id="pravila-dostup-s-uchetom-dannyh">Правила — доступ с учётом данных<a class="anchor" href="#pravila-dostup-s-uchetom-dannyh" aria-label="Ссылка на раздел">#</a></h3>
+<p>«Автор может редактировать <em>свой</em> пост»:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">rbac/AuthorRule.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">namespace</span> <span class="t-cl">app\rbac</span>;
+
+<span class="t-kw">use</span> <span class="t-cl">yii\rbac\Rule</span>;
+
+<span class="t-kw">class</span> <span class="t-cl">AuthorRule</span> <span class="t-kw">extends</span> <span class="t-cl">Rule</span>
+{
+    <span class="t-kw">public</span> <span class="t-va">$name</span> = <span class="t-st">'isAuthor'</span>;
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">execute</span>(<span class="t-va">$user</span>, <span class="t-va">$item</span>, <span class="t-va">$params</span>)
+    {
+        <span class="t-kw">return</span> <span class="t-kw">isset</span>(<span class="t-va">$params</span>[<span class="t-st">'post'</span>]) ? <span class="t-va">$params</span>[<span class="t-st">'post'</span>]-&gt;createdBy == <span class="t-va">$user</span> : <span class="t-lt">false</span>;
+    }
+}</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$rule</span> = <span class="t-kw">new</span> <span class="t-cl">\app\rbac\AuthorRule</span>();
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">add</span>(<span class="t-va">$rule</span>);
+
+<span class="t-va">$updateOwnPost</span> = <span class="t-va">$auth</span>-&gt;<span class="t-fn">createPermission</span>(<span class="t-st">'updateOwnPost'</span>);
+<span class="t-va">$updateOwnPost</span>-&gt;description = <span class="t-st">'Редактирование своего поста'</span>;
+<span class="t-va">$updateOwnPost</span>-&gt;ruleName = <span class="t-va">$rule</span>-&gt;name;
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">add</span>(<span class="t-va">$updateOwnPost</span>);
+
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">addChild</span>(<span class="t-va">$updateOwnPost</span>, <span class="t-va">$updatePost</span>);   <span class="t-cm">// updateOwnPost «использует» updatePost</span>
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">addChild</span>(<span class="t-va">$author</span>, <span class="t-va">$updateOwnPost</span>);</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// проверка</span>
+<span class="t-kw">if</span> (<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">can</span>(<span class="t-st">'updatePost'</span>, [<span class="t-st">'post'</span> =&gt; <span class="t-va">$post</span>])) { … }</code></pre></figure>
+<p>Для автора цепочка <code>author → updateOwnPost(правило) → updatePost</code> — правило проверит <code>createdBy</code>. Для admin путь <code>admin → updatePost</code> без правила — можно всегда.</p>
+<h3 id="naznachenie-roley">Назначение ролей<a class="anchor" href="#naznachenie-roley" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$auth</span>-&gt;<span class="t-fn">assign</span>(<span class="t-va">$auth</span>-&gt;<span class="t-fn">getRole</span>(<span class="t-st">'author'</span>), <span class="t-va">$user</span>-&gt;id);       <span class="t-cm">// при регистрации — в afterSave или в контроллере</span>
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">revoke</span>(<span class="t-va">$role</span>, <span class="t-va">$userId</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">revokeAll</span>(<span class="t-va">$userId</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">getRolesByUser</span>(<span class="t-va">$userId</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">getPermissionsByUser</span>(<span class="t-va">$userId</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">getUserIdsByRole</span>(<span class="t-st">'admin'</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">checkAccess</span>(<span class="t-va">$userId</span>, <span class="t-st">'updatePost'</span>, <span class="t-va">$params</span>);        <span class="t-cm">// то же, что user-&gt;can(), но для любого ID</span></code></pre></figure>
+<h3 id="roli-po-umolchaniyu">Роли по умолчанию<a class="anchor" href="#roli-po-umolchaniyu" aria-label="Ссылка на раздел">#</a></h3>
+<p>Роль, которая есть у всех (в т.ч. гостей) без записи в <code>auth_assignment</code> — через <code>defaultRoles</code> и правило:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">UserGroupRule</span> <span class="t-kw">extends</span> <span class="t-cl">Rule</span>
+{
+    <span class="t-kw">public</span> <span class="t-va">$name</span> = <span class="t-st">'userGroup'</span>;
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">execute</span>(<span class="t-va">$user</span>, <span class="t-va">$item</span>, <span class="t-va">$params</span>)
+    {
+        <span class="t-kw">if</span> (<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;isGuest) <span class="t-kw">return</span> <span class="t-lt">false</span>;
+        <span class="t-va">$group</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;identity-&gt;group;
+        <span class="t-kw">return</span> <span class="t-va">$item</span>-&gt;name === <span class="t-st">'admin'</span> ? <span class="t-va">$group</span> == <span class="t-nu">1</span> : (<span class="t-va">$item</span>-&gt;name === <span class="t-st">'author'</span> ? <span class="t-va">$group</span> == <span class="t-nu">1</span> || <span class="t-va">$group</span> == <span class="t-nu">2</span> : <span class="t-lt">false</span>);
+    }
+}
+
+<span class="t-cm">// authManager: 'defaultRoles' =&gt; ['admin', 'author'],</span></code></pre></figure>
+<p>Так роль определяется полем <code>group</code> пользователя, а не таблицей назначений.</p>
+<h2 id="proverka-v-kode">Проверка в коде<a class="anchor" href="#proverka-v-kode" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>if (Yii::$app-&gt;user-&gt;can('createPost')) { … }              // роль или разрешение
+if (Yii::$app-&gt;user-&gt;can('updatePost', ['post' =&gt; $post])) { … }
+if (!Yii::$app-&gt;user-&gt;can('admin')) {
+    throw new \yii\web\ForbiddenHttpException('Нет доступа');
+}
+
+// в представлении
+<span class="t-tg">&lt;?php</span> <span class="t-kw">if</span> (<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">can</span>(<span class="t-st">'updatePost'</span>, [<span class="t-st">'post'</span> =&gt; <span class="t-va">$model</span>])): <span class="t-tg">?&gt;</span>
+    <span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-st">'Редактировать'</span>, [<span class="t-st">'update'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-va">$model</span>-&gt;id]) <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?php</span> <span class="t-kw">endif</span> <span class="t-tg">?&gt;</span></code></pre></figure>
+<p><code>can()</code> для гостя (<code>user-&gt;id === null</code>) проверяет только <code>defaultRoles</code>.</p>
+<h2 id="acf-ili-rbac">ACF или RBAC?<a class="anchor" href="#acf-ili-rbac" aria-label="Ссылка на раздел">#</a></h2>
+<div class="cols"><div class="col"><div class="col-label">ACF</div><ul>
+<li>права зависят только от «гость/вошёл», IP, метода, действия;</li>
+<li>маленькое приложение, 1–2 роли;</li>
+<li>нужно быстро закрыть контроллер.</li>
+</ul></div><div class="col"><div class="col-label">RBAC</div><ul>
+<li>много ролей и разрешений, иерархия;</li>
+<li>доступ зависит от данных (свой/чужой объект);</li>
+<li>права меняются администратором без деплоя (DbManager).</li>
+</ul></div></div>
+<p>Они совместимы: в <code>roles</code> правила ACF пишут имена RBAC-элементов, и фильтр вызовет <code>can()</code>.</p>
+<aside class="callout tip"><div class="callout-title">Совет</div><div class="callout-body"><p>Проверяйте <strong>разрешения</strong>, а не роли: <code>can('updatePost')</code> переживёт переименование ролей и появление новых. Роли — для назначения, разрешения — для проверки.</p></div></aside>
+<div class="quiz"><div class="quiz-head"><span class="quiz-title">Проверь себя</span><span class="quiz-count">5</span><button type="button" class="quiz-all">Раскрыть все</button></div><div class="quiz-cards"><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">1</span><span class="qcard-text"><p>Что произойдёт, если ни одно правило ACF не совпало с запросом?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Доступ запрещён: гость — редирект на <code>loginUrl</code>, вошедший — <code>ForbiddenHttpException</code> (403).</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">2</span><span class="qcard-text"><p>Что означают роли <code>?</code> и <code>@</code> в правилах ACF?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>?</code> — неаутентифицированный пользователь, <code>@</code> — аутентифицированный.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">3</span><span class="qcard-text"><p>В чём разница между ролью и разрешением в RBAC?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Разрешение — конкретное действие; роль — набор разрешений и ролей. Проверять лучше разрешения, назначать — роли.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">4</span><span class="qcard-text"><p>Зачем нужен класс <code>Rule</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Для условий, зависящих от параметров: например, <code>updateOwnPost</code> проверяет, что автор поста — текущий пользователь.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">5</span><span class="qcard-text"><p>Как дать роль всем пользователям без записи в <code>auth_assignment</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Через <code>defaultRoles</code> менеджера и правило, определяющее роль по данным пользователя.</p></div></div></div></div>
+  </div>
+
+  <footer class="doc-foot">
+<details class="sources"><summary>Источник: главы официального руководства</summary><ul><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/security-authorization" target="_blank" rel="noopener"><span class="src-part">Безопасность</span>Авторизация</a></li></ul></details>
+    <div class="learned-cta">
+      <label class="learned big"><input type="checkbox" class="learned-box" data-page="authorization"><span>Отметить раздел изученным</span></label>
+    </div>
+    <nav class="pager" aria-label="Соседние разделы"><a class="pager-link prev" href="authentication.html"><span class="pager-label">← Назад</span><span class="pager-title">Аутентификация</span></a><a class="pager-link next" href="security.html"><span class="pager-label">Дальше →</span><span class="pager-title">Безопасность</span></a></nav>
+  </footer>
+</article>
+
+  </main>
+
+  <aside class="toc" id="toc" aria-label="Содержание страницы">
+    <div class="toc-title">На этой странице</div><ul class="toc-list">
+<li class="toc-l2"><a href="#access-control-filter">Access Control Filter</a></li>
+<li class="toc-l3"><a href="#opcii-pravila">Опции правила</a></li>
+<li class="toc-l2"><a href="#rbac">RBAC</a></li>
+<li class="toc-l3"><a href="#nastroyka">Настройка</a></li>
+<li class="toc-l3"><a href="#postroenie-ierarhii">Построение иерархии</a></li>
+<li class="toc-l3"><a href="#pravila-dostup-s-uchetom-dannyh">Правила — доступ с учётом данных</a></li>
+<li class="toc-l3"><a href="#naznachenie-roley">Назначение ролей</a></li>
+<li class="toc-l3"><a href="#roli-po-umolchaniyu">Роли по умолчанию</a></li>
+<li class="toc-l2"><a href="#proverka-v-kode">Проверка в коде</a></li>
+<li class="toc-l2"><a href="#acf-ili-rbac">ACF или RBAC?</a></li>
+</ul>
+  </aside>
+</div>
+
+<button type="button" class="to-top" id="to-top" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="search" id="search" hidden>
+  <div class="search-backdrop" data-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Поиск">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="search-input" placeholder="Что ищем? Например: findOne, RBAC, миграции…" autocomplete="off" spellcheck="false" aria-label="Поисковый запрос">
+      <button type="button" class="search-close" data-close aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results" id="search-results" role="listbox"></div>
+    <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> выбрать <kbd>Enter</kbd> открыть <kbd>Esc</kbd> закрыть</div>
+  </div>
+</div>
+
+<script src="assets/search-index.js" defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

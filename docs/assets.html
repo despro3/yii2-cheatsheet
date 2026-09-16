@@ -1,0 +1,315 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Ресурсы и клиентские скрипты · Yii 2 — шпаргалка</title>
+<meta name="description" content="Asset bundles — единственно правильный способ подключать JS и CSS: зависимости, публикация, Bower/NPM через Composer, объединение и сжатие, а также registerJs/registerCss и yii.js.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+(function(){try{var t=localStorage.getItem('yii2:theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+</head>
+<body class="page" data-page="assets">
+<a class="skip" href="#content">К содержимому</a>
+<header class="topbar">
+  <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html" aria-label="Yii 2 — шпаргалка — на главную">
+    <span class="brand-mark" aria-hidden="true">Yii</span>
+    <span class="brand-text">2 · шпаргалка</span>
+  </a>
+  <button type="button" class="search-btn" id="search-btn" aria-label="Поиск по шпаргалке">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="search-btn-text">Поиск</span>
+    <kbd class="search-kbd">Ctrl K</kbd>
+  </button>
+  <div class="topbar-right">
+    <a class="progress-pill" id="progress-pill" href="index.html#progress" title="Ваш прогресс">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+      <span class="progress-text"><span id="progress-num">0</span>%</span>
+    </a>
+    <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему" title="Тема: системная">
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+    <a class="icon-btn gh" href="https://github.com/yiisoft/yii2" target="_blank" rel="noopener" aria-label="Yii 2 на GitHub" title="yiisoft/yii2">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav" aria-label="Разделы">
+<a class="nav-home" href="index.html">Главная</a>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🚀</span>Старт</div><ul>
+<li><a href="intro.html" class="nav-link" data-page="intro"><span class="nav-num">01</span><span class="nav-text">Что такое Yii 2</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="install.html" class="nav-link" data-page="install"><span class="nav-num">02</span><span class="nav-text">Установка и запуск</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="first-app.html" class="nav-link" data-page="first-app"><span class="nav-num">03</span><span class="nav-text">Первое приложение</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🏗</span>Структура приложения</div><ul>
+<li><a href="app.html" class="nav-link" data-page="app"><span class="nav-num">04</span><span class="nav-text">Приложение и его компоненты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="controllers.html" class="nav-link" data-page="controllers"><span class="nav-num">05</span><span class="nav-text">Контроллеры и действия</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="models.html" class="nav-link" data-page="models"><span class="nav-num">06</span><span class="nav-text">Модели</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="views.html" class="nav-link" data-page="views"><span class="nav-num">07</span><span class="nav-text">Представления и шаблоны</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="modules.html" class="nav-link" data-page="modules"><span class="nav-num">08</span><span class="nav-text">Модули</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="filters.html" class="nav-link" data-page="filters"><span class="nav-num">09</span><span class="nav-text">Фильтры</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="widgets.html" class="nav-link" data-page="widgets"><span class="nav-num">10</span><span class="nav-text">Виджеты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="assets.html" class="nav-link active" data-page="assets" aria-current="page"><span class="nav-num">11</span><span class="nav-text">Ресурсы и клиентские скрипты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="extensions.html" class="nav-link" data-page="extensions"><span class="nav-num">12</span><span class="nav-text">Расширения и сторонний код</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔁</span>Обработка запроса</div><ul>
+<li><a href="lifecycle.html" class="nav-link" data-page="lifecycle"><span class="nav-num">13</span><span class="nav-text">Жизненный цикл запроса</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="routing.html" class="nav-link" data-page="routing"><span class="nav-num">14</span><span class="nav-text">Маршрутизация и URL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="request-response.html" class="nav-link" data-page="request-response"><span class="nav-num">15</span><span class="nav-text">Запрос и ответ</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="sessions.html" class="nav-link" data-page="sessions"><span class="nav-num">16</span><span class="nav-text">Сессии и куки</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="errors-logging.html" class="nav-link" data-page="errors-logging"><span class="nav-num">17</span><span class="nav-text">Ошибки и логирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧠</span>Ключевые концепции</div><ul>
+<li><a href="components.html" class="nav-link" data-page="components"><span class="nav-num">18</span><span class="nav-text">Компоненты и свойства</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="events.html" class="nav-link" data-page="events"><span class="nav-num">19</span><span class="nav-text">События</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="behaviors.html" class="nav-link" data-page="behaviors"><span class="nav-num">20</span><span class="nav-text">Поведения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="configurations.html" class="nav-link" data-page="configurations"><span class="nav-num">21</span><span class="nav-text">Конфигурации, псевдонимы, автозагрузка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="di.html" class="nav-link" data-page="di"><span class="nav-num">22</span><span class="nav-text">Service Locator и DI-контейнер</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🗄</span>Базы данных</div><ul>
+<li><a href="dao.html" class="nav-link" data-page="dao"><span class="nav-num">23</span><span class="nav-text">DAO — работа с SQL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="query-builder.html" class="nav-link" data-page="query-builder"><span class="nav-num">24</span><span class="nav-text">Query Builder</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="active-record.html" class="nav-link" data-page="active-record"><span class="nav-num">25</span><span class="nav-text">Active Record</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="migrations.html" class="nav-link" data-page="migrations"><span class="nav-num">26</span><span class="nav-text">Миграции</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📝</span>Формы и валидация</div><ul>
+<li><a href="forms.html" class="nav-link" data-page="forms"><span class="nav-num">27</span><span class="nav-text">Формы и ввод</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validation.html" class="nav-link" data-page="validation"><span class="nav-num">28</span><span class="nav-text">Валидация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validators.html" class="nav-link" data-page="validators"><span class="nav-num">29</span><span class="nav-text">Встроенные валидаторы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📊</span>Вывод данных</div><ul>
+<li><a href="formatting.html" class="nav-link" data-page="formatting"><span class="nav-num">30</span><span class="nav-text">Форматирование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-providers.html" class="nav-link" data-page="data-providers"><span class="nav-num">31</span><span class="nav-text">Провайдеры данных, пагинация, сортировка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-widgets.html" class="nav-link" data-page="data-widgets"><span class="nav-num">32</span><span class="nav-text">Виджеты данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔐</span>Безопасность</div><ul>
+<li><a href="authentication.html" class="nav-link" data-page="authentication"><span class="nav-num">33</span><span class="nav-text">Аутентификация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="authorization.html" class="nav-link" data-page="authorization"><span class="nav-num">34</span><span class="nav-text">Авторизация: ACF и RBAC</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="security.html" class="nav-link" data-page="security"><span class="nav-num">35</span><span class="nav-text">Безопасность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⚡</span>Кеширование</div><ul>
+<li><a href="caching.html" class="nav-link" data-page="caching"><span class="nav-num">36</span><span class="nav-text">Кэширование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="caching-output.html" class="nav-link" data-page="caching-output"><span class="nav-num">37</span><span class="nav-text">Кэширование фрагментов, страниц и HTTP</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔌</span>REST API</div><ul>
+<li><a href="rest.html" class="nav-link" data-page="rest"><span class="nav-num">38</span><span class="nav-text">REST API — быстрый старт</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="rest-advanced.html" class="nav-link" data-page="rest-advanced"><span class="nav-num">39</span><span class="nav-text">REST API — форматы, аутентификация, версии</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧰</span>Инструменты и тесты</div><ul>
+<li><a href="console.html" class="nav-link" data-page="console"><span class="nav-num">40</span><span class="nav-text">Консольные приложения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="testing.html" class="nav-link" data-page="testing"><span class="nav-num">41</span><span class="nav-text">Тестирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="dev-tools.html" class="nav-link" data-page="dev-tools"><span class="nav-num">42</span><span class="nav-text">Gii, отладчик и другие инструменты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧩</span>Специальные темы</div><ul>
+<li><a href="i18n.html" class="nav-link" data-page="i18n"><span class="nav-num">43</span><span class="nav-text">Интернационализация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="mailing.html" class="nav-link" data-page="mailing"><span class="nav-num">44</span><span class="nav-text">Отправка почты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="performance.html" class="nav-link" data-page="performance"><span class="nav-num">45</span><span class="nav-text">Производительность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="helpers.html" class="nav-link" data-page="helpers"><span class="nav-num">46</span><span class="nav-text">Хелперы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📌</span>Справочник</div><ul>
+<li><a href="cheatsheet.html" class="nav-link" data-page="cheatsheet"><span class="nav-num">47</span><span class="nav-text">Шпаргалка на одну страницу</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="glossary.html" class="nav-link" data-page="glossary"><span class="nav-num">48</span><span class="nav-text">Глоссарий</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="upgrade-from-yii1.html" class="nav-link" data-page="upgrade-from-yii1"><span class="nav-num">49</span><span class="nav-text">Переход с Yii 1.1</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⌘</span>Ещё</div><ul>
+<li><a href="all.html" class="nav-link" data-page="all"><span class="nav-num">∞</span><span class="nav-text">Всё одной страницей</span></a></li>
+</ul></div></nav>
+    <div class="sidebar-foot">
+      <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">Полное руководство ↗</a>
+      <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Справочник API ↗</a>
+      <button type="button" class="link-btn" id="reset-progress">Сбросить прогресс</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main" id="content">
+    <article class="doc">
+  <header class="doc-head">
+    <div class="crumbs"><a href="index.html">Главная</a><span>/</span><span class="crumb-part"><span class="crumb-icon">🏗</span>Структура приложения</span></div>
+    <h1><span class="doc-num">11</span>Ресурсы и клиентские скрипты</h1>
+    <p class="doc-summary">Asset bundles — единственно правильный способ подключать JS и CSS: зависимости, публикация, Bower/NPM через Composer, объединение и сжатие, а также registerJs/registerCss и yii.js.</p>
+    <div class="doc-meta">
+      <span class="meta-item" title="Примерное время чтения">⏱ ~6 мин</span>
+      <span class="meta-item" title="Сколько глав руководства сжато в этот раздел">📚 2 главы руководства</span>
+      <label class="learned"><input type="checkbox" class="learned-box" data-page="assets"><span>Изучено</span></label>
+    </div>
+  </header>
+
+  <div class="doc-body">
+<div class="lead"><p>Ресурсы (assets) — JS, CSS, картинки, шрифты. Yii управляет ими <strong>пакетами</strong> (<code>AssetBundle</code>): пакет знает, где лежат файлы, от каких других пакетов зависит, и сам публикует их в веб-доступную папку. Зарегистрировал пакет в представлении — теги <code>&lt;link&gt;</code> и <code>&lt;script&gt;</code> появились в нужном порядке.</p></div>
+<h2 id="paket-resursov">Пакет ресурсов<a class="anchor" href="#paket-resursov" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">assets/AppAsset.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">namespace</span> <span class="t-cl">app\assets</span>;
+
+<span class="t-kw">use</span> <span class="t-cl">yii\web\AssetBundle</span>;
+
+<span class="t-kw">class</span> <span class="t-cl">AppAsset</span> <span class="t-kw">extends</span> <span class="t-cl">AssetBundle</span>
+{
+    <span class="t-kw">public</span> <span class="t-va">$basePath</span> = <span class="t-st">'@webroot'</span>;          <span class="t-cm">// файлы уже доступны из веба</span>
+    <span class="t-kw">public</span> <span class="t-va">$baseUrl</span> = <span class="t-st">'@web'</span>;
+    <span class="t-kw">public</span> <span class="t-va">$css</span> = [<span class="t-st">'css/site.css'</span>];
+    <span class="t-kw">public</span> <span class="t-va">$js</span> = [<span class="t-st">'js/app.js'</span>];
+    <span class="t-kw">public</span> <span class="t-va">$depends</span> = [
+        <span class="t-st">'yii\web\YiiAsset'</span>,                 <span class="t-cm">// jQuery + yii.js</span>
+        <span class="t-st">'yii\bootstrap5\BootstrapAsset'</span>,
+    ];
+}</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">views/layouts/main.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span>
+<span class="t-kw">use</span> <span class="t-cl">app\assets\AppAsset</span>;
+<span class="t-cl">AppAsset</span>::<span class="t-fn">register</span>(<span class="t-va">$this</span>);   <span class="t-cm">// $this — объект View; в виджете: $this-&gt;view</span>
+<span class="t-tg">?&gt;</span></code></pre></figure>
+<div class="kv"><div class="kv-row"><div class="kv-key"><code>sourcePath</code></div><div class="kv-val">папка с исходниками <strong>вне</strong> веб-корня (расширения, <code>@bower/...</code>). Файлы будут опубликованы в <code>@webroot/assets</code></div></div><div class="kv-row"><div class="kv-key"><code>basePath</code> + <code>baseUrl</code></div><div class="kv-val">файлы <strong>уже</strong> в веб-корне, публиковать не нужно. Так делают для ресурсов самого приложения</div></div><div class="kv-row"><div class="kv-key"><code>js</code>, <code>css</code></div><div class="kv-val">списки файлов: относительные пути или абсолютные URL (CDN). Порядок сохраняется</div></div><div class="kv-row"><div class="kv-key"><code>depends</code></div><div class="kv-val">пакеты, которые должны быть подключены <strong>раньше</strong>. Зависимости транзитивны</div></div><div class="kv-row"><div class="kv-key"><code>jsOptions</code>, <code>cssOptions</code></div><div class="kv-val">параметры для <code>registerJsFile()</code>/<code>registerCssFile()</code>: <code>['position' =&gt; View::POS_HEAD]</code>, <code>['media' =&gt; 'print']</code>, <code>['condition' =&gt; 'lte IE9']</code>, <code>['noscript' =&gt; true]</code></div></div><div class="kv-row"><div class="kv-key"><code>publishOptions</code></div><div class="kv-val">что публиковать: <code>['only' =&gt; ['css/*', 'fonts/*']]</code>, <code>forceCopy</code>, <code>beforeCopy</code></div></div></div>
+<aside class="callout gotcha"><div class="callout-title">Грабли</div><div class="callout-body"><p>Не используйте <code>@webroot/assets</code> как <code>sourcePath</code> — эта папка принадлежит менеджеру ресурсов и может быть очищена. И не меняйте свойства пакета в <code>init()</code> или после <code>register()</code>: такие изменения перекроют настройки <code>assetManager-&gt;bundles</code> и сломают объединение ресурсов.</p></div></aside>
+<h3 id="tri-vida-resursov">Три вида ресурсов<a class="anchor" href="#tri-vida-resursov" aria-label="Ссылка на раздел">#</a></h3>
+<ul>
+<li><strong>Исходные</strong> — лежат рядом с PHP-кодом, недоступны из веба; при регистрации публикуются (копируются или линкуются) в <code>@webroot/assets/&lt;hash&gt;/</code>.</li>
+<li><strong>Опубликованные</strong> — уже в веб-папке (<code>basePath</code>/<code>baseUrl</code>).</li>
+<li><strong>Внешние</strong> — на CDN, задаются полным URL.</li>
+</ul>
+<h2 id="bower-i-npm-cherez-composer">Bower и NPM через Composer<a class="anchor" href="#bower-i-npm-cherez-composer" aria-label="Ссылка на раздел">#</a></h2>
+<p>Основной способ — репозиторий <a href="https://asset-packagist.org" class="ext" target="_blank" rel="noopener">asset-packagist</a> (в шаблонах basic/advanced с 2.0.13 уже настроен):</p>
+<figure class="code" data-lang="json"><div class="code-head"><span class="code-title">composer.json</span><span class="code-lang">JSON</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-pk">"repositories"</span>: [
+    {<span class="t-pk">"type"</span>: <span class="t-st">"composer"</span>, <span class="t-pk">"url"</span>: <span class="t-st">"https://asset-packagist.org"</span>}
+],
+<span class="t-pk">"require"</span>: {
+    <span class="t-pk">"bower-asset/jquery"</span>: <span class="t-st">"^3.6"</span>,
+    <span class="t-pk">"npm-asset/chart.js"</span>: <span class="t-st">"^4.0"</span>
+}</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'aliases'</span> =&gt; [
+    <span class="t-st">'@bower'</span> =&gt; <span class="t-st">'@vendor/bower-asset'</span>,
+    <span class="t-st">'@npm'</span> =&gt; <span class="t-st">'@vendor/npm-asset'</span>,
+],</code></pre></figure>
+<p>Дальше пакет ссылается на них через <code>sourcePath = '@npm/chart.js/dist'</code>. Альтернатива — глобальный плагин <code>fxp/composer-asset-plugin</code>, но он заметно медленнее.</p>
+<h2 id="nastroyka-cherez-assetmanager">Настройка через assetManager<a class="anchor" href="#nastroyka-cherez-assetmanager" aria-label="Ссылка на раздел">#</a></h2>
+<p>Все пакеты можно перенастроить централизованно, не трогая их классы:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'assetManager'</span> =&gt; [
+    <span class="t-st">'bundles'</span> =&gt; [
+        <span class="t-st">'yii\web\JqueryAsset'</span> =&gt; [
+            <span class="t-st">'sourcePath'</span> =&gt; <span class="t-lt">null</span>,                         <span class="t-cm">// не публиковать</span>
+            <span class="t-st">'js'</span> =&gt; [<span class="t-st">'//code.jquery.com/jquery-3.7.1.min.js'</span>],   <span class="t-cm">// взять с CDN</span>
+        ],
+        <span class="t-st">'yii\bootstrap5\BootstrapPluginAsset'</span> =&gt; <span class="t-lt">false</span>,   <span class="t-cm">// отключить пакет совсем</span>
+    ],
+    <span class="t-st">'assetMap'</span> =&gt; [
+        <span class="t-st">'jquery.js'</span> =&gt; <span class="t-st">'//code.jquery.com/jquery-3.7.1.min.js'</span>,   <span class="t-cm">// заменить файл во всех пакетах</span>
+    ],
+    <span class="t-st">'linkAssets'</span> =&gt; <span class="t-lt">true</span>,        <span class="t-cm">// публиковать симлинками, а не копированием</span>
+    <span class="t-st">'appendTimestamp'</span> =&gt; <span class="t-lt">true</span>,   <span class="t-cm">// /assets/abc/yii.js?v=1423448645 — сброс кеша браузера</span>
+],</code></pre></figure>
+<p><code>'bundles' =&gt; false</code> отключает все пакеты — полезно, когда фронтенд собирается отдельно.</p>
+<h2 id="preprocessory">Препроцессоры<a class="anchor" href="#preprocessory" aria-label="Ссылка на раздел">#</a></h2>
+<p>В <code>css</code>/<code>js</code> можно перечислять <code>.less</code>, <code>.scss</code>, <code>.styl</code>, <code>.coffee</code>, <code>.ts</code> — <code>AssetConverter</code> вызовет установленный компилятор (<code>lessc</code>, <code>sass</code>, <code>tsc</code>…) и подключит результат. Команды настраиваются в <code>assetManager.converter.commands</code>. Чаще, впрочем, сборку доверяют внешним инструментам и в пакет включают уже готовые файлы.</p>
+<h2 id="obedinenie-i-szhatie">Объединение и сжатие<a class="anchor" href="#obedinenie-i-szhatie" aria-label="Ссылка на раздел">#</a></h2>
+<p>На проде десятки файлов хочется склеить в один CSS и один JS. Идея: создать «сводный» пакет и заставить остальные зависеть от него с пустыми <code>js</code>/<code>css</code>. Команда <code>yii asset</code> делает это автоматически:</p>
+<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">yii</span> asset/template assets.php          <span class="t-cm"># шаблон конфигурации</span>
+<span class="t-kw">yii</span> asset assets.php config/assets-prod.php   <span class="t-cm"># объединить, сжать, сгенерировать конфиг пакетов</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">assets.php (фрагмент)</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">return</span> [
+    <span class="t-st">'jsCompressor'</span> =&gt; <span class="t-st">'java -jar compiler.jar --js {from} --js_output_file {to}'</span>,
+    <span class="t-st">'cssCompressor'</span> =&gt; <span class="t-st">'java -jar yuicompressor.jar --type css {from} -o {to}'</span>,
+    <span class="t-st">'bundles'</span> =&gt; [<span class="t-st">'app\assets\AppAsset'</span>, <span class="t-st">'yii\web\YiiAsset'</span>],
+    <span class="t-st">'targets'</span> =&gt; [
+        <span class="t-st">'all'</span> =&gt; [
+            <span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\web\AssetBundle'</span>,
+            <span class="t-st">'basePath'</span> =&gt; <span class="t-st">'@webroot/assets'</span>,
+            <span class="t-st">'baseUrl'</span> =&gt; <span class="t-st">'@web/assets'</span>,
+            <span class="t-st">'js'</span> =&gt; <span class="t-st">'js/all-{hash}.js'</span>,
+            <span class="t-st">'css'</span> =&gt; <span class="t-st">'css/all-{hash}.css'</span>,
+        ],
+    ],
+    <span class="t-st">'assetManager'</span> =&gt; [<span class="t-st">'basePath'</span> =&gt; <span class="t-st">'@webroot/assets'</span>, <span class="t-st">'baseUrl'</span> =&gt; <span class="t-st">'@web/assets'</span>],
+];</code></pre></figure>
+<p>Несколько <code>targets</code> (например, <code>allShared</code>, <code>allBackEnd</code>, <code>allFrontEnd</code>) группируют пакеты; цель с пустым <code>depends</code> собирает всё оставшееся. Результат подключают по окружению:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'assetManager'</span> =&gt; [
+    <span class="t-st">'bundles'</span> =&gt; <span class="t-kw">require</span> __DIR__ . <span class="t-st">'/'</span> . (<span class="t-ct">YII_ENV_PROD</span> ? <span class="t-st">'assets-prod.php'</span> : <span class="t-st">'assets-dev.php'</span>),
+],</code></pre></figure>
+<h2 id="registraciya-skriptov-i-stiley-napryamuyu">Регистрация скриптов и стилей напрямую<a class="anchor" href="#registraciya-skriptov-i-stiley-napryamuyu" aria-label="Ссылка на раздел">#</a></h2>
+<p>Для мелких динамических кусков — методы <code>View</code>:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$this</span>-&gt;<span class="t-fn">registerJs</span>(
+    <span class="t-st">"$('#myButton').on('click', function () { alert('Clicked'); });"</span>,
+    <span class="t-cl">View</span>::<span class="t-ct">POS_READY</span>,          <span class="t-cm">// POS_HEAD | POS_BEGIN | POS_END | POS_READY (по умолчанию) | POS_LOAD</span>
+    <span class="t-st">'my-button-handler'</span>       <span class="t-cm">// ключ: повторная регистрация заменит, а не продублирует</span>
+);
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerJsFile</span>(<span class="t-st">'@web/js/main.js'</span>, [<span class="t-st">'depends'</span> =&gt; [<span class="t-cl">\yii\web\JqueryAsset</span>::<span class="t-kw">class</span>]]);
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerCss</span>(<span class="t-st">'body { background: #f00; }'</span>);
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerCssFile</span>(<span class="t-st">'@web/css/print.css'</span>, [<span class="t-st">'media'</span> =&gt; <span class="t-st">'print'</span>], <span class="t-st">'css-print'</span>);</code></pre></figure>
+<p><code>POS_READY</code> и <code>POS_LOAD</code> оборачивают код в <code>jQuery(function(){})</code> и автоматически подключают <code>JqueryAsset</code>.</p>
+<h3 id="php-znacheniya-v-javascript">PHP-значения в JavaScript<a class="anchor" href="#php-znacheniya-v-javascript" aria-label="Ссылка на раздел">#</a></h3>
+<p>Экранируйте через <code>Json::htmlEncode()</code> — иначе кавычки и <code>&lt;/script&gt;</code> в данных сломают страницу:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$options</span> = [<span class="t-st">'baseUrl'</span> =&gt; <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;baseUrl, <span class="t-st">'language'</span> =&gt; <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;language];
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerJs</span>(<span class="t-st">'var appOptions = '</span> . <span class="t-cl">\yii\helpers\Json</span>::<span class="t-fn">htmlEncode</span>(<span class="t-va">$options</span>) . <span class="t-st">';'</span>, <span class="t-cl">View</span>::<span class="t-ct">POS_HEAD</span>, <span class="t-st">'app-options'</span>);
+
+<span class="t-va">$message</span> = <span class="t-cl">\yii\helpers\Json</span>::<span class="t-fn">htmlEncode</span>(<span class="t-cl">Yii</span>::<span class="t-fn">t</span>(<span class="t-st">'app'</span>, <span class="t-st">'Button clicked!'</span>));
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerJs</span>(<span class="t-st">&lt;&lt;&lt;JS
+    $('#myButton').on('click', function () { alert($message); });
+JS</span>);</code></pre></figure>
+<aside class="callout gotcha"><div class="callout-title">Грабли</div><div class="callout-body"><p>В heredoc PHP подставит <code>$переменные</code> — это удобно для <code>$message</code>, но jQuery-вызовы вида <code>$('#id')</code> не пострадают: <code>$(</code> и <code>$.</code> PHP не трактует как переменные.</p></div></aside>
+<h2 id="chto-daet-yii-js">Что даёт yii.js<a class="anchor" href="#chto-daet-yii-js" aria-label="Ссылка на раздел">#</a></h2>
+<p><code>YiiAsset</code> подключает <code>yii.js</code> — небольшую библиотеку, на которой держатся встроенные виджеты:</p>
+<ul>
+<li>отправка CSRF-токена в AJAX-запросах (берётся из <code>Html::csrfMetaTags()</code>);</li>
+<li>атрибуты <code>data-method="post"</code> и <code>data-confirm="Точно удалить?"</code> на ссылках — так работает кнопка удаления в <code>GridView</code>;</li>
+<li>обработка заголовка <code>X-Redirect</code> для перенаправлений в AJAX-ответах;</li>
+<li>система модулей <code>yii.*</code> для клиентского кода виджетов (<code>yii.activeForm</code>, <code>yii.gridView</code>).</li>
+</ul>
+<div class="quiz"><div class="quiz-head"><span class="quiz-title">Проверь себя</span><span class="quiz-count">5</span><button type="button" class="quiz-all">Раскрыть все</button></div><div class="quiz-cards"><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">1</span><span class="qcard-text"><p>Когда нужен <code>sourcePath</code>, а когда <code>basePath</code> + <code>baseUrl</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>sourcePath</code> — если файлы лежат вне веб-корня и их надо опубликовать (расширения, npm-пакеты). <code>basePath</code>/<code>baseUrl</code> — если файлы уже в <code>web/</code> и публикация не нужна.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">2</span><span class="qcard-text"><p>Зачем указывать <code>depends</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Чтобы гарантировать порядок подключения: файлы пакета выводятся после файлов всех его зависимостей (например, плагин после jQuery).</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">3</span><span class="qcard-text"><p>Как заставить браузер забрать новую версию <code>site.css</code> после деплоя?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>'appendTimestamp' =&gt; true</code> у <code>assetManager</code> — к URL добавится <code>?v=&lt;время изменения файла&gt;</code>.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">4</span><span class="qcard-text"><p>Что делает третий аргумент <code>registerJs($code, $pos, $key)</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Ключ блока: повторная регистрация с тем же ключом заменяет предыдущую, а не добавляет дубликат. Без ключа ключом служит сам код.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">5</span><span class="qcard-text"><p>Почему не стоит менять свойства пакета внутри <code>init()</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Такие изменения имеют приоритет над <code>assetManager-&gt;bundles</code> и ломают централизованную перенастройку и объединение ресурсов командой <code>yii asset</code>.</p></div></div></div></div>
+  </div>
+
+  <footer class="doc-foot">
+<details class="sources"><summary>Источник: главы официального руководства</summary><ul><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-assets" target="_blank" rel="noopener"><span class="src-part">Структура приложения</span>Ресурсы</a></li><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/output-client-scripts" target="_blank" rel="noopener"><span class="src-part">Отображение данных</span>Работа с клиентскими скриптами</a></li></ul></details>
+    <div class="learned-cta">
+      <label class="learned big"><input type="checkbox" class="learned-box" data-page="assets"><span>Отметить раздел изученным</span></label>
+    </div>
+    <nav class="pager" aria-label="Соседние разделы"><a class="pager-link prev" href="widgets.html"><span class="pager-label">← Назад</span><span class="pager-title">Виджеты</span></a><a class="pager-link next" href="extensions.html"><span class="pager-label">Дальше →</span><span class="pager-title">Расширения и сторонний код</span></a></nav>
+  </footer>
+</article>
+
+  </main>
+
+  <aside class="toc" id="toc" aria-label="Содержание страницы">
+    <div class="toc-title">На этой странице</div><ul class="toc-list">
+<li class="toc-l2"><a href="#paket-resursov">Пакет ресурсов</a></li>
+<li class="toc-l3"><a href="#tri-vida-resursov">Три вида ресурсов</a></li>
+<li class="toc-l2"><a href="#bower-i-npm-cherez-composer">Bower и NPM через Composer</a></li>
+<li class="toc-l2"><a href="#nastroyka-cherez-assetmanager">Настройка через assetManager</a></li>
+<li class="toc-l2"><a href="#preprocessory">Препроцессоры</a></li>
+<li class="toc-l2"><a href="#obedinenie-i-szhatie">Объединение и сжатие</a></li>
+<li class="toc-l2"><a href="#registraciya-skriptov-i-stiley-napryamuyu">Регистрация скриптов и стилей напрямую</a></li>
+<li class="toc-l3"><a href="#php-znacheniya-v-javascript">PHP-значения в JavaScript</a></li>
+<li class="toc-l2"><a href="#chto-daet-yii-js">Что даёт yii.js</a></li>
+</ul>
+  </aside>
+</div>
+
+<button type="button" class="to-top" id="to-top" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="search" id="search" hidden>
+  <div class="search-backdrop" data-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Поиск">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="search-input" placeholder="Что ищем? Например: findOne, RBAC, миграции…" autocomplete="off" spellcheck="false" aria-label="Поисковый запрос">
+      <button type="button" class="search-close" data-close aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results" id="search-results" role="listbox"></div>
+    <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> выбрать <kbd>Enter</kbd> открыть <kbd>Esc</kbd> закрыть</div>
+  </div>
+</div>
+
+<script src="assets/search-index.js" defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

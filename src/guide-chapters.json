@@ -1,0 +1,497 @@
+[
+ {
+  "slug": "intro-yii",
+  "title": "О Yii",
+  "part": "Введение"
+ },
+ {
+  "slug": "intro-upgrade-from-v1",
+  "title": "Обновление с версии 1.1",
+  "part": "Введение"
+ },
+ {
+  "slug": "start-prerequisites",
+  "title": "Что нужно знать",
+  "part": "Первое знакомство"
+ },
+ {
+  "slug": "start-installation",
+  "title": "Установка Yii",
+  "part": "Первое знакомство"
+ },
+ {
+  "slug": "start-workflow",
+  "title": "Запуск приложения",
+  "part": "Первое знакомство"
+ },
+ {
+  "slug": "start-hello",
+  "title": "Говорим «привет»",
+  "part": "Первое знакомство"
+ },
+ {
+  "slug": "start-forms",
+  "title": "Работа с формами",
+  "part": "Первое знакомство"
+ },
+ {
+  "slug": "start-databases",
+  "title": "Работа с базами данных",
+  "part": "Первое знакомство"
+ },
+ {
+  "slug": "start-gii",
+  "title": "Генерация кода при помощи Gii",
+  "part": "Первое знакомство"
+ },
+ {
+  "slug": "start-looking-ahead",
+  "title": "Что дальше?",
+  "part": "Первое знакомство"
+ },
+ {
+  "slug": "structure-overview",
+  "title": "Обзор",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-entry-scripts",
+  "title": "Входные скрипты",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-applications",
+  "title": "Приложения",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-application-components",
+  "title": "Компоненты приложения",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-controllers",
+  "title": "Контроллеры",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-models",
+  "title": "Модели",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-views",
+  "title": "Представления",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-modules",
+  "title": "Модули",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-filters",
+  "title": "Фильтры",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-widgets",
+  "title": "Виджеты",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-assets",
+  "title": "Ресурсы",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "structure-extensions",
+  "title": "Расширения",
+  "part": "Структура приложения"
+ },
+ {
+  "slug": "runtime-overview",
+  "title": "Обзор",
+  "part": "Обработка запросов"
+ },
+ {
+  "slug": "runtime-bootstrapping",
+  "title": "Bootstrapping",
+  "part": "Обработка запросов"
+ },
+ {
+  "slug": "runtime-routing",
+  "title": "Разбор и генерация URL",
+  "part": "Обработка запросов"
+ },
+ {
+  "slug": "runtime-requests",
+  "title": "Запросы",
+  "part": "Обработка запросов"
+ },
+ {
+  "slug": "runtime-responses",
+  "title": "Ответы",
+  "part": "Обработка запросов"
+ },
+ {
+  "slug": "runtime-sessions-cookies",
+  "title": "Сессии и куки",
+  "part": "Обработка запросов"
+ },
+ {
+  "slug": "runtime-handling-errors",
+  "title": "Обработка ошибок",
+  "part": "Обработка запросов"
+ },
+ {
+  "slug": "runtime-logging",
+  "title": "Логирование",
+  "part": "Обработка запросов"
+ },
+ {
+  "slug": "concept-components",
+  "title": "Компоненты",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "concept-properties",
+  "title": "Свойства",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "concept-events",
+  "title": "События",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "concept-behaviors",
+  "title": "Поведения",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "concept-configurations",
+  "title": "Конфигурации",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "concept-aliases",
+  "title": "Псевдонимы",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "concept-autoloading",
+  "title": "Автозагрузка классов",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "concept-service-locator",
+  "title": "Service Locator",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "concept-di-container",
+  "title": "Dependency Injection Container",
+  "part": "Основные понятия"
+ },
+ {
+  "slug": "db-dao",
+  "title": "Объекты доступа к данным (DAO)",
+  "part": "Работа с базами данных"
+ },
+ {
+  "slug": "db-query-builder",
+  "title": "Построитель запросов",
+  "part": "Работа с базами данных"
+ },
+ {
+  "slug": "db-active-record",
+  "title": "Active Record",
+  "part": "Работа с базами данных"
+ },
+ {
+  "slug": "db-migrations",
+  "title": "Миграции",
+  "part": "Работа с базами данных"
+ },
+ {
+  "slug": "input-forms",
+  "title": "Создание форм",
+  "part": "Получение данных от пользователя"
+ },
+ {
+  "slug": "input-validation",
+  "title": "Валидация",
+  "part": "Получение данных от пользователя"
+ },
+ {
+  "slug": "input-file-upload",
+  "title": "Загрузка файлов",
+  "part": "Получение данных от пользователя"
+ },
+ {
+  "slug": "input-tabular-input",
+  "title": "Табличный ввод",
+  "part": "Получение данных от пользователя"
+ },
+ {
+  "slug": "input-multiple-models",
+  "title": "Работа с несколькими моделями",
+  "part": "Получение данных от пользователя"
+ },
+ {
+  "slug": "input-form-javascript",
+  "title": "Расширение ActiveForm на стороне клиента",
+  "part": "Получение данных от пользователя"
+ },
+ {
+  "slug": "output-formatting",
+  "title": "Форматирование данных",
+  "part": "Отображение данных"
+ },
+ {
+  "slug": "output-pagination",
+  "title": "Постраничная разбивка",
+  "part": "Отображение данных"
+ },
+ {
+  "slug": "output-sorting",
+  "title": "Сортировка",
+  "part": "Отображение данных"
+ },
+ {
+  "slug": "output-data-providers",
+  "title": "Провайдеры данных",
+  "part": "Отображение данных"
+ },
+ {
+  "slug": "output-data-widgets",
+  "title": "Виджеты для данных",
+  "part": "Отображение данных"
+ },
+ {
+  "slug": "output-client-scripts",
+  "title": "Работа с клиентскими скриптами",
+  "part": "Отображение данных"
+ },
+ {
+  "slug": "output-theming",
+  "title": "Темизация",
+  "part": "Отображение данных"
+ },
+ {
+  "slug": "security-overview",
+  "title": "Обзор",
+  "part": "Безопасность"
+ },
+ {
+  "slug": "security-authentication",
+  "title": "Аутентификация",
+  "part": "Безопасность"
+ },
+ {
+  "slug": "security-authorization",
+  "title": "Авторизация",
+  "part": "Безопасность"
+ },
+ {
+  "slug": "security-passwords",
+  "title": "Работа с паролями",
+  "part": "Безопасность"
+ },
+ {
+  "slug": "security-cryptography",
+  "title": "Криптография",
+  "part": "Безопасность"
+ },
+ {
+  "slug": "security-best-practices",
+  "title": "Лучшие практики",
+  "part": "Безопасность"
+ },
+ {
+  "slug": "caching-overview",
+  "title": "Обзор",
+  "part": "Кеширование"
+ },
+ {
+  "slug": "caching-data",
+  "title": "Кэширование данных",
+  "part": "Кеширование"
+ },
+ {
+  "slug": "caching-fragment",
+  "title": "Кэширование фрагментов",
+  "part": "Кеширование"
+ },
+ {
+  "slug": "caching-page",
+  "title": "Кэширование страниц",
+  "part": "Кеширование"
+ },
+ {
+  "slug": "caching-http",
+  "title": "HTTP кэширование",
+  "part": "Кеширование"
+ },
+ {
+  "slug": "rest-quick-start",
+  "title": "Быстрый старт",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-resources",
+  "title": "Ресурсы",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-controllers",
+  "title": "Контроллеры",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-filtering-collections",
+  "title": "Фильтрация коллекций",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-routing",
+  "title": "Роутинг",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-response-formatting",
+  "title": "Форматирование ответа",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-authentication",
+  "title": "Аутентификация",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-rate-limiting",
+  "title": "Ограничение частоты запросов",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-versioning",
+  "title": "Версионирование",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "rest-error-handling",
+  "title": "Обработка ошибок",
+  "part": "Веб-сервисы REST"
+ },
+ {
+  "slug": "test-overview",
+  "title": "Обзор",
+  "part": "Тестирование"
+ },
+ {
+  "slug": "test-environment-setup",
+  "title": "Настройка тестового окружения",
+  "part": "Тестирование"
+ },
+ {
+  "slug": "test-unit",
+  "title": "Модульные тесты",
+  "part": "Тестирование"
+ },
+ {
+  "slug": "test-functional",
+  "title": "Функциональные тесты",
+  "part": "Тестирование"
+ },
+ {
+  "slug": "test-acceptance",
+  "title": "Приёмочные тесты",
+  "part": "Тестирование"
+ },
+ {
+  "slug": "test-fixtures",
+  "title": "Фикстуры",
+  "part": "Тестирование"
+ },
+ {
+  "slug": "tutorial-start-from-scratch",
+  "title": "Создание приложения с нуля",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-console",
+  "title": "Консольные команды",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-docker",
+  "title": "Docker",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-core-validators",
+  "title": "Встроенные валидаторы",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-i18n",
+  "title": "Интернационализация",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-mailing",
+  "title": "Отправка почты",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-performance-tuning",
+  "title": "Оптимизация производительности",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-shared-hosting",
+  "title": "Окружение виртуального хостинга",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-template-engines",
+  "title": "Шаблонизаторы",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-yii-integration",
+  "title": "Работа со сторонним кодом",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "tutorial-yii-as-micro-framework",
+  "title": "Использование Yii в качестве микро-framework'а",
+  "part": "Специальные темы"
+ },
+ {
+  "slug": "helper-overview",
+  "title": "Обзор",
+  "part": "Хелперы"
+ },
+ {
+  "slug": "helper-array",
+  "title": "ArrayHelper",
+  "part": "Хелперы"
+ },
+ {
+  "slug": "helper-html",
+  "title": "Html",
+  "part": "Хелперы"
+ },
+ {
+  "slug": "helper-json",
+  "title": "Json",
+  "part": "Хелперы"
+ },
+ {
+  "slug": "helper-url",
+  "title": "Url хелпер",
+  "part": "Хелперы"
+ }
+]

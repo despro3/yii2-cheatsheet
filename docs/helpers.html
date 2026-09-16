@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Хелперы · Yii 2 — шпаргалка</title>
+<meta name="description" content="Статические классы yii\helpers — ArrayHelper (getValue, map, index, merge, multisort, toArray), Html (теги, ссылки, формы, active-поля, CSS-классы), Json (encode/decode, JsExpression, htmlEncode), Url (to, toRoute, current, canonical, remember/previous), а также Inflector, StringHelper, FileHelper, VarDumper, Console, Markdown.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+(function(){try{var t=localStorage.getItem('yii2:theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+</head>
+<body class="page" data-page="helpers">
+<a class="skip" href="#content">К содержимому</a>
+<header class="topbar">
+  <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html" aria-label="Yii 2 — шпаргалка — на главную">
+    <span class="brand-mark" aria-hidden="true">Yii</span>
+    <span class="brand-text">2 · шпаргалка</span>
+  </a>
+  <button type="button" class="search-btn" id="search-btn" aria-label="Поиск по шпаргалке">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="search-btn-text">Поиск</span>
+    <kbd class="search-kbd">Ctrl K</kbd>
+  </button>
+  <div class="topbar-right">
+    <a class="progress-pill" id="progress-pill" href="index.html#progress" title="Ваш прогресс">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+      <span class="progress-text"><span id="progress-num">0</span>%</span>
+    </a>
+    <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему" title="Тема: системная">
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+    <a class="icon-btn gh" href="https://github.com/yiisoft/yii2" target="_blank" rel="noopener" aria-label="Yii 2 на GitHub" title="yiisoft/yii2">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav" aria-label="Разделы">
+<a class="nav-home" href="index.html">Главная</a>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🚀</span>Старт</div><ul>
+<li><a href="intro.html" class="nav-link" data-page="intro"><span class="nav-num">01</span><span class="nav-text">Что такое Yii 2</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="install.html" class="nav-link" data-page="install"><span class="nav-num">02</span><span class="nav-text">Установка и запуск</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="first-app.html" class="nav-link" data-page="first-app"><span class="nav-num">03</span><span class="nav-text">Первое приложение</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🏗</span>Структура приложения</div><ul>
+<li><a href="app.html" class="nav-link" data-page="app"><span class="nav-num">04</span><span class="nav-text">Приложение и его компоненты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="controllers.html" class="nav-link" data-page="controllers"><span class="nav-num">05</span><span class="nav-text">Контроллеры и действия</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="models.html" class="nav-link" data-page="models"><span class="nav-num">06</span><span class="nav-text">Модели</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="views.html" class="nav-link" data-page="views"><span class="nav-num">07</span><span class="nav-text">Представления и шаблоны</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="modules.html" class="nav-link" data-page="modules"><span class="nav-num">08</span><span class="nav-text">Модули</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="filters.html" class="nav-link" data-page="filters"><span class="nav-num">09</span><span class="nav-text">Фильтры</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="widgets.html" class="nav-link" data-page="widgets"><span class="nav-num">10</span><span class="nav-text">Виджеты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="assets.html" class="nav-link" data-page="assets"><span class="nav-num">11</span><span class="nav-text">Ресурсы и клиентские скрипты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="extensions.html" class="nav-link" data-page="extensions"><span class="nav-num">12</span><span class="nav-text">Расширения и сторонний код</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔁</span>Обработка запроса</div><ul>
+<li><a href="lifecycle.html" class="nav-link" data-page="lifecycle"><span class="nav-num">13</span><span class="nav-text">Жизненный цикл запроса</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="routing.html" class="nav-link" data-page="routing"><span class="nav-num">14</span><span class="nav-text">Маршрутизация и URL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="request-response.html" class="nav-link" data-page="request-response"><span class="nav-num">15</span><span class="nav-text">Запрос и ответ</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="sessions.html" class="nav-link" data-page="sessions"><span class="nav-num">16</span><span class="nav-text">Сессии и куки</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="errors-logging.html" class="nav-link" data-page="errors-logging"><span class="nav-num">17</span><span class="nav-text">Ошибки и логирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧠</span>Ключевые концепции</div><ul>
+<li><a href="components.html" class="nav-link" data-page="components"><span class="nav-num">18</span><span class="nav-text">Компоненты и свойства</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="events.html" class="nav-link" data-page="events"><span class="nav-num">19</span><span class="nav-text">События</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="behaviors.html" class="nav-link" data-page="behaviors"><span class="nav-num">20</span><span class="nav-text">Поведения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="configurations.html" class="nav-link" data-page="configurations"><span class="nav-num">21</span><span class="nav-text">Конфигурации, псевдонимы, автозагрузка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="di.html" class="nav-link" data-page="di"><span class="nav-num">22</span><span class="nav-text">Service Locator и DI-контейнер</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🗄</span>Базы данных</div><ul>
+<li><a href="dao.html" class="nav-link" data-page="dao"><span class="nav-num">23</span><span class="nav-text">DAO — работа с SQL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="query-builder.html" class="nav-link" data-page="query-builder"><span class="nav-num">24</span><span class="nav-text">Query Builder</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="active-record.html" class="nav-link" data-page="active-record"><span class="nav-num">25</span><span class="nav-text">Active Record</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="migrations.html" class="nav-link" data-page="migrations"><span class="nav-num">26</span><span class="nav-text">Миграции</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📝</span>Формы и валидация</div><ul>
+<li><a href="forms.html" class="nav-link" data-page="forms"><span class="nav-num">27</span><span class="nav-text">Формы и ввод</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validation.html" class="nav-link" data-page="validation"><span class="nav-num">28</span><span class="nav-text">Валидация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validators.html" class="nav-link" data-page="validators"><span class="nav-num">29</span><span class="nav-text">Встроенные валидаторы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📊</span>Вывод данных</div><ul>
+<li><a href="formatting.html" class="nav-link" data-page="formatting"><span class="nav-num">30</span><span class="nav-text">Форматирование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-providers.html" class="nav-link" data-page="data-providers"><span class="nav-num">31</span><span class="nav-text">Провайдеры данных, пагинация, сортировка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-widgets.html" class="nav-link" data-page="data-widgets"><span class="nav-num">32</span><span class="nav-text">Виджеты данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔐</span>Безопасность</div><ul>
+<li><a href="authentication.html" class="nav-link" data-page="authentication"><span class="nav-num">33</span><span class="nav-text">Аутентификация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="authorization.html" class="nav-link" data-page="authorization"><span class="nav-num">34</span><span class="nav-text">Авторизация: ACF и RBAC</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="security.html" class="nav-link" data-page="security"><span class="nav-num">35</span><span class="nav-text">Безопасность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⚡</span>Кеширование</div><ul>
+<li><a href="caching.html" class="nav-link" data-page="caching"><span class="nav-num">36</span><span class="nav-text">Кэширование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="caching-output.html" class="nav-link" data-page="caching-output"><span class="nav-num">37</span><span class="nav-text">Кэширование фрагментов, страниц и HTTP</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔌</span>REST API</div><ul>
+<li><a href="rest.html" class="nav-link" data-page="rest"><span class="nav-num">38</span><span class="nav-text">REST API — быстрый старт</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="rest-advanced.html" class="nav-link" data-page="rest-advanced"><span class="nav-num">39</span><span class="nav-text">REST API — форматы, аутентификация, версии</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧰</span>Инструменты и тесты</div><ul>
+<li><a href="console.html" class="nav-link" data-page="console"><span class="nav-num">40</span><span class="nav-text">Консольные приложения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="testing.html" class="nav-link" data-page="testing"><span class="nav-num">41</span><span class="nav-text">Тестирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="dev-tools.html" class="nav-link" data-page="dev-tools"><span class="nav-num">42</span><span class="nav-text">Gii, отладчик и другие инструменты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧩</span>Специальные темы</div><ul>
+<li><a href="i18n.html" class="nav-link" data-page="i18n"><span class="nav-num">43</span><span class="nav-text">Интернационализация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="mailing.html" class="nav-link" data-page="mailing"><span class="nav-num">44</span><span class="nav-text">Отправка почты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="performance.html" class="nav-link" data-page="performance"><span class="nav-num">45</span><span class="nav-text">Производительность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="helpers.html" class="nav-link active" data-page="helpers" aria-current="page"><span class="nav-num">46</span><span class="nav-text">Хелперы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📌</span>Справочник</div><ul>
+<li><a href="cheatsheet.html" class="nav-link" data-page="cheatsheet"><span class="nav-num">47</span><span class="nav-text">Шпаргалка на одну страницу</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="glossary.html" class="nav-link" data-page="glossary"><span class="nav-num">48</span><span class="nav-text">Глоссарий</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="upgrade-from-yii1.html" class="nav-link" data-page="upgrade-from-yii1"><span class="nav-num">49</span><span class="nav-text">Переход с Yii 1.1</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⌘</span>Ещё</div><ul>
+<li><a href="all.html" class="nav-link" data-page="all"><span class="nav-num">∞</span><span class="nav-text">Всё одной страницей</span></a></li>
+</ul></div></nav>
+    <div class="sidebar-foot">
+      <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">Полное руководство ↗</a>
+      <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Справочник API ↗</a>
+      <button type="button" class="link-btn" id="reset-progress">Сбросить прогресс</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main" id="content">
+    <article class="doc">
+  <header class="doc-head">
+    <div class="crumbs"><a href="index.html">Главная</a><span>/</span><span class="crumb-part"><span class="crumb-icon">🧩</span>Специальные темы</span></div>
+    <h1><span class="doc-num">46</span>Хелперы</h1>
+    <p class="doc-summary">Статические классы yii\helpers — ArrayHelper (getValue, map, index, merge, multisort, toArray), Html (теги, ссылки, формы, active-поля, CSS-классы), Json (encode/decode, JsExpression, htmlEncode), Url (to, toRoute, current, canonical, remember/previous), а также Inflector, StringHelper, FileHelper, VarDumper, Console, Markdown.</p>
+    <div class="doc-meta">
+      <span class="meta-item" title="Примерное время чтения">⏱ ~5 мин</span>
+      <span class="meta-item" title="Сколько глав руководства сжато в этот раздел">📚 5 глав руководства</span>
+      <label class="learned"><input type="checkbox" class="learned-box" data-page="helpers"><span>Изучено</span></label>
+    </div>
+  </header>
+
+  <div class="doc-body">
+<div class="lead"><p>Хелперы — статические классы для рутины: безопасно достать значение из массива, собрать тег с экранированием, построить URL по маршруту, закодировать JSON. Расширяются наследованием: <code>class Html extends BaseHtml</code> — каждый хелпер состоит из <code>BaseXxx</code> с логикой и тонкого <code>Xxx</code>, который можно подменить.</p></div>
+<h2 id="arrayhelper">ArrayHelper<a class="anchor" href="#arrayhelper" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\helpers\ArrayHelper</span>;
+
+<span class="t-cm">// достать значение — из массива или объекта, с вложенностью и значением по умолчанию</span>
+<span class="t-va">$name</span> = <span class="t-cl">ArrayHelper</span>::<span class="t-fn">getValue</span>(<span class="t-va">$user</span>, <span class="t-st">'name'</span>, <span class="t-st">'anon'</span>);
+<span class="t-va">$street</span> = <span class="t-cl">ArrayHelper</span>::<span class="t-fn">getValue</span>(<span class="t-va">$user</span>, <span class="t-st">'address.street'</span>);           <span class="t-cm">// $user['address']['street'] или $user-&gt;address-&gt;street</span>
+<span class="t-va">$val</span> = <span class="t-cl">ArrayHelper</span>::<span class="t-fn">getValue</span>(<span class="t-va">$arr</span>, [<span class="t-st">'x'</span>, <span class="t-st">'y'</span>]);                     <span class="t-cm">// ключ с точкой — массивом</span>
+<span class="t-va">$fullName</span> = <span class="t-cl">ArrayHelper</span>::<span class="t-fn">getValue</span>(<span class="t-va">$user</span>, <span class="t-kw">function</span> (<span class="t-va">$user</span>, <span class="t-va">$default</span>) { <span class="t-kw">return</span> <span class="t-va">$user</span>-&gt;first . <span class="t-st">' '</span> . <span class="t-va">$user</span>-&gt;last; });
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">setValue</span>(<span class="t-va">$array</span>, <span class="t-st">'key.subkey'</span>, <span class="t-va">$value</span>);
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">keyExists</span>(<span class="t-st">'Name'</span>, <span class="t-va">$array</span>, <span class="t-lt">false</span>);                      <span class="t-cm">// регистронезависимо</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">remove</span>(<span class="t-va">$array</span>, <span class="t-st">'type'</span>, <span class="t-st">'default'</span>);                     <span class="t-cm">// достать и удалить</span>
+
+<span class="t-cm">// столбцы, карты, индексы</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">getColumn</span>(<span class="t-va">$posts</span>, <span class="t-st">'id'</span>);                               <span class="t-cm">// [1, 2, 3]</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">getColumn</span>(<span class="t-va">$posts</span>, <span class="t-kw">function</span> (<span class="t-va">$p</span>) { <span class="t-kw">return</span> <span class="t-va">$p</span>-&gt;title; });
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">map</span>(<span class="t-va">$countries</span>, <span class="t-st">'code'</span>, <span class="t-st">'name'</span>);                       <span class="t-cm">// ['RU' =&gt; 'Россия'] — для dropDownList</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">map</span>(<span class="t-va">$countries</span>, <span class="t-st">'code'</span>, <span class="t-st">'name'</span>, <span class="t-st">'continent'</span>);          <span class="t-cm">// с группировкой</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">index</span>(<span class="t-va">$users</span>, <span class="t-st">'id'</span>);                                   <span class="t-cm">// [id =&gt; row]</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">index</span>(<span class="t-va">$users</span>, <span class="t-st">'id'</span>, <span class="t-st">'group'</span>);                          <span class="t-cm">// [group =&gt; [id =&gt; row]]</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">index</span>(<span class="t-va">$users</span>, <span class="t-lt">null</span>, <span class="t-st">'group'</span>);                          <span class="t-cm">// [group =&gt; [row, row]]</span>
+
+<span class="t-cm">// объединение и сортировка</span>
+<span class="t-va">$config</span> = <span class="t-cl">ArrayHelper</span>::<span class="t-fn">merge</span>(<span class="t-va">$base</span>, <span class="t-va">$override</span>);                     <span class="t-cm">// рекурсивно, с UnsetArrayValue / ReplaceArrayValue</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">multisort</span>(<span class="t-va">$data</span>, [<span class="t-st">'age'</span>, <span class="t-st">'name'</span>], [<span class="t-ct">SORT_ASC</span>, <span class="t-ct">SORT_DESC</span>]);
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">multisort</span>(<span class="t-va">$data</span>, <span class="t-kw">function</span> (<span class="t-va">$item</span>) { <span class="t-kw">return</span> <span class="t-va">$item</span>[<span class="t-st">'a'</span>] . <span class="t-va">$item</span>[<span class="t-st">'b'</span>]; });
+
+<span class="t-cm">// прочее</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">toArray</span>(<span class="t-va">$model</span>, [<span class="t-cl">User</span>::<span class="t-kw">class</span> =&gt; [<span class="t-st">'id'</span>, <span class="t-st">'email'</span>, <span class="t-st">'fullName'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$u</span>) { <span class="t-kw">return</span> <span class="t-va">$u</span>-&gt;name; }]]);
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">isAssociative</span>(<span class="t-va">$arr</span>); <span class="t-cl">ArrayHelper</span>::<span class="t-fn">isIndexed</span>(<span class="t-va">$arr</span>);
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">isIn</span>(<span class="t-st">'a'</span>, <span class="t-va">$arr</span>); <span class="t-cl">ArrayHelper</span>::<span class="t-fn">isSubset</span>([<span class="t-st">'a'</span>], <span class="t-va">$arr</span>);
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">htmlEncode</span>(<span class="t-va">$data</span>); <span class="t-cl">ArrayHelper</span>::<span class="t-fn">htmlDecode</span>(<span class="t-va">$data</span>);     <span class="t-cm">// рекурсивно</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">filter</span>(<span class="t-va">$array</span>, [<span class="t-st">'A.B'</span>, <span class="t-st">'!A.C'</span>]);                       <span class="t-cm">// оставить/исключить ключи</span>
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">isTraversable</span>(<span class="t-va">$x</span>);</code></pre></figure>
+<p><code>merge()</code> — то, что <code>yii\web\Application</code> делает с конфигурациями: <code>new \yii\helpers\UnsetArrayValue()</code> удаляет ключ, <code>ReplaceArrayValue</code> заменяет массив целиком вместо слияния.</p>
+<h2 id="html">Html<a class="anchor" href="#html" aria-label="Ссылка на раздел">#</a></h2>
+<p>Все методы <strong>экранируют</strong> данные (кроме уже готового HTML в <code>content</code>):</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\helpers\Html</span>;
+
+<span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$text</span>); <span class="t-cl">Html</span>::<span class="t-fn">decode</span>(<span class="t-va">$html</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">tag</span>(<span class="t-st">'div'</span>, <span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$content</span>), [<span class="t-st">'class'</span> =&gt; <span class="t-st">'box'</span>, <span class="t-st">'data'</span> =&gt; [<span class="t-st">'id'</span> =&gt; <span class="t-nu">5</span>], <span class="t-st">'id'</span> =&gt; <span class="t-lt">null</span>]);   <span class="t-cm">// null — атрибут не выводится</span>
+<span class="t-cl">Html</span>::<span class="t-fn">beginTag</span>(<span class="t-st">'div'</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'x'</span>]) … <span class="t-cl">Html</span>::<span class="t-fn">endTag</span>(<span class="t-st">'div'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-st">'Профиль'</span>, [<span class="t-st">'user/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">42</span>], [<span class="t-st">'class'</span> =&gt; <span class="t-st">'btn'</span>]);   <span class="t-cm">// маршрут → URL через Url::to()</span>
+<span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-st">'Сайт'</span>, <span class="t-st">'https://example.com'</span>, [<span class="t-st">'target'</span> =&gt; <span class="t-st">'_blank'</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">mailto</span>(<span class="t-st">'Написать'</span>, <span class="t-st">'admin@example.com'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">img</span>(<span class="t-st">'@web/images/logo.png'</span>, [<span class="t-st">'alt'</span> =&gt; <span class="t-st">'Logo'</span>]);                <span class="t-cm">// псевдонимы понимает</span>
+<span class="t-cl">Html</span>::<span class="t-fn">img</span>(<span class="t-st">'/img/x.png'</span>, [<span class="t-st">'srcset'</span> =&gt; [<span class="t-st">'100w'</span> =&gt; <span class="t-st">'/x@1.png'</span>, <span class="t-st">'200w'</span> =&gt; <span class="t-st">'/x@2.png'</span>]]);
+<span class="t-cl">Html</span>::<span class="t-fn">ul</span>(<span class="t-va">$items</span>, [<span class="t-st">'item'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$item</span>, <span class="t-va">$index</span>) { <span class="t-kw">return</span> <span class="t-cl">Html</span>::<span class="t-fn">tag</span>(<span class="t-st">'li'</span>, <span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$item</span>)); }]);
+<span class="t-cl">Html</span>::<span class="t-fn">ol</span>(<span class="t-va">$items</span>, [<span class="t-st">'encode'</span> =&gt; <span class="t-lt">true</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">style</span>(<span class="t-st">'.x{color:red}'</span>); <span class="t-cl">Html</span>::<span class="t-fn">script</span>(<span class="t-st">'alert(1)'</span>); <span class="t-cl">Html</span>::<span class="t-fn">cssFile</span>(<span class="t-st">'@web/css/a.css'</span>); <span class="t-cl">Html</span>::<span class="t-fn">jsFile</span>(<span class="t-st">'@web/js/a.js'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">csrfMetaTags</span>();</code></pre></figure>
+<h3 id="css-klassy-i-stili">CSS-классы и стили<a class="anchor" href="#css-klassy-i-stili" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$options</span> = [<span class="t-st">'class'</span> =&gt; <span class="t-st">'btn'</span>];
+<span class="t-cl">Html</span>::<span class="t-fn">addCssClass</span>(<span class="t-va">$options</span>, <span class="t-st">'btn-primary'</span>);            <span class="t-cm">// 'btn btn-primary'; дубли не добавляются</span>
+<span class="t-cl">Html</span>::<span class="t-fn">addCssClass</span>(<span class="t-va">$options</span>, [<span class="t-st">'btn-lg'</span>, <span class="t-st">'x'</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">removeCssClass</span>(<span class="t-va">$options</span>, <span class="t-st">'btn'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">addCssStyle</span>(<span class="t-va">$options</span>, <span class="t-st">'width: 100px'</span>);           <span class="t-cm">// 'style' =&gt; 'width: 100px'</span>
+<span class="t-cl">Html</span>::<span class="t-fn">addCssStyle</span>(<span class="t-va">$options</span>, [<span class="t-st">'color'</span> =&gt; <span class="t-st">'red'</span>], <span class="t-lt">false</span>); <span class="t-cm">// не перезаписывать существующее</span>
+<span class="t-cl">Html</span>::<span class="t-fn">removeCssStyle</span>(<span class="t-va">$options</span>, <span class="t-st">'width'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">cssStyleFromArray</span>([<span class="t-st">'width'</span> =&gt; <span class="t-st">'100px'</span>]); <span class="t-cl">Html</span>::<span class="t-fn">cssStyleToArray</span>(<span class="t-st">'width: 100px'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">renderTagAttributes</span>([<span class="t-st">'class'</span> =&gt; <span class="t-st">'a'</span>, <span class="t-st">'data'</span> =&gt; [<span class="t-st">'x'</span> =&gt; <span class="t-nu">1</span>]]);   <span class="t-cm">// ' class="a" data-x="1"'</span></code></pre></figure>
+<h3 id="formy">Формы<a class="anchor" href="#formy" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cl">Html</span>::<span class="t-fn">beginForm</span>([<span class="t-st">'order/update'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-va">$id</span>], <span class="t-st">'post'</span>, [<span class="t-st">'enctype'</span> =&gt; <span class="t-st">'multipart/form-data'</span>]) … <span class="t-cl">Html</span>::<span class="t-fn">endForm</span>();
+<span class="t-cl">Html</span>::<span class="t-fn">input</span>(<span class="t-st">'text'</span>, <span class="t-st">'username'</span>, <span class="t-va">$value</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'form-control'</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">textInput</span>(<span class="t-st">'username'</span>, <span class="t-va">$value</span>); <span class="t-cl">Html</span>::<span class="t-fn">passwordInput</span>(<span class="t-st">'pw'</span>); <span class="t-cl">Html</span>::<span class="t-fn">hiddenInput</span>(<span class="t-st">'id'</span>, <span class="t-nu">1</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">textarea</span>(<span class="t-st">'text'</span>, <span class="t-va">$value</span>, [<span class="t-st">'rows'</span> =&gt; <span class="t-nu">5</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">checkbox</span>(<span class="t-st">'agree'</span>, <span class="t-va">$checked</span>, [<span class="t-st">'label'</span> =&gt; <span class="t-st">'Согласен'</span>, <span class="t-st">'uncheck'</span> =&gt; <span class="t-nu">0</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">radio</span>(<span class="t-st">'type'</span>, <span class="t-va">$checked</span>, [<span class="t-st">'value'</span> =&gt; <span class="t-st">'a'</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">dropDownList</span>(<span class="t-st">'country'</span>, <span class="t-va">$selected</span>, <span class="t-va">$items</span>, [<span class="t-st">'prompt'</span> =&gt; <span class="t-st">'—'</span>, <span class="t-st">'options'</span> =&gt; [<span class="t-st">'RU'</span> =&gt; [<span class="t-st">'disabled'</span> =&gt; <span class="t-lt">true</span>]]]);
+<span class="t-cl">Html</span>::<span class="t-fn">listBox</span>(<span class="t-st">'tags'</span>, <span class="t-va">$selected</span>, <span class="t-va">$items</span>, [<span class="t-st">'multiple'</span> =&gt; <span class="t-lt">true</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">checkboxList</span>(<span class="t-st">'tags'</span>, <span class="t-va">$selected</span>, <span class="t-va">$items</span>, [<span class="t-st">'separator'</span> =&gt; <span class="t-st">'&lt;br&gt;'</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">radioList</span>(<span class="t-st">'type'</span>, <span class="t-va">$selected</span>, <span class="t-va">$items</span>, [<span class="t-st">'item'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$index</span>, <span class="t-va">$label</span>, <span class="t-va">$name</span>, <span class="t-va">$checked</span>, <span class="t-va">$value</span>) { … }]);
+<span class="t-cl">Html</span>::<span class="t-fn">submitButton</span>(<span class="t-st">'Сохранить'</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'btn'</span>]); <span class="t-cl">Html</span>::<span class="t-fn">resetButton</span>(); <span class="t-cl">Html</span>::<span class="t-fn">button</span>(<span class="t-st">'Кнопка'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">fileInput</span>(<span class="t-st">'file'</span>);
+
+<span class="t-cm">// active* — по модели и атрибуту: имя LoginForm[username], id loginform-username, значение из модели</span>
+<span class="t-cl">Html</span>::<span class="t-fn">activeTextInput</span>(<span class="t-va">$model</span>, <span class="t-st">'username'</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'form-control'</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">activeDropDownList</span>(<span class="t-va">$model</span>, <span class="t-st">'country'</span>, <span class="t-va">$items</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">activeLabel</span>(<span class="t-va">$model</span>, <span class="t-st">'username'</span>); <span class="t-cl">Html</span>::<span class="t-fn">activeHint</span>(<span class="t-va">$model</span>, <span class="t-st">'username'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">error</span>(<span class="t-va">$model</span>, <span class="t-st">'username'</span>); <span class="t-cl">Html</span>::<span class="t-fn">errorSummary</span>(<span class="t-va">$model</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">activeCheckbox</span>(<span class="t-va">$model</span>, <span class="t-st">'agree'</span>);
+<span class="t-cl">Html</span>::<span class="t-fn">getInputName</span>(<span class="t-va">$model</span>, <span class="t-st">'attr'</span>); <span class="t-cl">Html</span>::<span class="t-fn">getInputId</span>(<span class="t-va">$model</span>, <span class="t-st">'attr'</span>);</code></pre></figure>
+<p><code>ActiveForm</code> и <code>ActiveField</code> — обёртки над этими <code>active*</code> методами.</p>
+<h2 id="json">Json<a class="anchor" href="#json" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\helpers\Json</span>;
+<span class="t-kw">use</span> <span class="t-cl">yii\web\JsExpression</span>;
+
+<span class="t-cl">Json</span>::<span class="t-fn">encode</span>(<span class="t-va">$data</span>);                       <span class="t-cm">// JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES по умолчанию (2.0.x), объекты Arrayable → массивы</span>
+<span class="t-cl">Json</span>::<span class="t-fn">encode</span>([<span class="t-st">'fn'</span> =&gt; <span class="t-kw">new</span> <span class="t-cl">JsExpression</span>(<span class="t-st">'function () { return 1; }'</span>)]);   <span class="t-cm">// без кавычек — для JS-конфигураций виджетов</span>
+<span class="t-cl">Json</span>::<span class="t-fn">htmlEncode</span>(<span class="t-va">$data</span>);                   <span class="t-cm">// безопасно для вставки в HTML-атрибуты и &lt;script&gt;</span>
+<span class="t-cl">Json</span>::<span class="t-fn">decode</span>(<span class="t-va">$json</span>);                       <span class="t-cm">// всегда массив (assoc = true); бросает InvalidArgumentException при ошибке</span>
+<span class="t-cl">Json</span>::<span class="t-fn">decode</span>(<span class="t-va">$json</span>, <span class="t-lt">false</span>);                <span class="t-cm">// stdClass</span>
+<span class="t-cl">Json</span>::prettyPrint = <span class="t-lt">true</span>;                  <span class="t-cm">// отладка</span>
+<span class="t-cl">Json</span>::<span class="t-fn">errorSummary</span>(<span class="t-va">$model</span>);                <span class="t-cm">// ошибки модели как JSON</span></code></pre></figure>
+<p><code>JsExpression</code> — единственный способ вставить в JSON JS-код (например, колбэк в опции jQuery-плагина).</p>
+<h2 id="url">Url<a class="anchor" href="#url" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\helpers\Url</span>;
+
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>]);           <span class="t-cm">// маршрут → /post/1 через urlManager</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>], <span class="t-lt">true</span>);     <span class="t-cm">// абсолютный: https://host/post/1</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>], <span class="t-st">'https'</span>); <span class="t-cm">// с заданной схемой</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'/site/index'</span>]);                    <span class="t-cm">// ведущий / — от корня приложения (не относительно модуля/контроллера)</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'index'</span>]);                          <span class="t-cm">// относительно текущего контроллера</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">''</span>]);                               <span class="t-cm">// текущий маршрут (с параметрами — нет; см. current)</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>(<span class="t-st">'@web/images/logo.png'</span>);             <span class="t-cm">// псевдоним</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>(<span class="t-st">'/images/x.png'</span>); <span class="t-cl">Url</span>::<span class="t-fn">to</span>(<span class="t-st">'https://…'</span>);   <span class="t-cm">// как есть</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>();                                   <span class="t-cm">// текущий URL</span>
+
+<span class="t-cl">Url</span>::<span class="t-fn">toRoute</span>(<span class="t-st">'post/index'</span>); <span class="t-cl">Url</span>::<span class="t-fn">toRoute</span>([<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>]);
+<span class="t-cl">Url</span>::<span class="t-fn">current</span>();                              <span class="t-cm">// текущий URL со всеми GET-параметрами</span>
+<span class="t-cl">Url</span>::<span class="t-fn">current</span>([<span class="t-st">'page'</span> =&gt; <span class="t-nu">2</span>]);                 <span class="t-cm">// …с добавленным/заменённым параметром</span>
+<span class="t-cl">Url</span>::<span class="t-fn">current</span>([<span class="t-st">'page'</span> =&gt; <span class="t-lt">null</span>]);              <span class="t-cm">// …без параметра</span>
+<span class="t-cl">Url</span>::<span class="t-fn">home</span>(); <span class="t-cl">Url</span>::<span class="t-fn">base</span>(); <span class="t-cl">Url</span>::<span class="t-fn">base</span>(<span class="t-lt">true</span>);   <span class="t-cm">// домашняя, базовая (с/без хоста)</span>
+<span class="t-cl">Url</span>::<span class="t-fn">canonical</span>();                            <span class="t-cm">// для &lt;link rel="canonical"&gt; — маршрут + параметры действия</span>
+<span class="t-cl">Url</span>::<span class="t-fn">remember</span>(); <span class="t-cl">Url</span>::<span class="t-fn">previous</span>();            <span class="t-cm">// сохранить/достать URL (в сессии) — для «вернуться назад»</span>
+<span class="t-cl">Url</span>::<span class="t-fn">isRelative</span>(<span class="t-va">$url</span>); <span class="t-cl">Url</span>::<span class="t-fn">ensureScheme</span>(<span class="t-st">'//host/path'</span>, <span class="t-st">'https'</span>);</code></pre></figure>
+<p>Правило: маршруты в <code>Html::a()</code>, <code>redirect()</code>, <code>Url::to()</code> — всегда массивом <code>['controller/action', 'param' =&gt; …]</code>, а не строками, чтобы работали правила <code>urlManager</code>.</p>
+<h2 id="ostalnye-helpery">Остальные хелперы<a class="anchor" href="#ostalnye-helpery" aria-label="Ссылка на раздел">#</a></h2>
+<div class="kv"><div class="kv-row"><div class="kv-key"><code>Inflector</code></div><div class="kv-val"><code>pluralize('person')</code> → people, <code>singularize</code>, <code>camelize</code>, <code>camel2id('PostTag')</code> → post-tag, <code>id2camel</code>, <code>humanize</code>, <code>slug('Привет мир')</code> → privet-mir, <code>titleize</code>, <code>classify</code>, <code>tableize</code>, <code>ordinalize(1)</code> → 1st</div></div><div class="kv-row"><div class="kv-key"><code>StringHelper</code></div><div class="kv-val"><code>byteLength</code>, <code>byteSubstr</code>, <code>truncate($s, 20, '…')</code>, <code>truncateWords</code>, <code>startsWith</code>, <code>endsWith</code>, <code>explode(',', $s, true, true)</code> (trim + skip empty), <code>basename</code>, <code>dirname</code>, <code>mb_ucfirst</code>, <code>base64UrlEncode</code></div></div><div class="kv-row"><div class="kv-key"><code>FileHelper</code></div><div class="kv-val"><code>normalizePath</code>, <code>findFiles($dir, ['only' =&gt; ['*.php'], 'except' =&gt; ['/tests/']])</code>, <code>createDirectory</code>, <code>removeDirectory</code>, <code>copyDirectory</code>, <code>getMimeType</code>, <code>getExtensionsByMimeType</code>, <code>localize</code></div></div><div class="kv-row"><div class="kv-key"><code>VarDumper</code></div><div class="kv-val"><code>dump($var, $depth, $highlight)</code>, <code>dumpAsString</code>, <code>export</code> — читаемый вывод любых структур</div></div><div class="kv-row"><div class="kv-key"><code>Console</code></div><div class="kv-val">цвета, <code>ansiFormat</code>, <code>prompt</code>, <code>confirm</code>, <code>select</code>, прогресс-бары, <code>wrapText</code>, <code>getScreenSize</code></div></div><div class="kv-row"><div class="kv-key"><code>Markdown</code></div><div class="kv-val"><code>process($md, 'gfm')</code>, <code>processParagraph</code></div></div><div class="kv-row"><div class="kv-key"><code>HtmlPurifier</code></div><div class="kv-val"><code>process($html, $config)</code> — очистка HTML</div></div><div class="kv-row"><div class="kv-key"><code>FormatConverter</code></div><div class="kv-val">ICU ↔ PHP форматы дат (<code>convertDateIcuToPhp</code>)</div></div><div class="kv-row"><div class="kv-key"><code>IpHelper</code></div><div class="kv-val"><code>inRange</code>, <code>expandIPv6</code>, <code>getIpVersion</code>, <code>ip2bin</code></div></div><div class="kv-row"><div class="kv-key"></div><div class="kv-val"><code>BaseObject</code>-хелперы для подмены: <code>class Html extends \yii\helpers\BaseHtml</code> и <code>Yii::$classMap['yii\helpers\Html'] = '@app/components/Html.php'</code></div></div></div>
+<p>Подмена хелпера: наследуйте от <code>BaseHtml</code>, назовите класс <code>Html</code> в своём пространстве имён и импортируйте его вместо <code>yii\helpers\Html</code>; либо через <code>classMap</code>, чтобы подменить глобально (включая код фреймворка).</p>
+<div class="quiz"><div class="quiz-head"><span class="quiz-title">Проверь себя</span><span class="quiz-count">5</span><button type="button" class="quiz-all">Раскрыть все</button></div><div class="quiz-cards"><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">1</span><span class="qcard-text"><p>Как безопасно получить <code>$user['address']['city']</code>, если ключей может не быть?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>ArrayHelper::getValue($user, 'address.city', $default)</code> — работает и с объектами.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">2</span><span class="qcard-text"><p>Чем <code>ArrayHelper::map()</code> отличается от <code>index()</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>map()</code> строит <code>[ключ =&gt; значение поля]</code> (для списков), <code>index()</code> — <code>[ключ =&gt; целый элемент]</code>.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">3</span><span class="qcard-text"><p>Как передать JavaScript-функцию в JSON-опции виджета?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Обернуть в <code>new JsExpression('function () {…}')</code> — <code>Json::encode()</code> вставит её без кавычек.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">4</span><span class="qcard-text"><p>В чём разница между <code>Url::to(['index'])</code> и <code>Url::to(['/index'])</code>?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Без <code>/</code> маршрут относительно текущего контроллера (<code>post/index</code>), с <code>/</code> — абсолютный маршрут от корня приложения, даже внутри модуля.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">5</span><span class="qcard-text"><p>Как добавить CSS-класс к массиву опций, не затирая существующие?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>Html::addCssClass($options, 'new-class')</code>.</p></div></div></div></div>
+  </div>
+
+  <footer class="doc-foot">
+<details class="sources"><summary>Источник: главы официального руководства</summary><ul><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-overview" target="_blank" rel="noopener"><span class="src-part">Хелперы</span>Обзор</a></li><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-array" target="_blank" rel="noopener"><span class="src-part">Хелперы</span>ArrayHelper</a></li><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-html" target="_blank" rel="noopener"><span class="src-part">Хелперы</span>Html</a></li><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-json" target="_blank" rel="noopener"><span class="src-part">Хелперы</span>Json</a></li><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-url" target="_blank" rel="noopener"><span class="src-part">Хелперы</span>Url хелпер</a></li></ul></details>
+    <div class="learned-cta">
+      <label class="learned big"><input type="checkbox" class="learned-box" data-page="helpers"><span>Отметить раздел изученным</span></label>
+    </div>
+    <nav class="pager" aria-label="Соседние разделы"><a class="pager-link prev" href="performance.html"><span class="pager-label">← Назад</span><span class="pager-title">Производительность</span></a><a class="pager-link next" href="cheatsheet.html"><span class="pager-label">Дальше →</span><span class="pager-title">Шпаргалка на одну страницу</span></a></nav>
+  </footer>
+</article>
+
+  </main>
+
+  <aside class="toc" id="toc" aria-label="Содержание страницы">
+    <div class="toc-title">На этой странице</div><ul class="toc-list">
+<li class="toc-l2"><a href="#arrayhelper">ArrayHelper</a></li>
+<li class="toc-l2"><a href="#html">Html</a></li>
+<li class="toc-l3"><a href="#css-klassy-i-stili">CSS-классы и стили</a></li>
+<li class="toc-l3"><a href="#formy">Формы</a></li>
+<li class="toc-l2"><a href="#json">Json</a></li>
+<li class="toc-l2"><a href="#url">Url</a></li>
+<li class="toc-l2"><a href="#ostalnye-helpery">Остальные хелперы</a></li>
+</ul>
+  </aside>
+</div>
+
+<button type="button" class="to-top" id="to-top" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="search" id="search" hidden>
+  <div class="search-backdrop" data-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Поиск">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="search-input" placeholder="Что ищем? Например: findOne, RBAC, миграции…" autocomplete="off" spellcheck="false" aria-label="Поисковый запрос">
+      <button type="button" class="search-close" data-close aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results" id="search-results" role="listbox"></div>
+    <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> выбрать <kbd>Enter</kbd> открыть <kbd>Esc</kbd> закрыть</div>
+  </div>
+</div>
+
+<script src="assets/search-index.js" defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

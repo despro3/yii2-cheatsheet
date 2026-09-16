@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 920 300" role="img" aria-labelledby="rl-title" class="dg">
+  <title id="rl-title">Жизненный цикл запроса в Yii 2: браузер → входной скрипт → приложение → маршрут → контроллер → фильтры → действие → модель → представление → ответ → браузер</title>
+  <defs>
+    <marker id="rl-arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0L10 5 0 10z" class="dg-arrowhead"/>
+    </marker>
+  </defs>
+  <!-- стрелки первого ряда -->
+  <g class="dg-arrows">
+    <path d="M140 56h28" marker-end="url(#rl-arrow)"/>
+    <path d="M290 56h28" marker-end="url(#rl-arrow)"/>
+    <path d="M440 56h28" marker-end="url(#rl-arrow)"/>
+    <path d="M590 56h28" marker-end="url(#rl-arrow)"/>
+    <path d="M740 56h28" marker-end="url(#rl-arrow)"/>
+    <path d="M830 82v106" marker-end="url(#rl-arrow)"/>
+    <path d="M768 216h-26" marker-end="url(#rl-arrow)"/>
+    <path d="M618 216h-26" marker-end="url(#rl-arrow)"/>
+    <path d="M468 216h-26" marker-end="url(#rl-arrow)"/>
+    <path d="M318 216h-26" marker-end="url(#rl-arrow)"/>
+    <path d="M170 216H100a20 20 0 0 1-20-20V84" marker-end="url(#rl-arrow)"/>
+  </g>
+  <!-- ряд 1 -->
+  <g class="dg-node dg-node-io">
+    <rect x="20" y="30" width="120" height="52" rx="10"/>
+    <text x="80" y="53" class="dg-label">Браузер</text>
+    <text x="80" y="70" class="dg-sub">HTTP-запрос</text>
+  </g>
+  <a href="app.html#vhodnoy-skript" class="dg-link"><g class="dg-node">
+    <rect x="170" y="30" width="120" height="52" rx="10"/>
+    <text x="230" y="53" class="dg-label">index.php</text>
+    <text x="230" y="70" class="dg-sub">входной скрипт</text>
+  </g></a>
+  <a href="app.html" class="dg-link"><g class="dg-node">
+    <rect x="320" y="30" width="120" height="52" rx="10"/>
+    <text x="380" y="53" class="dg-label">Application</text>
+    <text x="380" y="70" class="dg-sub">конфиг + bootstrap</text>
+  </g></a>
+  <a href="routing.html" class="dg-link"><g class="dg-node">
+    <rect x="470" y="30" width="120" height="52" rx="10"/>
+    <text x="530" y="53" class="dg-label">Маршрут</text>
+    <text x="530" y="70" class="dg-sub">urlManager → post/view</text>
+  </g></a>
+  <a href="controllers.html" class="dg-link"><g class="dg-node">
+    <rect x="620" y="30" width="120" height="52" rx="10"/>
+    <text x="680" y="53" class="dg-label">Контроллер</text>
+    <text x="680" y="70" class="dg-sub">PostController</text>
+  </g></a>
+  <a href="filters.html" class="dg-link"><g class="dg-node">
+    <rect x="770" y="30" width="120" height="52" rx="10"/>
+    <text x="830" y="53" class="dg-label">Фильтры</text>
+    <text x="830" y="70" class="dg-sub">beforeAction()</text>
+  </g></a>
+  <!-- ряд 2 -->
+  <a href="controllers.html#deystviya" class="dg-link"><g class="dg-node">
+    <rect x="770" y="190" width="120" height="52" rx="10"/>
+    <text x="830" y="213" class="dg-label">Действие</text>
+    <text x="830" y="230" class="dg-sub">actionView($id)</text>
+  </g></a>
+  <a href="active-record.html" class="dg-link"><g class="dg-node dg-node-data">
+    <rect x="620" y="190" width="120" height="52" rx="10"/>
+    <text x="680" y="213" class="dg-label">Модель · БД</text>
+    <text x="680" y="230" class="dg-sub">Post::findOne($id)</text>
+  </g></a>
+  <a href="views.html" class="dg-link"><g class="dg-node">
+    <rect x="470" y="190" width="120" height="52" rx="10"/>
+    <text x="530" y="213" class="dg-label">Представление</text>
+    <text x="530" y="230" class="dg-sub">render() + layout</text>
+  </g></a>
+  <a href="request-response.html#otvet-response" class="dg-link"><g class="dg-node">
+    <rect x="320" y="190" width="120" height="52" rx="10"/>
+    <text x="380" y="213" class="dg-label">Ответ</text>
+    <text x="380" y="230" class="dg-sub">Response::send()</text>
+  </g></a>
+  <!-- подписи -->
+  <text x="80" y="132" class="dg-note" text-anchor="middle">1. пользователь открывает URL</text>
+  <text x="830" y="132" class="dg-note" text-anchor="middle">фильтр вернул false → стоп</text>
+  <text x="530" y="275" class="dg-note" text-anchor="middle">afterAction() → EVENT_AFTER_REQUEST → браузеру</text>
+</svg>

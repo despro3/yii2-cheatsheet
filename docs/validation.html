@@ -1,0 +1,391 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Валидация · Yii 2 — шпаргалка</title>
+<meta name="description" content="Правила rules(), сценарии и on/except, пустые значения и skipOnEmpty/skipOnError, условная валидация when/whenClient, фильтрация данных, ad hoc-валидация через DynamicModel, свои валидаторы (inline и класс), клиентская, отложенная и AJAX-валидация.">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+(function(){try{var t=localStorage.getItem('yii2:theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
+</head>
+<body class="page" data-page="validation">
+<a class="skip" href="#content">К содержимому</a>
+<header class="topbar">
+  <button type="button" class="icon-btn menu-btn" id="menu-btn" aria-label="Открыть меню" aria-controls="sidebar" aria-expanded="false">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+  </button>
+  <a class="brand" href="index.html" aria-label="Yii 2 — шпаргалка — на главную">
+    <span class="brand-mark" aria-hidden="true">Yii</span>
+    <span class="brand-text">2 · шпаргалка</span>
+  </a>
+  <button type="button" class="search-btn" id="search-btn" aria-label="Поиск по шпаргалке">
+    <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    <span class="search-btn-text">Поиск</span>
+    <kbd class="search-kbd">Ctrl K</kbd>
+  </button>
+  <div class="topbar-right">
+    <a class="progress-pill" id="progress-pill" href="index.html#progress" title="Ваш прогресс">
+      <svg viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+      <span class="progress-text"><span id="progress-num">0</span>%</span>
+    </a>
+    <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему" title="Тема: системная">
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+    </button>
+    <a class="icon-btn gh" href="https://github.com/yiisoft/yii2" target="_blank" rel="noopener" aria-label="Yii 2 на GitHub" title="yiisoft/yii2">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-3.2 19.5c.5.1.7-.2.7-.5v-1.8c-2.8.6-3.4-1.2-3.4-1.2-.4-1.1-1.1-1.5-1.1-1.5-.9-.6.1-.6.1-.6 1 .1 1.5 1 1.5 1 .9 1.6 2.4 1.1 3 .9.1-.7.4-1.1.6-1.4-2.2-.2-4.6-1.1-4.6-4.9 0-1.1.4-2 1-2.7-.1-.3-.4-1.3.1-2.7 0 0 .8-.3 2.8 1a9.5 9.5 0 0 1 5 0c1.9-1.3 2.7-1 2.7-1 .5 1.4.2 2.4.1 2.7.6.7 1 1.6 1 2.7 0 3.8-2.3 4.7-4.6 4.9.4.3.7.9.7 1.9v2.8c0 .3.2.6.7.5A10 10 0 0 0 12 2z"/></svg>
+    </a>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <nav class="nav" aria-label="Разделы">
+<a class="nav-home" href="index.html">Главная</a>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🚀</span>Старт</div><ul>
+<li><a href="intro.html" class="nav-link" data-page="intro"><span class="nav-num">01</span><span class="nav-text">Что такое Yii 2</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="install.html" class="nav-link" data-page="install"><span class="nav-num">02</span><span class="nav-text">Установка и запуск</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="first-app.html" class="nav-link" data-page="first-app"><span class="nav-num">03</span><span class="nav-text">Первое приложение</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🏗</span>Структура приложения</div><ul>
+<li><a href="app.html" class="nav-link" data-page="app"><span class="nav-num">04</span><span class="nav-text">Приложение и его компоненты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="controllers.html" class="nav-link" data-page="controllers"><span class="nav-num">05</span><span class="nav-text">Контроллеры и действия</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="models.html" class="nav-link" data-page="models"><span class="nav-num">06</span><span class="nav-text">Модели</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="views.html" class="nav-link" data-page="views"><span class="nav-num">07</span><span class="nav-text">Представления и шаблоны</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="modules.html" class="nav-link" data-page="modules"><span class="nav-num">08</span><span class="nav-text">Модули</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="filters.html" class="nav-link" data-page="filters"><span class="nav-num">09</span><span class="nav-text">Фильтры</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="widgets.html" class="nav-link" data-page="widgets"><span class="nav-num">10</span><span class="nav-text">Виджеты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="assets.html" class="nav-link" data-page="assets"><span class="nav-num">11</span><span class="nav-text">Ресурсы и клиентские скрипты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="extensions.html" class="nav-link" data-page="extensions"><span class="nav-num">12</span><span class="nav-text">Расширения и сторонний код</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔁</span>Обработка запроса</div><ul>
+<li><a href="lifecycle.html" class="nav-link" data-page="lifecycle"><span class="nav-num">13</span><span class="nav-text">Жизненный цикл запроса</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="routing.html" class="nav-link" data-page="routing"><span class="nav-num">14</span><span class="nav-text">Маршрутизация и URL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="request-response.html" class="nav-link" data-page="request-response"><span class="nav-num">15</span><span class="nav-text">Запрос и ответ</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="sessions.html" class="nav-link" data-page="sessions"><span class="nav-num">16</span><span class="nav-text">Сессии и куки</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="errors-logging.html" class="nav-link" data-page="errors-logging"><span class="nav-num">17</span><span class="nav-text">Ошибки и логирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧠</span>Ключевые концепции</div><ul>
+<li><a href="components.html" class="nav-link" data-page="components"><span class="nav-num">18</span><span class="nav-text">Компоненты и свойства</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="events.html" class="nav-link" data-page="events"><span class="nav-num">19</span><span class="nav-text">События</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="behaviors.html" class="nav-link" data-page="behaviors"><span class="nav-num">20</span><span class="nav-text">Поведения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="configurations.html" class="nav-link" data-page="configurations"><span class="nav-num">21</span><span class="nav-text">Конфигурации, псевдонимы, автозагрузка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="di.html" class="nav-link" data-page="di"><span class="nav-num">22</span><span class="nav-text">Service Locator и DI-контейнер</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🗄</span>Базы данных</div><ul>
+<li><a href="dao.html" class="nav-link" data-page="dao"><span class="nav-num">23</span><span class="nav-text">DAO — работа с SQL</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="query-builder.html" class="nav-link" data-page="query-builder"><span class="nav-num">24</span><span class="nav-text">Query Builder</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="active-record.html" class="nav-link" data-page="active-record"><span class="nav-num">25</span><span class="nav-text">Active Record</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="migrations.html" class="nav-link" data-page="migrations"><span class="nav-num">26</span><span class="nav-text">Миграции</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📝</span>Формы и валидация</div><ul>
+<li><a href="forms.html" class="nav-link" data-page="forms"><span class="nav-num">27</span><span class="nav-text">Формы и ввод</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validation.html" class="nav-link active" data-page="validation" aria-current="page"><span class="nav-num">28</span><span class="nav-text">Валидация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="validators.html" class="nav-link" data-page="validators"><span class="nav-num">29</span><span class="nav-text">Встроенные валидаторы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📊</span>Вывод данных</div><ul>
+<li><a href="formatting.html" class="nav-link" data-page="formatting"><span class="nav-num">30</span><span class="nav-text">Форматирование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-providers.html" class="nav-link" data-page="data-providers"><span class="nav-num">31</span><span class="nav-text">Провайдеры данных, пагинация, сортировка</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="data-widgets.html" class="nav-link" data-page="data-widgets"><span class="nav-num">32</span><span class="nav-text">Виджеты данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔐</span>Безопасность</div><ul>
+<li><a href="authentication.html" class="nav-link" data-page="authentication"><span class="nav-num">33</span><span class="nav-text">Аутентификация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="authorization.html" class="nav-link" data-page="authorization"><span class="nav-num">34</span><span class="nav-text">Авторизация: ACF и RBAC</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="security.html" class="nav-link" data-page="security"><span class="nav-num">35</span><span class="nav-text">Безопасность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⚡</span>Кеширование</div><ul>
+<li><a href="caching.html" class="nav-link" data-page="caching"><span class="nav-num">36</span><span class="nav-text">Кэширование данных</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="caching-output.html" class="nav-link" data-page="caching-output"><span class="nav-num">37</span><span class="nav-text">Кэширование фрагментов, страниц и HTTP</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🔌</span>REST API</div><ul>
+<li><a href="rest.html" class="nav-link" data-page="rest"><span class="nav-num">38</span><span class="nav-text">REST API — быстрый старт</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="rest-advanced.html" class="nav-link" data-page="rest-advanced"><span class="nav-num">39</span><span class="nav-text">REST API — форматы, аутентификация, версии</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧰</span>Инструменты и тесты</div><ul>
+<li><a href="console.html" class="nav-link" data-page="console"><span class="nav-num">40</span><span class="nav-text">Консольные приложения</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="testing.html" class="nav-link" data-page="testing"><span class="nav-num">41</span><span class="nav-text">Тестирование</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="dev-tools.html" class="nav-link" data-page="dev-tools"><span class="nav-num">42</span><span class="nav-text">Gii, отладчик и другие инструменты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">🧩</span>Специальные темы</div><ul>
+<li><a href="i18n.html" class="nav-link" data-page="i18n"><span class="nav-num">43</span><span class="nav-text">Интернационализация</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="mailing.html" class="nav-link" data-page="mailing"><span class="nav-num">44</span><span class="nav-text">Отправка почты</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="performance.html" class="nav-link" data-page="performance"><span class="nav-num">45</span><span class="nav-text">Производительность</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="helpers.html" class="nav-link" data-page="helpers"><span class="nav-num">46</span><span class="nav-text">Хелперы</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">📌</span>Справочник</div><ul>
+<li><a href="cheatsheet.html" class="nav-link" data-page="cheatsheet"><span class="nav-num">47</span><span class="nav-text">Шпаргалка на одну страницу</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="glossary.html" class="nav-link" data-page="glossary"><span class="nav-num">48</span><span class="nav-text">Глоссарий</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+<li><a href="upgrade-from-yii1.html" class="nav-link" data-page="upgrade-from-yii1"><span class="nav-num">49</span><span class="nav-text">Переход с Yii 1.1</span><span class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></li>
+</ul></div>
+<div class="nav-part"><div class="nav-part-title"><span class="nav-part-icon">⌘</span>Ещё</div><ul>
+<li><a href="all.html" class="nav-link" data-page="all"><span class="nav-num">∞</span><span class="nav-text">Всё одной страницей</span></a></li>
+</ul></div></nav>
+    <div class="sidebar-foot">
+      <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">Полное руководство ↗</a>
+      <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Справочник API ↗</a>
+      <button type="button" class="link-btn" id="reset-progress">Сбросить прогресс</button>
+    </div>
+  </aside>
+  <div class="scrim" id="scrim"></div>
+
+  <main class="main" id="content">
+    <article class="doc">
+  <header class="doc-head">
+    <div class="crumbs"><a href="index.html">Главная</a><span>/</span><span class="crumb-part"><span class="crumb-icon">📝</span>Формы и валидация</span></div>
+    <h1><span class="doc-num">28</span>Валидация</h1>
+    <p class="doc-summary">Правила rules(), сценарии и on/except, пустые значения и skipOnEmpty/skipOnError, условная валидация when/whenClient, фильтрация данных, ad hoc-валидация через DynamicModel, свои валидаторы (inline и класс), клиентская, отложенная и AJAX-валидация.</p>
+    <div class="doc-meta">
+      <span class="meta-item" title="Примерное время чтения">⏱ ~7 мин</span>
+      <span class="meta-item" title="Сколько глав руководства сжато в этот раздел">📚 1 глава руководства</span>
+      <label class="learned"><input type="checkbox" class="learned-box" data-page="validation"><span>Изучено</span></label>
+    </div>
+  </header>
+
+  <div class="doc-body">
+<div class="lead"><p>Данные извне не проверены, пока не прошли <code>validate()</code>. Правила описываются декларативно в <code>rules()</code>, ошибки собираются в модели, а те же правила автоматически превращаются в клиентскую JavaScript-проверку. Это единый механизм для форм, REST-запросов и консольных команд.</p></div>
+<h2 id="rules">rules()<a class="anchor" href="#rules" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">rules</span>()
+{
+    <span class="t-kw">return</span> [
+        <span class="t-cm">// [атрибуты, валидатор, опции...]</span>
+        [[<span class="t-st">'username'</span>, <span class="t-st">'email'</span>, <span class="t-st">'password'</span>], <span class="t-st">'required'</span>],
+        [<span class="t-st">'email'</span>, <span class="t-st">'email'</span>],
+        [<span class="t-st">'username'</span>, <span class="t-st">'string'</span>, <span class="t-st">'min'</span> =&gt; <span class="t-nu">2</span>, <span class="t-st">'max'</span> =&gt; <span class="t-nu">24</span>],
+        [<span class="t-st">'username'</span>, <span class="t-st">'unique'</span>, <span class="t-st">'targetClass'</span> =&gt; <span class="t-cl">User</span>::<span class="t-kw">class</span>],
+        [<span class="t-st">'age'</span>, <span class="t-st">'integer'</span>, <span class="t-st">'min'</span> =&gt; <span class="t-nu">18</span>, <span class="t-st">'message'</span> =&gt; <span class="t-st">'Только для взрослых'</span>],
+        [<span class="t-st">'status'</span>, <span class="t-st">'in'</span>, <span class="t-st">'range'</span> =&gt; [<span class="t-lt">self</span>::<span class="t-ct">STATUS_ACTIVE</span>, <span class="t-lt">self</span>::<span class="t-ct">STATUS_DELETED</span>]],
+        [<span class="t-st">'status'</span>, <span class="t-st">'default'</span>, <span class="t-st">'value'</span> =&gt; <span class="t-lt">self</span>::<span class="t-ct">STATUS_ACTIVE</span>],
+        [<span class="t-st">'website'</span>, <span class="t-st">'url'</span>, <span class="t-st">'defaultScheme'</span> =&gt; <span class="t-st">'https'</span>],
+        [<span class="t-st">'password_repeat'</span>, <span class="t-st">'compare'</span>, <span class="t-st">'compareAttribute'</span> =&gt; <span class="t-st">'password'</span>],
+        [[<span class="t-st">'first_name'</span>, <span class="t-st">'last_name'</span>], <span class="t-st">'trim'</span>],
+        [<span class="t-st">'title'</span>, <span class="t-st">'filter'</span>, <span class="t-st">'filter'</span> =&gt; <span class="t-st">'strip_tags'</span>],
+        [<span class="t-st">'title'</span>, <span class="t-st">'validateTitle'</span>],                       <span class="t-cm">// inline-валидатор — метод модели</span>
+        [<span class="t-st">'country'</span>, <span class="t-cl">\app\components\validators\CountryValidator</span>::<span class="t-kw">class</span>],   <span class="t-cm">// свой класс</span>
+        [<span class="t-st">'tags'</span>, <span class="t-st">'safe'</span>],                                 <span class="t-cm">// без проверки, но разрешить load()</span>
+        [<span class="t-st">'token'</span>, <span class="t-st">'required'</span>, <span class="t-st">'on'</span> =&gt; <span class="t-st">'register'</span>],        <span class="t-cm">// только в сценарии</span>
+        [<span class="t-st">'email'</span>, <span class="t-st">'unique'</span>, <span class="t-st">'except'</span> =&gt; <span class="t-st">'update'</span>],        <span class="t-cm">// во всех, кроме</span>
+    ];
+}</code></pre></figure>
+<p>Валидатор указывается коротким именем (<a href="validators.html" class="int">встроенные валидаторы</a>), именем класса, объектом или именем метода модели. Правила применяются <strong>по порядку</strong>, атрибут проверяется всеми правилами, где он упомянут.</p>
+<h2 id="zapusk-i-oshibki">Запуск и ошибки<a class="anchor" href="#zapusk-i-oshibki" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$model</span> = <span class="t-kw">new</span> <span class="t-cl">ContactForm</span>();
+<span class="t-va">$model</span>-&gt;<span class="t-fn">load</span>(<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;<span class="t-fn">post</span>());
+
+<span class="t-kw">if</span> (<span class="t-va">$model</span>-&gt;<span class="t-fn">validate</span>()) {                 <span class="t-cm">// все атрибуты активного сценария</span>
+    <span class="t-cm">// ok</span>
+} <span class="t-kw">else</span> {
+    <span class="t-va">$model</span>-&gt;errors;                       <span class="t-cm">// ['email' =&gt; ['…', '…'], 'name' =&gt; ['…']]</span>
+    <span class="t-va">$model</span>-&gt;<span class="t-fn">getFirstErrors</span>();             <span class="t-cm">// ['email' =&gt; '…']</span>
+    <span class="t-va">$model</span>-&gt;<span class="t-fn">getFirstError</span>(<span class="t-st">'email'</span>);
+    <span class="t-va">$model</span>-&gt;<span class="t-fn">getErrorSummary</span>(<span class="t-lt">true</span>);        <span class="t-cm">// плоский список</span>
+    <span class="t-va">$model</span>-&gt;<span class="t-fn">hasErrors</span>(<span class="t-st">'email'</span>);
+}
+
+<span class="t-va">$model</span>-&gt;<span class="t-fn">validate</span>([<span class="t-st">'email'</span>, <span class="t-st">'name'</span>]);      <span class="t-cm">// только эти атрибуты</span>
+<span class="t-va">$model</span>-&gt;<span class="t-fn">addError</span>(<span class="t-st">'email'</span>, <span class="t-st">'Такой уже есть'</span>);   <span class="t-cm">// ошибка вручную</span>
+<span class="t-va">$model</span>-&gt;<span class="t-fn">clearErrors</span>();</code></pre></figure>
+<p><code>ActiveRecord::save()</code> вызывает <code>validate()</code> сам. В сообщениях доступны <code>{attribute}</code> (подпись из <code>attributeLabels()</code>) и <code>{value}</code>, у конкретных валидаторов — свои плейсхолдеры (<code>{min}</code>, <code>{max}</code>…).</p>
+<h3 id="aktivnye-pravila-i-atributy">Активные правила и атрибуты<a class="anchor" href="#aktivnye-pravila-i-atributy" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$model</span>-&gt;scenario = <span class="t-st">'register'</span>;
+<span class="t-va">$model</span>-&gt;<span class="t-fn">activeAttributes</span>();     <span class="t-cm">// атрибуты, участвующие в сценарии</span>
+<span class="t-va">$model</span>-&gt;<span class="t-fn">getActiveValidators</span>();  <span class="t-cm">// валидаторы сценария</span>
+<span class="t-va">$model</span>-&gt;<span class="t-fn">getActiveValidators</span>(<span class="t-st">'email'</span>);
+<span class="t-va">$model</span>-&gt;validators;             <span class="t-cm">// ArrayObject всех валидаторов — можно добавить объект на лету</span></code></pre></figure>
+<p>Правило активно, если сценарий модели попадает в <code>on</code> (или <code>on</code> не задан) и не попадает в <code>except</code>. Атрибуты активных правил становятся <em>безопасными</em> для <code>load()</code> — кроме тех, что упомянуты только в правилах с <code>'safe' =&gt; false</code> или с восклицательным знаком в <code>scenarios()</code>.</p>
+<h2 id="pustye-znacheniya">Пустые значения<a class="anchor" href="#pustye-znacheniya" aria-label="Ссылка на раздел">#</a></h2>
+<p>По умолчанию валидатор <strong>пропускает пустой</strong> атрибут (<code>null</code>, <code>''</code>, <code>[]</code>) — проверяет только <code>required</code>. Меняется опцией:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>[<span class="t-st">'email'</span>, <span class="t-st">'email'</span>, <span class="t-st">'skipOnEmpty'</span> =&gt; <span class="t-lt">false</span>],
+[<span class="t-st">'tags'</span>, <span class="t-st">'each'</span>, <span class="t-st">'rule'</span> =&gt; [<span class="t-st">'string'</span>], <span class="t-st">'isEmpty'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$value</span>) { <span class="t-kw">return</span> <span class="t-va">$value</span> === [] || <span class="t-va">$value</span> === <span class="t-lt">null</span>; }],</code></pre></figure>
+<p>По умолчанию <code>Validator::isEmpty()</code> считает пустыми <code>null</code>, <code>''</code> и <code>[]</code>. Ошибка при первом правиле атрибута приводит к пропуску остальных — <code>skipOnError =&gt; false</code> отключает это.</p>
+<h2 id="uslovnaya-validaciya">Условная валидация<a class="anchor" href="#uslovnaya-validaciya" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>[<span class="t-st">'state'</span>, <span class="t-st">'required'</span>, <span class="t-st">'when'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$model</span>) {
+    <span class="t-kw">return</span> <span class="t-va">$model</span>-&gt;country == <span class="t-st">'USA'</span>;
+}, <span class="t-st">'whenClient'</span> =&gt; "<span class="t-kw">function</span> (attribute, value) {
+    <span class="t-kw">return</span> $(<span class="t-st">'#country'</span>).<span class="t-fn">val</span>() == <span class="t-st">'USA'</span>;
+}"],</code></pre></figure>
+<p><code>when</code> — серверное условие; <code>whenClient</code> — то же на JS, чтобы клиентская валидация не спорила с серверной.</p>
+<h2 id="filtraciya-ne-proverka-a-preobrazovanie">Фильтрация — не проверка, а преобразование<a class="anchor" href="#filtraciya-ne-proverka-a-preobrazovanie" aria-label="Ссылка на раздел">#</a></h2>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>[[<span class="t-st">'username'</span>, <span class="t-st">'email'</span>], <span class="t-st">'trim'</span>],
+[<span class="t-st">'username'</span>, <span class="t-st">'filter'</span>, <span class="t-st">'filter'</span> =&gt; <span class="t-st">'strtolower'</span>],
+[<span class="t-st">'title'</span>, <span class="t-st">'filter'</span>, <span class="t-st">'filter'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$value</span>) { <span class="t-kw">return</span> <span class="t-fn">mb_substr</span>(<span class="t-va">$value</span>, <span class="t-nu">0</span>, <span class="t-nu">100</span>); }],
+[<span class="t-st">'status'</span>, <span class="t-st">'default'</span>, <span class="t-st">'value'</span> =&gt; <span class="t-nu">1</span>],       <span class="t-cm">// если пусто</span>
+[<span class="t-st">'is_active'</span>, <span class="t-st">'boolean'</span>],                  <span class="t-cm">// не преобразует! только проверяет</span></code></pre></figure>
+<p><code>trim</code>, <code>filter</code>, <code>default</code> меняют значение атрибута. Ставьте их перед проверяющими правилами.</p>
+<h2 id="ad-hoc-validaciya">Ad hoc-валидация<a class="anchor" href="#ad-hoc-validaciya" aria-label="Ссылка на раздел">#</a></h2>
+<p>Проверить значения без класса модели — <code>DynamicModel</code>:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionSearch</span>(<span class="t-va">$name</span>, <span class="t-va">$email</span>)
+{
+    <span class="t-va">$model</span> = <span class="t-cl">DynamicModel</span>::<span class="t-fn">validateData</span>(<span class="t-fn">compact</span>(<span class="t-st">'name'</span>, <span class="t-st">'email'</span>), [
+        [[<span class="t-st">'name'</span>, <span class="t-st">'email'</span>], <span class="t-st">'string'</span>, <span class="t-st">'max'</span> =&gt; <span class="t-nu">128</span>],
+        [<span class="t-st">'email'</span>, <span class="t-st">'email'</span>],
+    ]);
+
+    <span class="t-kw">if</span> (<span class="t-va">$model</span>-&gt;<span class="t-fn">hasErrors</span>()) {
+        <span class="t-cm">// …</span>
+    }
+}
+
+<span class="t-cm">// или одно значение</span>
+<span class="t-va">$validator</span> = <span class="t-kw">new</span> <span class="t-cl">EmailValidator</span>();
+<span class="t-kw">if</span> (<span class="t-va">$validator</span>-&gt;<span class="t-fn">validate</span>(<span class="t-va">$email</span>, <span class="t-va">$error</span>)) { } <span class="t-kw">else</span> { <span class="t-kw">echo</span> <span class="t-va">$error</span>; }</code></pre></figure>
+<p><code>DynamicModel</code> можно создать и вручную: <code>new DynamicModel(compact('name', 'email'))</code> → <code>addRule('email', 'email')</code> → <code>validate()</code>.</p>
+<h2 id="svoi-validatory">Свои валидаторы<a class="anchor" href="#svoi-validatory" aria-label="Ссылка на раздел">#</a></h2>
+<h3 id="inline-metod-modeli">Inline — метод модели<a class="anchor" href="#inline-metod-modeli" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">rules</span>()
+{
+    <span class="t-kw">return</span> [
+        [<span class="t-st">'country'</span>, <span class="t-st">'validateCountry'</span>],
+        [<span class="t-st">'token'</span>, <span class="t-kw">function</span> (<span class="t-va">$attribute</span>, <span class="t-va">$params</span>, <span class="t-va">$validator</span>) {
+            <span class="t-kw">if</span> (<span class="t-va">$this</span>-&gt;<span class="t-va">$attribute</span> !== <span class="t-st">'a'</span>) {
+                <span class="t-va">$this</span>-&gt;<span class="t-fn">addError</span>(<span class="t-va">$attribute</span>, <span class="t-st">'Неверный токен'</span>);
+            }
+        }],
+    ];
+}
+
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">validateCountry</span>(<span class="t-va">$attribute</span>, <span class="t-va">$params</span>, <span class="t-va">$validator</span>)
+{
+    <span class="t-kw">if</span> (!<span class="t-fn">in_array</span>(<span class="t-va">$this</span>-&gt;<span class="t-va">$attribute</span>, [<span class="t-st">'USA'</span>, <span class="t-st">'Indonesia'</span>])) {
+        <span class="t-va">$validator</span>-&gt;<span class="t-fn">addError</span>(<span class="t-va">$this</span>, <span class="t-va">$attribute</span>, <span class="t-st">'{attribute} должна быть "USA" или "Indonesia".'</span>);
+    }
+}</code></pre></figure>
+<p>Inline-валидаторы <strong>не</strong> имеют клиентской части и, как и все, пропускают пустые значения, если не задан <code>skipOnEmpty =&gt; false</code>. С 2.0.11 удобнее <code>$validator-&gt;addError($this, $attribute, $message)</code> — работает с плейсхолдерами.</p>
+<h3 id="otdelnyy-klass">Отдельный класс<a class="anchor" href="#otdelnyy-klass" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">namespace</span> <span class="t-cl">app\components</span>;
+
+<span class="t-kw">use</span> <span class="t-cl">yii\validators\Validator</span>;
+
+<span class="t-kw">class</span> <span class="t-cl">CountryValidator</span> <span class="t-kw">extends</span> <span class="t-cl">Validator</span>
+{
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">validateAttribute</span>(<span class="t-va">$model</span>, <span class="t-va">$attribute</span>)
+    {
+        <span class="t-kw">if</span> (!<span class="t-fn">in_array</span>(<span class="t-va">$model</span>-&gt;<span class="t-va">$attribute</span>, [<span class="t-st">'USA'</span>, <span class="t-st">'Indonesia'</span>])) {
+            <span class="t-va">$this</span>-&gt;<span class="t-fn">addError</span>(<span class="t-va">$model</span>, <span class="t-va">$attribute</span>, <span class="t-st">'{attribute} должна быть "USA" или "Indonesia".'</span>);
+        }
+    }
+
+    <span class="t-cm">// чтобы валидатор работал и вне модели ($validator-&gt;validate($value, $error))</span>
+    <span class="t-kw">protected</span> <span class="t-kw">function</span> <span class="t-fn">validateValue</span>(<span class="t-va">$value</span>)
+    {
+        <span class="t-kw">return</span> <span class="t-fn">in_array</span>(<span class="t-va">$value</span>, [<span class="t-st">'USA'</span>, <span class="t-st">'Indonesia'</span>]) ? <span class="t-lt">null</span> : [<span class="t-st">'{attribute} должна быть "USA" или "Indonesia".'</span>, []];
+    }
+}</code></pre></figure>
+<p>Достаточно переопределить <code>validateValue()</code> — <code>validateAttribute()</code> по умолчанию вызывает его. Если у валидатора есть опции, объявите их публичными свойствами и задайте умолчания в <code>init()</code>.</p>
+<h3 id="validator-s-neskolkimi-atributami">Валидатор с несколькими атрибутами<a class="anchor" href="#validator-s-neskolkimi-atributami" aria-label="Ссылка на раздел">#</a></h3>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">MigrationRule</span> <span class="t-kw">extends</span> <span class="t-cl">Validator</span>
+{
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">validateAttribute</span>(<span class="t-va">$model</span>, <span class="t-va">$attribute</span>)
+    {
+        <span class="t-kw">if</span> (<span class="t-va">$model</span>-&gt;<span class="t-va">$attribute</span> == <span class="t-va">$model</span>-&gt;otherAttribute) { … }
+    }
+}
+<span class="t-cm">// применить один раз, а не для каждого атрибута:</span>
+[[<span class="t-st">'from'</span>, <span class="t-st">'to'</span>], <span class="t-cl">MigrationRule</span>::<span class="t-kw">class</span>],   <span class="t-cm">// validateAttribute вызовется дважды</span>
+[<span class="t-st">'from'</span>, <span class="t-cl">MigrationRule</span>::<span class="t-kw">class</span>],           <span class="t-cm">// один раз — ошибки добавить обоим вручную</span></code></pre></figure>
+<h2 id="klientskaya-validaciya">Клиентская валидация<a class="anchor" href="#klientskaya-validaciya" aria-label="Ссылка на раздел">#</a></h2>
+<p>Встроенные валидаторы (кроме <code>unique</code>, <code>exist</code>, <code>file</code> частично и inline) генерируют JS через <code>clientValidateAttribute()</code>. Свой:</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">clientValidateAttribute</span>(<span class="t-va">$model</span>, <span class="t-va">$attribute</span>, <span class="t-va">$view</span>)
+{
+    <span class="t-va">$statuses</span> = <span class="t-fn">json_encode</span>(<span class="t-cl">Status</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">select</span>(<span class="t-st">'id'</span>)-&gt;<span class="t-fn">column</span>());
+    <span class="t-va">$message</span> = <span class="t-fn">json_encode</span>(<span class="t-va">$this</span>-&gt;message);
+    <span class="t-kw">return</span> <span class="t-st">&lt;&lt;&lt;JS
+if ($.inArray(value, $statuses) === -1) {
+    messages.push($message);
+}
+JS</span>;
+}</code></pre></figure>
+<p>В JS доступны <code>attribute</code>, <code>value</code>, <code>messages</code>, <code>deferred</code>, <code>$form</code>. Отключить: <code>enableClientValidation =&gt; false</code> у формы или <code>'enableClientValidation' =&gt; false</code> в правиле.</p>
+<aside class="callout tip"><div class="callout-title">Совет</div><div class="callout-body"><p>С 2.0.11 у валидаторов есть <code>getClientOptions()</code> — можно отдать опции клиентскому коду без генерации JS-строк, а <code>yii.validation.*</code> (<code>required</code>, <code>string</code>, <code>email</code>, <code>number</code>, <code>compare</code>…) вызываются из вашего JS так же, как из сгенерированного.</p></div></aside>
+<h3 id="otlozhennaya-deferred-validaciya">Отложенная (deferred) валидация<a class="anchor" href="#otlozhennaya-deferred-validaciya" aria-label="Ссылка на раздел">#</a></h3>
+<p>Для асинхронных проверок на клиенте (например, размер изображения):</p>
+<figure class="code" data-lang="js"><div class="code-head"><span class="code-lang">JavaScript</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">var</span> def = <span class="t-va">$</span>.<span class="t-cl">Deferred</span>();
+<span class="t-kw">var</span> img = <span class="t-kw">new</span> <span class="t-cl">Image</span>();
+img.onload = <span class="t-kw">function</span> () {
+    <span class="t-kw">if</span> (<span class="t-kw">this</span>.width &gt; <span class="t-nu">150</span>) messages.<span class="t-fn">push</span>(<span class="t-st">'Слишком широкое'</span>);
+    def.<span class="t-fn">resolve</span>();
+};
+img.src = <span class="t-cl">URL</span>.<span class="t-fn">createObjectURL</span>(file);
+deferred.<span class="t-fn">push</span>(def);</code></pre></figure>
+<p>Форма ждёт все <code>deferred</code>, прежде чем показать результат.</p>
+<h3 id="ajax-validaciya">AJAX-валидация<a class="anchor" href="#ajax-validaciya" aria-label="Ссылка на раздел">#</a></h3>
+<p>Когда клиентской логики недостаточно (<code>unique</code>, сложные проверки):</p>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// форма</span>
+<span class="t-va">$form</span> = <span class="t-cl">ActiveForm</span>::<span class="t-fn">begin</span>([<span class="t-st">'enableAjaxValidation'</span> =&gt; <span class="t-lt">true</span>]);
+<span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'username'</span>, [<span class="t-st">'enableAjaxValidation'</span> =&gt; <span class="t-lt">true</span>]);   <span class="t-cm">// или для одного поля</span>
+
+<span class="t-cm">// действие</span>
+<span class="t-kw">if</span> (<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;isAjax &amp;&amp; <span class="t-va">$model</span>-&gt;<span class="t-fn">load</span>(<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;<span class="t-fn">post</span>())) {
+    <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;format = <span class="t-cl">Response</span>::<span class="t-ct">FORMAT_JSON</span>;
+    <span class="t-kw">return</span> <span class="t-cl">ActiveForm</span>::<span class="t-fn">validate</span>(<span class="t-va">$model</span>);
+}</code></pre></figure>
+<p><code>ActiveForm::validate($model, 'attr1', 'attr2')</code> вернёт ошибки в формате, который ждёт JS формы. Для табличного ввода — <code>ActiveForm::validateMultiple($models)</code>.</p>
+<h2 id="poryadok-vypolneniya-na-praktike">Порядок выполнения на практике<a class="anchor" href="#poryadok-vypolneniya-na-praktike" aria-label="Ссылка на раздел">#</a></h2>
+<div class="steps"><ol>
+<li><code>load()</code> — массовое присваивание безопасных атрибутов сценария.</li>
+<li><code>validate()</code> → <code>beforeValidate()</code>; <code>false</code> — прерывание.</li>
+<li>Для каждого правила по порядку: пропуск пустых (<code>skipOnEmpty</code>), пропуск с ошибками (<code>skipOnError</code>), условие <code>when</code>, затем проверка или фильтрация.</li>
+<li><code>afterValidate()</code>; результат — <code>!hasErrors()</code>.</li>
+</ol></div>
+<div class="quiz"><div class="quiz-head"><span class="quiz-title">Проверь себя</span><span class="quiz-count">5</span><button type="button" class="quiz-all">Раскрыть все</button></div><div class="quiz-cards"><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">1</span><span class="qcard-text"><p>Почему валидатор <code>email</code> не ругается на пустое поле?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>По умолчанию <code>skipOnEmpty = true</code>: пустые значения проверяет только <code>required</code>. Задайте <code>'skipOnEmpty' =&gt; false</code>, если нужно.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">2</span><span class="qcard-text"><p>Как проверить несколько значений без создания класса модели?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p><code>DynamicModel::validateData($data, $rules)</code> или <code>new DynamicModel()</code> с <code>addRule()</code>.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">3</span><span class="qcard-text"><p>Как сделать правило обязательным только при определённом значении другого поля?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Опцией <code>when</code> (и <code>whenClient</code> для JS): <code>'when' =&gt; function ($model) { return $model-&gt;country == 'USA'; }</code>.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">4</span><span class="qcard-text"><p>Что нужно, чтобы свой валидатор работал через <code>$validator-&gt;validate($value)</code> вне модели?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>Реализовать <code>validateValue($value)</code>, возвращающий <code>null</code> либо <code>[сообщение, параметры]</code>.</p></div></div><div class="qcard"><button type="button" class="qcard-q" aria-expanded="false"><span class="qcard-n">5</span><span class="qcard-text"><p>Почему inline-валидатор не проверяет данные на клиенте?</p></span><span class="qcard-arrow" aria-hidden="true"></span></button><div class="qcard-a"><p>У него нет <code>clientValidateAttribute()</code>; используйте класс-валидатор с JS-кодом или AJAX-валидацию.</p></div></div></div></div>
+  </div>
+
+  <footer class="doc-foot">
+<details class="sources"><summary>Источник: главы официального руководства</summary><ul><li><a href="https://www.yiiframework.com/doc/guide/2.0/ru/input-validation" target="_blank" rel="noopener"><span class="src-part">Получение данных от пользователя</span>Валидация</a></li></ul></details>
+    <div class="learned-cta">
+      <label class="learned big"><input type="checkbox" class="learned-box" data-page="validation"><span>Отметить раздел изученным</span></label>
+    </div>
+    <nav class="pager" aria-label="Соседние разделы"><a class="pager-link prev" href="forms.html"><span class="pager-label">← Назад</span><span class="pager-title">Формы и ввод</span></a><a class="pager-link next" href="validators.html"><span class="pager-label">Дальше →</span><span class="pager-title">Встроенные валидаторы</span></a></nav>
+  </footer>
+</article>
+
+  </main>
+
+  <aside class="toc" id="toc" aria-label="Содержание страницы">
+    <div class="toc-title">На этой странице</div><ul class="toc-list">
+<li class="toc-l2"><a href="#rules">rules()</a></li>
+<li class="toc-l2"><a href="#zapusk-i-oshibki">Запуск и ошибки</a></li>
+<li class="toc-l3"><a href="#aktivnye-pravila-i-atributy">Активные правила и атрибуты</a></li>
+<li class="toc-l2"><a href="#pustye-znacheniya">Пустые значения</a></li>
+<li class="toc-l2"><a href="#uslovnaya-validaciya">Условная валидация</a></li>
+<li class="toc-l2"><a href="#filtraciya-ne-proverka-a-preobrazovanie">Фильтрация — не проверка, а преобразование</a></li>
+<li class="toc-l2"><a href="#ad-hoc-validaciya">Ad hoc-валидация</a></li>
+<li class="toc-l2"><a href="#svoi-validatory">Свои валидаторы</a></li>
+<li class="toc-l3"><a href="#inline-metod-modeli">Inline — метод модели</a></li>
+<li class="toc-l3"><a href="#otdelnyy-klass">Отдельный класс</a></li>
+<li class="toc-l3"><a href="#validator-s-neskolkimi-atributami">Валидатор с несколькими атрибутами</a></li>
+<li class="toc-l2"><a href="#klientskaya-validaciya">Клиентская валидация</a></li>
+<li class="toc-l3"><a href="#otlozhennaya-deferred-validaciya">Отложенная (deferred) валидация</a></li>
+<li class="toc-l3"><a href="#ajax-validaciya">AJAX-валидация</a></li>
+<li class="toc-l2"><a href="#poryadok-vypolneniya-na-praktike">Порядок выполнения на практике</a></li>
+</ul>
+  </aside>
+</div>
+
+<button type="button" class="to-top" id="to-top" aria-label="Наверх">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 19V6M6 12l6-6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+</button>
+
+<div class="search" id="search" hidden>
+  <div class="search-backdrop" data-close></div>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Поиск">
+    <div class="search-field">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+      <input type="search" id="search-input" placeholder="Что ищем? Например: findOne, RBAC, миграции…" autocomplete="off" spellcheck="false" aria-label="Поисковый запрос">
+      <button type="button" class="search-close" data-close aria-label="Закрыть">Esc</button>
+    </div>
+    <div class="search-results" id="search-results" role="listbox"></div>
+    <div class="search-foot"><kbd>↑</kbd><kbd>↓</kbd> выбрать <kbd>Enter</kbd> открыть <kbd>Esc</kbd> закрыть</div>
+  </div>
+</div>
+
+<script src="assets/search-index.js" defer></script>
+<script src="assets/app.js" defer></script>
+</body>
+</html>

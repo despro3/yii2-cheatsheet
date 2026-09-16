@@ -1,0 +1,67 @@
+<div class="home">
+  <section class="hero">
+    <div class="hero-text">
+      <p class="eyebrow">Выжимка официального руководства · Yii 2.0 · на русском</p>
+      <h1>Весь Yii 2 —<br>коротко, наглядно, <span class="accent">с примерами</span></h1>
+      <p class="lead">{{chapters_count}} глав руководства сжаты в {{pages_count}} разделов: суть каждой темы, рабочий код, типичные грабли и вопросы для самопроверки. Читайте по порядку как курс или открывайте нужное через поиск.</p>
+      <div class="hero-actions">
+        <a class="btn primary" href="intro.html">Начать с первого раздела →</a>
+        <button type="button" class="btn" data-open-search>Поиск <kbd>Ctrl K</kbd></button>
+      </div>
+      <ul class="hero-stats">
+        <li><b>{{pages_count}}</b><span>разделов</span></li>
+        <li><b>{{chapters_count}}</b><span>глав руководства</span></li>
+        <li><b>~{{hours}}</b><span>чтения целиком</span></li>
+      </ul>
+    </div>
+    <div class="hero-art" aria-hidden="true">
+      <figure class="code hero-code" data-lang="php">
+        <div class="code-head"><span class="code-title">controllers/PostController.php</span><span class="code-lang">PHP</span></div>
+        <pre><code>{{hero_code}}</code></pre>
+      </figure>
+    </div>
+  </section>
+
+  <section class="progress-section" id="progress">
+    <div class="progress-card">
+      <div class="progress-card-text">
+        <h2>Ваш прогресс</h2>
+        <p><b id="progress-done">0</b> из {{pages_count}} разделов отмечено изученными. Отметки хранятся в этом браузере.</p>
+      </div>
+      <div class="progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar-fill" id="progress-bar"></div></div>
+      <a class="btn primary" id="continue-link" href="intro.html">Продолжить →</a>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-icon">📖</div>
+        <h3>Читайте по порядку</h3>
+        <p>Разделы выстроены как курс: от установки к архитектуре, БД, формам, безопасности и REST. Внизу каждой страницы — ссылка на следующую.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">🃏</div>
+        <h3>Проверяйте себя</h3>
+        <p>В конце разделов — карточки «вопрос → ответ». Сначала попробуйте ответить сами, потом раскрывайте.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-icon">⌨️</div>
+        <h3>Копируйте код</h3>
+        <p>У каждого примера есть кнопка копирования. Поиск ищет и по заголовкам, и по именам методов: попробуйте <code>findOne</code> или <code>RBAC</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lifecycle-section">
+    <h2>Карта запроса</h2>
+    <p class="section-lead">Так Yii проходит каждый HTTP-запрос — от <code>index.php</code> до ответа браузеру. Узлы кликабельны и ведут к нужным разделам.</p>
+    <figure class="diagram diagram-request-lifecycle home-diagram">{{lifecycle}}</figure>
+  </section>
+
+  <section class="parts-section">
+    <h2>Все разделы</h2>
+    <div class="parts-grid">{{parts}}</div>
+  </section>
+
+  <footer class="home-foot">
+    <p>Собрано по <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">официальному руководству Yii 2.0</a> (ветка <code>guide-ru</code> репозитория yiisoft/yii2). Текст шпаргалки — авторский пересказ; примеры кода — короткие и переписанные под суть. Сверяйтесь с первоисточником: ссылки на главы есть внизу каждого раздела.</p>
+  </footer>
+</div>
