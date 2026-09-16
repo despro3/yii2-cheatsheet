@@ -1106,7 +1106,7 @@ def main():
         'hours': ('%d ч' % round(total_minutes / 60.0)) if total_minutes >= 90 else ('%d мин' % total_minutes),
         'lifecycle': read(os.path.join(DIAGRAMS, 'request-lifecycle.svg')) if os.path.exists(os.path.join(DIAGRAMS, 'request-lifecycle.svg')) else '',
     })
-    write(os.path.join(OUT, 'index.html'), shell(SITE_NAME + ' — выжимка официального руководства',
+    write(os.path.join(OUT, 'index.html'), shell(SITE_NAME,
                                                  'Все главы руководства Yii 2.0 в компактных разделах с примерами кода.',
                                                  'home', build_nav(parts, pages_by_part, 'index'), index_main, '', 'index'))
 
