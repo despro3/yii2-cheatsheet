@@ -151,7 +151,7 @@
   <div class="doc-body">
 <div class="lead"><p>Провайдер данных — объект <code>DataProviderInterface</code>, который отдаёт страницу моделей с учётом <strong>пагинации</strong> и <strong>сортировки</strong> из параметров запроса. Его принимают <code>GridView</code>, <code>ListView</code>, REST-контроллеры. Вы описываете источник (запрос AR, SQL или массив) — остальное делают классы <code>Pagination</code> и <code>Sort</code>.</p></div>
 <h2 id="tri-provaydera">Три провайдера<a class="anchor" href="#tri-provaydera" aria-label="Ссылка на раздел">#</a></h2>
-<div class="tabs" id="tabs-96152"><div class="tab-list" role="tablist"><button type="button" role="tab" class="tab active" aria-selected="true" data-tab="0">ActiveDataProvider</button><button type="button" role="tab" class="tab" aria-selected="false" data-tab="1">SqlDataProvider</button><button type="button" role="tab" class="tab" aria-selected="false" data-tab="2">ArrayDataProvider</button></div><div role="tabpanel" class="tab-panel active" data-tab="0"><figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\data\ActiveDataProvider</span>;
+<div class="tabs" id="tabs-20554"><div class="tab-list" role="tablist"><button type="button" role="tab" class="tab active" aria-selected="true" data-tab="0">ActiveDataProvider</button><button type="button" role="tab" class="tab" aria-selected="false" data-tab="1">SqlDataProvider</button><button type="button" role="tab" class="tab" aria-selected="false" data-tab="2">ArrayDataProvider</button></div><div role="tabpanel" class="tab-panel active" data-tab="0"><figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\data\ActiveDataProvider</span>;
 
 <span class="t-va">$query</span> = <span class="t-cl">Post</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>]);
 <span class="t-va">$provider</span> = <span class="t-kw">new</span> <span class="t-cl">ActiveDataProvider</span>([
@@ -166,7 +166,9 @@
 <span class="t-va">$provider</span>-&gt;<span class="t-fn">getCount</span>();             <span class="t-cm">// моделей на странице</span></code></pre></figure>
 <p>Принимает любой <code>QueryInterface</code>, в том числе обычный <code>Query</code> — тогда модели будут массивами. Сортировка по умолчанию настроена по атрибутам модели. Соединение — <code>db</code>, можно задать другое.</p></div><div role="tabpanel" class="tab-panel" data-tab="1"><figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">use</span> <span class="t-cl">yii\data\SqlDataProvider</span>;
 
-<span class="t-va">$count</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;db-&gt;<span class="t-fn">createCommand</span>(<span class="t-st">'SELECT COUNT(*) FROM post WHERE status=:status'</span>, [<span class="t-st">':status'</span> =&gt; <span class="t-nu">1</span>])-&gt;<span class="t-fn">queryScalar</span>();
+<span class="t-va">$count</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;db
+    -&gt;<span class="t-fn">createCommand</span>(<span class="t-st">'SELECT COUNT(*) FROM post WHERE status=:status'</span>, [<span class="t-st">':status'</span> =&gt; <span class="t-nu">1</span>])
+    -&gt;<span class="t-fn">queryScalar</span>();
 
 <span class="t-va">$provider</span> = <span class="t-kw">new</span> <span class="t-cl">SqlDataProvider</span>([
     <span class="t-st">'sql'</span> =&gt; <span class="t-st">'SELECT * FROM post WHERE status=:status'</span>,
@@ -210,7 +212,8 @@
     <span class="t-st">'prevPageLabel'</span> =&gt; <span class="t-st">'‹'</span>, <span class="t-st">'nextPageLabel'</span> =&gt; <span class="t-st">'›'</span>,
     <span class="t-st">'hideOnSinglePage'</span> =&gt; <span class="t-lt">true</span>,
     <span class="t-st">'options'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'pagination justify-content-center'</span>],
-    <span class="t-st">'linkContainerOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'page-item'</span>], <span class="t-st">'linkOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'page-link'</span>],   <span class="t-cm">// Bootstrap 4/5</span>
+    <span class="t-cm">// Bootstrap 4/5</span>
+    <span class="t-st">'linkContainerOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'page-item'</span>], <span class="t-st">'linkOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'page-link'</span>],
 ]);</code></pre></figure>
 <h2 id="sort">Sort<a class="anchor" href="#sort" aria-label="Ссылка на раздел">#</a></h2>
 <p>Читает GET-параметр <code>sort</code> (<code>?sort=age,-name</code> — минус означает DESC), строит <code>ORDER BY</code> и ссылки:</p>

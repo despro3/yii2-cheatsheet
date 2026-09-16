@@ -185,7 +185,8 @@
 <span class="t-va">$customers</span> = <span class="t-cl">Customer</span>::<span class="t-fn">findBySql</span>(<span class="t-st">'SELECT * FROM customer WHERE status=:status'</span>, [<span class="t-st">':status'</span> =&gt; <span class="t-nu">1</span>])-&gt;<span class="t-fn">all</span>();</code></pre></figure>
 <aside class="callout gotcha"><div class="callout-title">Инъекция через findOne()</div><div class="callout-body"><p><code>Customer::findOne(Yii::$app-&gt;request-&gt;get('id'))</code> — опасно: если в <code>id</code> передать массив <code>['id' =&gt; 1, 'status' =&gt; 1]</code>, он превратится в условие. Приводите тип (<code>(int)$id</code>) или пишите <code>findOne(['id' =&gt; $id])</code> явно. С 2.0.15 фреймворк сам выбрасывает исключение на такие попытки, но привычка остаётся.</p></div></aside>
 <h3 id="forma-rezultata">Форма результата<a class="anchor" href="#forma-rezultata" aria-label="Ссылка на раздел">#</a></h3>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$rows</span> = <span class="t-cl">Customer</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">asArray</span>()-&gt;<span class="t-fn">all</span>();       <span class="t-cm">// массивы вместо объектов — быстрее, но без приведения типов и связей-объектов</span>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// массивы вместо объектов — быстрее, но без приведения типов и связей-объектов</span>
+<span class="t-va">$rows</span> = <span class="t-cl">Customer</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">asArray</span>()-&gt;<span class="t-fn">all</span>();
 <span class="t-va">$customers</span> = <span class="t-cl">Customer</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">indexBy</span>(<span class="t-st">'id'</span>)-&gt;<span class="t-fn">all</span>();
 
 <span class="t-kw">foreach</span> (<span class="t-cl">Customer</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">batch</span>(<span class="t-nu">100</span>) <span class="t-kw">as</span> <span class="t-va">$customers</span>) { }   <span class="t-cm">// пакетами, как в Query</span>
@@ -225,7 +226,8 @@
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$customer</span> = <span class="t-kw">new</span> <span class="t-cl">Customer</span>();
 <span class="t-va">$customer</span>-&gt;<span class="t-fn">loadDefaultValues</span>();      <span class="t-cm">// DEFAULT из схемы таблицы</span>
 
-<span class="t-va">$post</span>-&gt;<span class="t-fn">updateCounters</span>([<span class="t-st">'view_count'</span> =&gt; <span class="t-nu">1</span>]);   <span class="t-cm">// UPDATE post SET view_count = view_count + 1 — атомарно, без гонок</span>
+<span class="t-cm">// UPDATE post SET view_count = view_count + 1 — атомарно, без гонок</span>
+<span class="t-va">$post</span>-&gt;<span class="t-fn">updateCounters</span>([<span class="t-st">'view_count'</span> =&gt; <span class="t-nu">1</span>]);
 
 <span class="t-cm">// массово, без загрузки объектов (события не срабатывают!)</span>
 <span class="t-cl">Customer</span>::<span class="t-fn">updateAll</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>], <span class="t-st">'status = 2'</span>);

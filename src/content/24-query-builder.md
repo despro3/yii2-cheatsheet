@@ -146,7 +146,8 @@ $query->innerJoin(['p' => $subQuery], 'p.user_id = user.id');   // rightJoin т�
 
 $query1->union($query2);              // UNION; union($q, true) — UNION ALL
 
-$query->withQuery($cte, 'posts', $recursive = false);   // WITH posts AS (…) — общие табличные выражения (2.0.35)
+// WITH posts AS (…) — общие табличные выражения (2.0.35)
+$query->withQuery($cte, 'posts', $recursive = false);
 ```
 
 ## Выполнение и результат
@@ -202,7 +203,8 @@ $query->where(new Expression('YEAR(created_at) = :y', [':y' => 2024]));
 $query->where(['>', 'expires', new Expression('NOW()')]);
 
 $sub = (new Query())->select('user_id')->from('post')->where(['status' => 1]);
-$q   = (new Query())->from('user')->where(['id' => $sub]);   // WHERE id IN (SELECT user_id FROM post WHERE status=1)
+// WHERE id IN (SELECT user_id FROM post WHERE status=1)
+$q   = (new Query())->from('user')->where(['id' => $sub]);
 ```
 
 `Expression` вставляется в SQL как есть — никогда не подставляйте в него пользовательские данные без параметров.

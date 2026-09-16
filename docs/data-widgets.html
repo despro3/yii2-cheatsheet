@@ -180,7 +180,8 @@
 
 <span class="t-kw">echo</span> <span class="t-cl">ListView</span>::<span class="t-fn">widget</span>([
     <span class="t-st">'dataProvider'</span> =&gt; <span class="t-va">$dataProvider</span>,
-    <span class="t-st">'itemView'</span> =&gt; <span class="t-st">'_post'</span>,                          <span class="t-cm">// views/post/_post.php, получает $model, $key, $index, $widget</span>
+    <span class="t-cm">// views/post/_post.php, получает $model, $key, $index, $widget</span>
+    <span class="t-st">'itemView'</span> =&gt; <span class="t-st">'_post'</span>,
     <span class="t-cm">// 'itemView' =&gt; function ($model, $key, $index, $widget) { return Html::tag('div', $model-&gt;title); },</span>
     <span class="t-st">'viewParams'</span> =&gt; [<span class="t-st">'fullView'</span> =&gt; <span class="t-lt">true</span>],           <span class="t-cm">// дополнительно в $itemView</span>
     <span class="t-st">'itemOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'item'</span>],
@@ -225,7 +226,8 @@
     <span class="t-st">'contentOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'text-end'</span>],
     <span class="t-st">'headerOptions'</span> =&gt; [<span class="t-st">'style'</span> =&gt; <span class="t-st">'width: 100px'</span>],
     <span class="t-st">'enableSorting'</span> =&gt; <span class="t-lt">true</span>,
-    <span class="t-st">'filter'</span> =&gt; [<span class="t-st">'1'</span> =&gt; <span class="t-st">'Активен'</span>, <span class="t-st">'0'</span> =&gt; <span class="t-st">'Заблокирован'</span>],   <span class="t-cm">// &lt;select&gt; вместо текстового поля; false — без фильтра</span>
+    <span class="t-cm">// &lt;select&gt; вместо текстового поля; false — без фильтра</span>
+    <span class="t-st">'filter'</span> =&gt; [<span class="t-st">'1'</span> =&gt; <span class="t-st">'Активен'</span>, <span class="t-st">'0'</span> =&gt; <span class="t-st">'Заблокирован'</span>],
     <span class="t-st">'filterInputOptions'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'form-control'</span>, <span class="t-st">'placeholder'</span> =&gt; <span class="t-st">'Поиск'</span>],
     <span class="t-st">'visible'</span> =&gt; !<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;isGuest,
     <span class="t-st">'content'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$model</span>) { … },   <span class="t-cm">// полностью свой HTML (не экранируется)</span>

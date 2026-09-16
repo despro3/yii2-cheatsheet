@@ -101,7 +101,8 @@ public function rules()
         [['name', 'email', 'subject', 'body'], 'required'],
         ['email', 'email'],
         ['subject', 'string', 'max' => 100, 'on' => 'contact'],
-        'password' => [['password'], 'string', 'min' => 8],     // именованное правило — легко удалить в наследнике
+        // именованное правило — легко удалить в наследнике
+        'password' => [['password'], 'string', 'min' => 8],
     ];
 }
 
@@ -142,7 +143,8 @@ public function rules()
 public function scenarios()
 {
     return [
-        self::SCENARIO_LOGIN => ['username', 'password', '!secret'],   // ! — проверять, но не присваивать массово
+        // ! — проверять, но не присваивать массово
+        self::SCENARIO_LOGIN => ['username', 'password', '!secret'],
     ];
 }
 $model->secret = $value;   // только явно

@@ -83,11 +83,14 @@ $id = 2; $post2 = $command->queryOne();
 
 ```php
 $db->createCommand()->insert('user', ['name' => 'Sam', 'age' => 30])->execute();
-$db->createCommand()->batchInsert('user', ['name', 'age'], [['Tom', 30], ['Jane', 20]])->execute();   // один запрос
+// один запрос
+$db->createCommand()->batchInsert('user', ['name', 'age'], [['Tom', 30], ['Jane', 20]])->execute();
 $db->createCommand()->update('user', ['status' => 1], 'age > 30')->execute();
-$db->createCommand()->update('user', ['status' => 1], ['id' => [1, 2, 3]])->execute();   // условие в формате массива
+// условие в формате массива
+$db->createCommand()->update('user', ['status' => 1], ['id' => [1, 2, 3]])->execute();
 $db->createCommand()->delete('user', 'status = 0')->execute();
-$db->createCommand()->upsert('user', ['email' => 'a@b.c', 'name' => 'A'])->execute();    // INSERT … ON DUPLICATE KEY UPDATE
+// INSERT … ON DUPLICATE KEY UPDATE
+$db->createCommand()->upsert('user', ['email' => 'a@b.c', 'name' => 'A'])->execute();
 ```
 
 Эти методы только строят команду — `execute()` обязателен.

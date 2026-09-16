@@ -16,7 +16,8 @@ sources: caching-overview, caching-data
 'components' => [
     'cache' => [
         'class' => 'yii\caching\FileCache',                 // файлы в @runtime/cache
-        // 'class' => 'yii\caching\ApcCache',               // APCu — быстрее всего, но локально и в памяти процесса
+        // APCu — быстрее всего, но локально и в памяти процесса
+        // 'class' => 'yii\caching\ApcCache',
         // 'class' => 'yii\caching\MemCache', 'servers' => [['host' => 'server1', 'port' => 11211, 'weight' => 100]],
         // 'class' => 'yii\redis\Cache',                    // расширение yii2-redis
         // 'class' => 'yii\caching\DbCache', 'cacheTable' => 'cache',   // таблица в БД

@@ -23,7 +23,8 @@ Yii дружит с Codeception, а шаблоны приложений уже �
 ## Окружение
 
 ```bash
-composer require --dev codeception/codeception codeception/module-asserts codeception/module-yii2   # уже есть в шаблонах
+# уже есть в шаблонах
+composer require --dev codeception/codeception codeception/module-asserts codeception/module-yii2
 cp .env.example .env    # (advanced) или config/test_db.php
 ./yii_test migrate      # (advanced: yii_test — консоль с тестовой конфигурацией)
 vendor/bin/codecept run                     # все тесты
@@ -155,8 +156,14 @@ class UserFixture extends ActiveFixture
 
 ```php title="tests/_data/user.php"
 return [
-    'admin' => ['username' => 'admin', 'email' => 'admin@example.com', 'auth_key' => 'key', 'password_hash' => '$2y$13$…'],
-    'user1' => ['username' => 'user1', 'email' => 'user1@example.com', 'auth_key' => 'key2', 'password_hash' => '…'],
+    'admin' => [
+        'username' => 'admin', 'email' => 'admin@example.com',
+        'auth_key' => 'key', 'password_hash' => '$2y$13$…',
+    ],
+    'user1' => [
+        'username' => 'user1', 'email' => 'user1@example.com',
+        'auth_key' => 'key2', 'password_hash' => '…',
+    ],
 ];
 ```
 
@@ -182,7 +189,8 @@ $this->tester->grabFixture('users');                     // весь объек�
 ### Консольная загрузка
 
 ```bash
-./yii fixture/load User                 # загрузить фикстуру User из namespace (по умолчанию tests\unit\fixtures)
+# загрузить фикстуру User из namespace (по умолчанию tests\unit\fixtures)
+./yii fixture/load User
 ./yii fixture/load "*"                  # все
 ./yii fixture/load User Profile --namespace=app\\tests\\fixtures
 ./yii fixture/unload User

@@ -157,7 +157,9 @@
     <span class="t-va">$config</span>[<span class="t-st">'modules'</span>][<span class="t-st">'gii'</span>] = [
         <span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\gii\Module'</span>,
         <span class="t-st">'allowedIPs'</span> =&gt; [<span class="t-st">'127.0.0.1'</span>, <span class="t-st">'::1'</span>, <span class="t-st">'192.168.0.*'</span>],   <span class="t-cm">// по умолчанию только localhost</span>
-        <span class="t-cm">// 'generators' =&gt; ['crud' =&gt; ['class' =&gt; 'yii\gii\generators\crud\Generator', 'templates' =&gt; ['my' =&gt; '@app/gii/crud']]],</span>
+        <span class="t-cm">// 'generators' =&gt; [</span>
+        <span class="t-cm">//     'crud' =&gt; ['class' =&gt; 'yii\gii\generators\crud\Generator', 'templates' =&gt; ['my' =&gt; '@app/gii/crud']],</span>
+        <span class="t-cm">// ],</span>
     ];
 }</code></pre></figure>
 <p><code>composer require --dev yiisoft/yii2-gii</code> (в шаблонах уже есть). Открыть: <code>/index.php?r=gii</code> или <code>/gii</code> с красивыми URL. <strong>Только dev</strong> — генератор пишет файлы в проект.</p>

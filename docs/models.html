@@ -217,7 +217,8 @@
         [[<span class="t-st">'name'</span>, <span class="t-st">'email'</span>, <span class="t-st">'subject'</span>, <span class="t-st">'body'</span>], <span class="t-st">'required'</span>],
         [<span class="t-st">'email'</span>, <span class="t-st">'email'</span>],
         [<span class="t-st">'subject'</span>, <span class="t-st">'string'</span>, <span class="t-st">'max'</span> =&gt; <span class="t-nu">100</span>, <span class="t-st">'on'</span> =&gt; <span class="t-st">'contact'</span>],
-        <span class="t-st">'password'</span> =&gt; [[<span class="t-st">'password'</span>], <span class="t-st">'string'</span>, <span class="t-st">'min'</span> =&gt; <span class="t-nu">8</span>],     <span class="t-cm">// именованное правило — легко удалить в наследнике</span>
+        <span class="t-cm">// именованное правило — легко удалить в наследнике</span>
+        <span class="t-st">'password'</span> =&gt; [[<span class="t-st">'password'</span>], <span class="t-st">'string'</span>, <span class="t-st">'min'</span> =&gt; <span class="t-nu">8</span>],
     ];
 }
 
@@ -246,7 +247,8 @@
 <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">scenarios</span>()
 {
     <span class="t-kw">return</span> [
-        <span class="t-lt">self</span>::<span class="t-ct">SCENARIO_LOGIN</span> =&gt; [<span class="t-st">'username'</span>, <span class="t-st">'password'</span>, <span class="t-st">'!secret'</span>],   <span class="t-cm">// ! — проверять, но не присваивать массово</span>
+        <span class="t-cm">// ! — проверять, но не присваивать массово</span>
+        <span class="t-lt">self</span>::<span class="t-ct">SCENARIO_LOGIN</span> =&gt; [<span class="t-st">'username'</span>, <span class="t-st">'password'</span>, <span class="t-st">'!secret'</span>],
     ];
 }
 <span class="t-va">$model</span>-&gt;secret = <span class="t-va">$value</span>;   <span class="t-cm">// только явно</span></code></pre></figure>

@@ -124,7 +124,8 @@ class UploadForm extends Model
     public function upload()
     {
         if ($this->validate()) {
-            $this->imageFile->saveAs('@webroot/uploads/' . $this->imageFile->baseName . '.' . $this->imageFile->extension);
+            $file = $this->imageFile;
+            $file->saveAs('@webroot/uploads/' . $file->baseName . '.' . $file->extension);
             return true;
         }
         return false;

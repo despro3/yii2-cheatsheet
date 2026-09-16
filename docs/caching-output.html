@@ -211,7 +211,8 @@
                 <span class="t-kw">return</span> (<span class="t-kw">new</span> <span class="t-cl">\yii\db\Query</span>())-&gt;<span class="t-fn">from</span>(<span class="t-st">'post'</span>)-&gt;<span class="t-fn">max</span>(<span class="t-st">'updated_at'</span>);   <span class="t-cm">// timestamp</span>
             },
             <span class="t-st">'etagSeed'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$action</span>, <span class="t-va">$params</span>) {
-                <span class="t-kw">return</span> <span class="t-fn">serialize</span>([<span class="t-va">$this</span>-&gt;page-&gt;title, <span class="t-va">$this</span>-&gt;page-&gt;content]);  <span class="t-cm">// что угодно, что меняется с содержимым</span>
+                <span class="t-cm">// что угодно, что меняется с содержимым</span>
+                <span class="t-kw">return</span> <span class="t-fn">serialize</span>([<span class="t-va">$this</span>-&gt;page-&gt;title, <span class="t-va">$this</span>-&gt;page-&gt;content]);
             },
             <span class="t-st">'cacheControlHeader'</span> =&gt; <span class="t-st">'public, max-age=3600'</span>,
             <span class="t-st">'sessionCacheLimiter'</span> =&gt; <span class="t-st">'public'</span>,

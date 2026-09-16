@@ -189,7 +189,8 @@ Yii::$app->view->on(View::EVENT_END_BODY, function () {
 ```php
 public function actions()
 {
-    return ['page' => ['class' => 'yii\web\ViewAction']];   // ?r=site/page&view=about → views/site/pages/about.php
+    // ?r=site/page&view=about → views/site/pages/about.php
+    return ['page' => ['class' => 'yii\web\ViewAction']];
 }
 ```
 
@@ -203,7 +204,8 @@ public function actions()
         'basePath' => '@app/themes/basic',
         'baseUrl' => '@web/themes/basic',
         'pathMap' => [
-            '@app/views' => '@app/themes/basic',                   // views/site/about.php → themes/basic/site/about.php
+            // views/site/about.php → themes/basic/site/about.php
+            '@app/views' => '@app/themes/basic',
             '@app/modules' => '@app/themes/basic/modules',         // темизация модулей
             '@app/widgets' => '@app/themes/basic/widgets',         // темизация виджетов
         ],

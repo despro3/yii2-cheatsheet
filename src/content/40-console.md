@@ -111,7 +111,8 @@ $this->stdout("Готово\n", Console::FG_GREEN, Console::BOLD);
 $this->stderr("Ошибка\n", Console::FG_RED);
 echo $this->ansiFormat('внимание', Console::FG_YELLOW);
 Console::startProgress(0, $total);  Console::updateProgress($done, $total);  Console::endProgress();
-$this->isColorEnabled();                                        // цвета включаются, если терминал их поддерживает (--color)
+// цвета включаются, если терминал их поддерживает (--color)
+$this->isColorEnabled();
 ```
 
 Не используйте `exit()` — верните код; не используйте `echo` для ошибок — `stderr`.

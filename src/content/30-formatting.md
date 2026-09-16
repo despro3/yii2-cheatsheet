@@ -110,7 +110,10 @@ $formatter->asInteger(1234567);          // 1,234,567
 $formatter->asDecimal(1234.5678, 2);     // 1,234.57
 $formatter->asCurrency(1234.5, 'EUR');   // €1,234.50
 $formatter->asShortSize(1024 * 1024);    // 1 MB (sizeFormatBase = 1024)
-$formatter->numberFormatterOptions = [NumberFormatter::MIN_FRACTION_DIGITS => 0, NumberFormatter::MAX_FRACTION_DIGITS => 2];
+$formatter->numberFormatterOptions = [
+    NumberFormatter::MIN_FRACTION_DIGITS => 0,
+    NumberFormatter::MAX_FRACTION_DIGITS => 2,
+];
 $formatter->numberFormatterSymbols = [NumberFormatter::CURRENCY_SYMBOL => '€'];
 ```
 

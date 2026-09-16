@@ -225,7 +225,8 @@
     [
         <span class="t-st">'pattern'</span> =&gt; <span class="t-st">'posts/&lt;page:\d+&gt;/&lt;tag&gt;'</span>,
         <span class="t-st">'route'</span> =&gt; <span class="t-st">'post/index'</span>,
-        <span class="t-st">'defaults'</span> =&gt; [<span class="t-st">'page'</span> =&gt; <span class="t-nu">1</span>, <span class="t-st">'tag'</span> =&gt; <span class="t-st">''</span>],   <span class="t-cm">// необязательные параметры: /posts, /posts/2, /posts/2/news, /posts/news</span>
+        <span class="t-cm">// необязательные параметры: /posts, /posts/2, /posts/2/news, /posts/news</span>
+        <span class="t-st">'defaults'</span> =&gt; [<span class="t-st">'page'</span> =&gt; <span class="t-nu">1</span>, <span class="t-st">'tag'</span> =&gt; <span class="t-st">''</span>],
         <span class="t-st">'suffix'</span> =&gt; <span class="t-st">'.json'</span>,
     ],
 
@@ -240,7 +241,8 @@
 <p>Именованный параметр <code>&lt;name:regexp&gt;</code> без регулярки принимает всё, кроме <code>/</code>. Разобранные параметры попадают в <code>$_GET</code> и в аргументы действия.</p>
 <h3 id="suffiksy-i-normalizaciya">Суффиксы и нормализация<a class="anchor" href="#suffiksy-i-normalizaciya" aria-label="Ссылка на раздел">#</a></h3>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'urlManager'</span> =&gt; [
-    <span class="t-st">'suffix'</span> =&gt; <span class="t-st">'.html'</span>,          <span class="t-cm">// все URL — с .html; без суффикса → 404 (хорошо для SEO); '/' — завершающий слеш</span>
+    <span class="t-cm">// все URL — с .html; без суффикса → 404 (хорошо для SEO); '/' — завершающий слеш</span>
+    <span class="t-st">'suffix'</span> =&gt; <span class="t-st">'.html'</span>,
     <span class="t-st">'normalizer'</span> =&gt; [
         <span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\web\UrlNormalizer'</span>,   <span class="t-cm">// /path/ и /path//x → 301 на канонический вид</span>
         <span class="t-st">'action'</span> =&gt; <span class="t-cl">\yii\web\UrlNormalizer</span>::<span class="t-ct">ACTION_REDIRECT_TEMPORARY</span>,

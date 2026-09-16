@@ -60,7 +60,8 @@ $customers = Customer::findBySql('SELECT * FROM customer WHERE status=:status', 
 ### Форма результата
 
 ```php
-$rows = Customer::find()->asArray()->all();       // массивы вместо объектов — быстрее, но без приведения типов и связей-объектов
+// массивы вместо объектов — быстрее, но без приведения типов и связей-объектов
+$rows = Customer::find()->asArray()->all();
 $customers = Customer::find()->indexBy('id')->all();
 
 foreach (Customer::find()->batch(100) as $customers) { }   // пакетами, как в Query
@@ -120,7 +121,8 @@ $customer->markAttributeDirty('email');   // принудительно
 $customer = new Customer();
 $customer->loadDefaultValues();      // DEFAULT из схемы таблицы
 
-$post->updateCounters(['view_count' => 1]);   // UPDATE post SET view_count = view_count + 1 — атомарно, без гонок
+// UPDATE post SET view_count = view_count + 1 — атомарно, без гонок
+$post->updateCounters(['view_count' => 1]);
 
 // массово, без загрузки объектов (события не срабатывают!)
 Customer::updateAll(['status' => 1], 'status = 2');

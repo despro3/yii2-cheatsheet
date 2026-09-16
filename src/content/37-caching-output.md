@@ -106,7 +106,8 @@ public function behaviors()
                 return (new \yii\db\Query())->from('post')->max('updated_at');   // timestamp
             },
             'etagSeed' => function ($action, $params) {
-                return serialize([$this->page->title, $this->page->content]);  // что угодно, что меняется с содержимым
+                // что угодно, что меняется с содержимым
+                return serialize([$this->page->title, $this->page->content]);
             },
             'cacheControlHeader' => 'public, max-age=3600',
             'sessionCacheLimiter' => 'public',

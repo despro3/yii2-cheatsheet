@@ -69,7 +69,8 @@ class User extends ActiveRecord
     public function fields()
     {
         $fields = parent::fields();               // все атрибуты
-        unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token']);   // 🔐 убрать секреты
+        // 🔐 убрать секреты
+        unset($fields['auth_key'], $fields['password_hash'], $fields['password_reset_token']);
         $fields['full_name'] = function ($model) { return $model->first_name . ' ' . $model->last_name; };
         $fields['email_short'] = 'email';         // переименовать
         return $fields;

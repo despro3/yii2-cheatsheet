@@ -276,7 +276,8 @@ Breadcrumbs::widget(['links' =&gt; $this-&gt;params['breadcrumbs'] ?? []]);   //
 <p>Вместо десятка одинаковых <code>actionAbout()</code> — одно отдельное действие:</p>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actions</span>()
 {
-    <span class="t-kw">return</span> [<span class="t-st">'page'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\web\ViewAction'</span>]];   <span class="t-cm">// ?r=site/page&amp;view=about → views/site/pages/about.php</span>
+    <span class="t-cm">// ?r=site/page&amp;view=about → views/site/pages/about.php</span>
+    <span class="t-kw">return</span> [<span class="t-st">'page'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\web\ViewAction'</span>]];
 }</code></pre></figure>
 <h2 id="temizaciya">Темизация<a class="anchor" href="#temizaciya" aria-label="Ссылка на раздел">#</a></h2>
 <p>Тема подменяет файлы представлений без правки кода. Настраивается у компонента <code>view</code>:</p>
@@ -285,7 +286,8 @@ Breadcrumbs::widget(['links' =&gt; $this-&gt;params['breadcrumbs'] ?? []]);   //
         <span class="t-st">'basePath'</span> =&gt; <span class="t-st">'@app/themes/basic'</span>,
         <span class="t-st">'baseUrl'</span> =&gt; <span class="t-st">'@web/themes/basic'</span>,
         <span class="t-st">'pathMap'</span> =&gt; [
-            <span class="t-st">'@app/views'</span> =&gt; <span class="t-st">'@app/themes/basic'</span>,                   <span class="t-cm">// views/site/about.php → themes/basic/site/about.php</span>
+            <span class="t-cm">// views/site/about.php → themes/basic/site/about.php</span>
+            <span class="t-st">'@app/views'</span> =&gt; <span class="t-st">'@app/themes/basic'</span>,
             <span class="t-st">'@app/modules'</span> =&gt; <span class="t-st">'@app/themes/basic/modules'</span>,         <span class="t-cm">// темизация модулей</span>
             <span class="t-st">'@app/widgets'</span> =&gt; <span class="t-st">'@app/themes/basic/widgets'</span>,         <span class="t-cm">// темизация виджетов</span>
         ],

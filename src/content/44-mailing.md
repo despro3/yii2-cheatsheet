@@ -66,7 +66,8 @@ Yii::$app->mailer->compose(['html' => 'passwordReset-html', 'text' => 'passwordR
 use yii\helpers\Html;
 use yii\helpers\Url;
 
-$resetLink = Url::to(['site/reset-password', 'token' => $user->password_reset_token], true);   // абсолютный URL!
+// абсолютный URL!
+$resetLink = Url::to(['site/reset-password', 'token' => $user->password_reset_token], true);
 ?>
 <p>Здравствуйте, <?= Html::encode($user->username) ?>!</p>
 <p>Для сброса пароля перейдите по ссылке: <?= Html::a(Html::encode($resetLink), $resetLink) ?></p>

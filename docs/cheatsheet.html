@@ -142,55 +142,106 @@
     <h1><span class="doc-num">47</span>Шпаргалка на одну страницу</h1>
     <p class="doc-summary">Самое нужное из всего руководства в одном месте — команды, конфигурация, контроллер, модель, Active Record, формы, URL, доступ, кэш, миграции, консоль, REST. Для быстрого «как это писалось».</p>
     <div class="doc-meta">
-      <span class="meta-item" title="Примерное время чтения">⏱ ~4 мин</span>
+      <span class="meta-item" title="Примерное время чтения">⏱ ~11 мин</span>
       <span class="meta-item" title="Составлено по всем разделам сайта">🧷 сводный раздел</span>
       <label class="learned"><input type="checkbox" class="learned-box" data-page="cheatsheet"><span>Изучено</span></label>
     </div>
   </header>
 
   <div class="doc-body">
-<div class="lead"><p>Сжатая выжимка всего сайта: только код и однострочные пояснения. Каждый блок ведёт в подробный раздел. Держите открытой рядом с редактором.</p></div>
+<div class="lead"><p>Сжатая выжимка всего сайта: только код и короткие пояснения. Заголовок каждого блока ведёт в подробный раздел. Держите открытой рядом с редактором.</p></div>
 <h2 id="ustanovka-i-komandy-ustanovka-install">Установка и команды → <a href="install.html" class="int">Установка</a><a class="anchor" href="#ustanovka-i-komandy-ustanovka-install" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">composer</span> create-project <span class="t-at">--prefer-dist</span> yiisoft/yii2-app-basic myapp      <span class="t-cm"># basic</span>
-<span class="t-kw">composer</span> create-project <span class="t-at">--prefer-dist</span> yiisoft/yii2-app-advanced myapp &amp;&amp; php init   <span class="t-cm"># advanced</span>
-<span class="t-kw">./yii</span> serve <span class="t-at">--port</span>=<span class="t-nu">8080</span>                <span class="t-cm"># dev-сервер → http://localhost:8080</span>
-<span class="t-kw">./yii</span> help | ./yii migrate | ./yii cache/flush-all | ./yii gii/model <span class="t-at">--tableName</span>=post <span class="t-at">--modelClass</span>=Post</code></pre></figure>
+<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm"># шаблон basic</span>
+<span class="t-kw">composer</span> create-project <span class="t-at">--prefer-dist</span> yiisoft/yii2-app-basic myapp
+<span class="t-cm"># шаблон advanced (после установки: cd myapp &amp;&amp; php init)</span>
+<span class="t-kw">composer</span> create-project <span class="t-at">--prefer-dist</span> yiisoft/yii2-app-advanced myapp
+<span class="t-kw">
+./yii</span> serve <span class="t-at">--port</span>=<span class="t-nu">8080</span>          <span class="t-cm"># dev-сервер → http://localhost:8080</span>
+<span class="t-kw">./yii</span> help                       <span class="t-cm"># все команды</span>
+<span class="t-kw">./yii</span> migrate                    <span class="t-cm"># применить миграции</span>
+<span class="t-kw">./yii</span> cache/flush-all            <span class="t-cm"># сбросить кэш</span>
+<span class="t-kw">./yii</span> gii/model <span class="t-at">--tableName</span>=post <span class="t-at">--modelClass</span>=Post</code></pre></figure>
 <h2 id="konfiguraciya-konfiguracii-configurations-prilozhenie-app">Конфигурация → <a href="configurations.html" class="int">Конфигурации</a>, <a href="app.html" class="int">Приложение</a><a class="anchor" href="#konfiguraciya-konfiguracii-configurations-prilozhenie-app" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">return</span> [
-    <span class="t-st">'id'</span> =&gt; <span class="t-st">'app'</span>, <span class="t-st">'basePath'</span> =&gt; <span class="t-fn">dirname</span>(__DIR__), <span class="t-st">'bootstrap'</span> =&gt; [<span class="t-st">'log'</span>], <span class="t-st">'language'</span> =&gt; <span class="t-st">'ru-RU'</span>,
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">config/web.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">return</span> [
+    <span class="t-st">'id'</span> =&gt; <span class="t-st">'app'</span>,
+    <span class="t-st">'basePath'</span> =&gt; <span class="t-fn">dirname</span>(__DIR__),
+    <span class="t-st">'bootstrap'</span> =&gt; [<span class="t-st">'log'</span>],
+    <span class="t-st">'language'</span> =&gt; <span class="t-st">'ru-RU'</span>,
     <span class="t-st">'aliases'</span> =&gt; [<span class="t-st">'@uploads'</span> =&gt; <span class="t-st">'@webroot/uploads'</span>],
     <span class="t-st">'components'</span> =&gt; [
-        <span class="t-st">'db'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\db\Connection'</span>, <span class="t-st">'dsn'</span> =&gt; <span class="t-st">'mysql:host=localhost;dbname=app'</span>, <span class="t-st">'username'</span> =&gt; <span class="t-st">'root'</span>, <span class="t-st">'password'</span> =&gt; <span class="t-st">''</span>, <span class="t-st">'charset'</span> =&gt; <span class="t-st">'utf8mb4'</span>, <span class="t-st">'enableSchemaCache'</span> =&gt; !<span class="t-ct">YII_DEBUG</span>],
+        <span class="t-st">'db'</span> =&gt; [
+            <span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\db\Connection'</span>,
+            <span class="t-st">'dsn'</span> =&gt; <span class="t-st">'mysql:host=localhost;dbname=app'</span>,
+            <span class="t-st">'username'</span> =&gt; <span class="t-st">'root'</span>,
+            <span class="t-st">'password'</span> =&gt; <span class="t-st">''</span>,
+            <span class="t-st">'charset'</span> =&gt; <span class="t-st">'utf8mb4'</span>,
+            <span class="t-st">'enableSchemaCache'</span> =&gt; !<span class="t-ct">YII_DEBUG</span>,
+        ],
         <span class="t-st">'cache'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\caching\FileCache'</span>],
         <span class="t-st">'user'</span> =&gt; [<span class="t-st">'identityClass'</span> =&gt; <span class="t-st">'app\models\User'</span>, <span class="t-st">'enableAutoLogin'</span> =&gt; <span class="t-lt">true</span>],
-        <span class="t-st">'request'</span> =&gt; [<span class="t-st">'cookieValidationKey'</span> =&gt; <span class="t-st">'random-string'</span>, <span class="t-st">'parsers'</span> =&gt; [<span class="t-st">'application/json'</span> =&gt; <span class="t-st">'yii\web\JsonParser'</span>]],
-        <span class="t-st">'urlManager'</span> =&gt; [<span class="t-st">'enablePrettyUrl'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'showScriptName'</span> =&gt; <span class="t-lt">false</span>, <span class="t-st">'rules'</span> =&gt; [<span class="t-st">'post/&lt;id:\d+&gt;'</span> =&gt; <span class="t-st">'post/view'</span>]],
+        <span class="t-st">'request'</span> =&gt; [
+            <span class="t-st">'cookieValidationKey'</span> =&gt; <span class="t-st">'random-string'</span>,
+            <span class="t-st">'parsers'</span> =&gt; [<span class="t-st">'application/json'</span> =&gt; <span class="t-st">'yii\web\JsonParser'</span>],
+        ],
+        <span class="t-st">'urlManager'</span> =&gt; [
+            <span class="t-st">'enablePrettyUrl'</span> =&gt; <span class="t-lt">true</span>,
+            <span class="t-st">'showScriptName'</span> =&gt; <span class="t-lt">false</span>,
+            <span class="t-st">'rules'</span> =&gt; [<span class="t-st">'post/&lt;id:\d+&gt;'</span> =&gt; <span class="t-st">'post/view'</span>],
+        ],
         <span class="t-st">'errorHandler'</span> =&gt; [<span class="t-st">'errorAction'</span> =&gt; <span class="t-st">'site/error'</span>],
-        <span class="t-st">'log'</span> =&gt; [<span class="t-st">'traceLevel'</span> =&gt; <span class="t-ct">YII_DEBUG</span> ? <span class="t-nu">3</span> : <span class="t-nu">0</span>, <span class="t-st">'targets'</span> =&gt; [[<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\log\FileTarget'</span>, <span class="t-st">'levels'</span> =&gt; [<span class="t-st">'error'</span>, <span class="t-st">'warning'</span>]]]],
+        <span class="t-st">'log'</span> =&gt; [
+            <span class="t-st">'traceLevel'</span> =&gt; <span class="t-ct">YII_DEBUG</span> ? <span class="t-nu">3</span> : <span class="t-nu">0</span>,
+            <span class="t-st">'targets'</span> =&gt; [
+                [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\log\FileTarget'</span>, <span class="t-st">'levels'</span> =&gt; [<span class="t-st">'error'</span>, <span class="t-st">'warning'</span>]],
+            ],
+        ],
         <span class="t-st">'mailer'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-cl">\yii\symfonymailer\Mailer</span>::<span class="t-kw">class</span>, <span class="t-st">'useFileTransport'</span> =&gt; <span class="t-ct">YII_ENV_DEV</span>],
     ],
     <span class="t-st">'modules'</span> =&gt; [<span class="t-st">'admin'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'app\modules\admin\Module'</span>]],
     <span class="t-st">'params'</span> =&gt; [<span class="t-st">'adminEmail'</span> =&gt; <span class="t-st">'admin@example.com'</span>],
-];
-<span class="t-cm">// объект по конфигурации: ['class' =&gt; X::class, 'prop' =&gt; 1, 'on event' =&gt; $h, 'as behavior' =&gt; [...]] → Yii::createObject()</span>
-<span class="t-cm">// псевдонимы: @app @web @webroot @runtime @vendor @yii;  Yii::getAlias('@app/runtime')</span></code></pre></figure>
+];</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// любой объект по конфигурации</span>
+<span class="t-va">$obj</span> = <span class="t-cl">Yii</span>::<span class="t-fn">createObject</span>([
+    <span class="t-st">'class'</span> =&gt; <span class="t-cl">Foo</span>::<span class="t-kw">class</span>,
+    <span class="t-st">'prop'</span> =&gt; <span class="t-nu">1</span>,
+    <span class="t-st">'on eventName'</span> =&gt; <span class="t-va">$handler</span>,     <span class="t-cm">// подписка на событие</span>
+    <span class="t-st">'as behaviorName'</span> =&gt; [...],     <span class="t-cm">// поведение</span>
+]);
+
+<span class="t-cm">// псевдонимы: @app @web @webroot @runtime @vendor @yii</span>
+<span class="t-cl">Yii</span>::<span class="t-fn">getAlias</span>(<span class="t-st">'@app/runtime'</span>);
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;params[<span class="t-st">'adminEmail'</span>];</code></pre></figure>
 <h2 id="kontroller-kontrollery-controllers-filtry-filters-zapros-i-o">Контроллер → <a href="controllers.html" class="int">Контроллеры</a>, <a href="filters.html" class="int">Фильтры</a>, <a href="request-response.html" class="int">Запрос и ответ</a><a class="anchor" href="#kontroller-kontrollery-controllers-filtry-filters-zapros-i-o" aria-label="Ссылка на раздел">#</a></h2>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">PostController</span> <span class="t-kw">extends</span> <span class="t-cl">Controller</span>
 {
     <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">behaviors</span>()
     {
         <span class="t-kw">return</span> [
-            <span class="t-st">'access'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-cl">AccessControl</span>::<span class="t-kw">class</span>, <span class="t-st">'rules'</span> =&gt; [[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'@'</span>]]]],
-            <span class="t-st">'verbs'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-cl">VerbFilter</span>::<span class="t-kw">class</span>, <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'delete'</span> =&gt; [<span class="t-st">'POST'</span>]]],
+            <span class="t-st">'access'</span> =&gt; [
+                <span class="t-st">'class'</span> =&gt; <span class="t-cl">AccessControl</span>::<span class="t-kw">class</span>,
+                <span class="t-st">'rules'</span> =&gt; [[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'@'</span>]]],
+            ],
+            <span class="t-st">'verbs'</span> =&gt; [
+                <span class="t-st">'class'</span> =&gt; <span class="t-cl">VerbFilter</span>::<span class="t-kw">class</span>,
+                <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'delete'</span> =&gt; [<span class="t-st">'POST'</span>]],
+            ],
         ];
     }
-    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actions</span>() { <span class="t-kw">return</span> [<span class="t-st">'error'</span> =&gt; <span class="t-st">'yii\web\ErrorAction'</span>]; }
 
-    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionView</span>(<span class="t-va">$id</span>)                       <span class="t-cm">// GET ?id=1 → параметр; отсутствует → 400</span>
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actions</span>()
     {
-        <span class="t-va">$model</span> = <span class="t-cl">Post</span>::<span class="t-fn">findOne</span>(<span class="t-va">$id</span>) ?? <span class="t-kw">throw</span> <span class="t-kw">new</span> <span class="t-cl">NotFoundHttpException</span>();
-        <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">render</span>(<span class="t-st">'view'</span>, [<span class="t-st">'model'</span> =&gt; <span class="t-va">$model</span>]);   <span class="t-cm">// views/post/view.php внутри layout</span>
+        <span class="t-kw">return</span> [<span class="t-st">'error'</span> =&gt; <span class="t-st">'yii\web\ErrorAction'</span>];
     }
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionView</span>(<span class="t-va">$id</span>)                 <span class="t-cm">// ?id=1 → $id; нет параметра → 400</span>
+    {
+        <span class="t-va">$model</span> = <span class="t-cl">Post</span>::<span class="t-fn">findOne</span>(<span class="t-va">$id</span>);
+        <span class="t-kw">if</span> (<span class="t-va">$model</span> === <span class="t-lt">null</span>) {
+            <span class="t-kw">throw</span> <span class="t-kw">new</span> <span class="t-cl">NotFoundHttpException</span>();
+        }
+        <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">render</span>(<span class="t-st">'view'</span>, [<span class="t-st">'model'</span> =&gt; <span class="t-va">$model</span>]);   <span class="t-cm">// views/post/view.php + layout</span>
+    }
+
     <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionCreate</span>()
     {
         <span class="t-va">$model</span> = <span class="t-kw">new</span> <span class="t-cl">Post</span>();
@@ -200,124 +251,382 @@
         }
         <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">render</span>(<span class="t-st">'create'</span>, [<span class="t-st">'model'</span> =&gt; <span class="t-va">$model</span>]);
     }
-    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionApi</span>() { <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">asJson</span>([<span class="t-st">'ok'</span> =&gt; <span class="t-lt">true</span>]); }
-}
-<span class="t-cm">// запрос: $r = Yii::$app-&gt;request; $r-&gt;get('id'); $r-&gt;post(); $r-&gt;isPost; $r-&gt;isAjax; $r-&gt;headers-&gt;get('X'); $r-&gt;userIP</span>
-<span class="t-cm">// ответ: $this-&gt;redirect(); $this-&gt;goBack(); $this-&gt;goHome(); $this-&gt;refresh(); Yii::$app-&gt;response-&gt;sendFile($path); statusCode</span>
-<span class="t-cm">// beforeAction($action) → return parent::beforeAction($action);   afterAction($action, $result)</span></code></pre></figure>
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionApi</span>()
+    {
+        <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">asJson</span>([<span class="t-st">'ok'</span> =&gt; <span class="t-lt">true</span>]);
+    }
+}</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// запрос</span>
+<span class="t-va">$r</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request;
+<span class="t-va">$r</span>-&gt;<span class="t-fn">get</span>(<span class="t-st">'id'</span>);  <span class="t-va">$r</span>-&gt;<span class="t-fn">post</span>();  <span class="t-va">$r</span>-&gt;isPost;  <span class="t-va">$r</span>-&gt;isAjax;
+<span class="t-va">$r</span>-&gt;headers-&gt;<span class="t-fn">get</span>(<span class="t-st">'X-Token'</span>);  <span class="t-va">$r</span>-&gt;userIP;
+
+<span class="t-cm">// ответ</span>
+<span class="t-va">$this</span>-&gt;<span class="t-fn">redirect</span>([<span class="t-st">'site/index'</span>]);   <span class="t-va">$this</span>-&gt;<span class="t-fn">goBack</span>();   <span class="t-va">$this</span>-&gt;<span class="t-fn">goHome</span>();   <span class="t-va">$this</span>-&gt;<span class="t-fn">refresh</span>();
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;<span class="t-fn">sendFile</span>(<span class="t-va">$path</span>);
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;statusCode = <span class="t-nu">201</span>;
+
+<span class="t-cm">// хуки действия</span>
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">beforeAction</span>(<span class="t-va">$action</span>) { <span class="t-cm">/* … */</span> <span class="t-kw">return</span> <span class="t-lt">parent</span>::<span class="t-fn">beforeAction</span>(<span class="t-va">$action</span>); }
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">afterAction</span>(<span class="t-va">$action</span>, <span class="t-va">$result</span>) { <span class="t-kw">return</span> <span class="t-lt">parent</span>::<span class="t-fn">afterAction</span>(<span class="t-va">$action</span>, <span class="t-va">$result</span>); }</code></pre></figure>
 <h2 id="model-i-validaciya-modeli-models-validaciya-validation-valid">Модель и валидация → <a href="models.html" class="int">Модели</a>, <a href="validation.html" class="int">Валидация</a>, <a href="validators.html" class="int">Валидаторы</a><a class="anchor" href="#model-i-validaciya-modeli-models-validaciya-validation-valid" aria-label="Ссылка на раздел">#</a></h2>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">ContactForm</span> <span class="t-kw">extends</span> <span class="t-cl">Model</span>
 {
-    <span class="t-kw">public</span> <span class="t-va">$name</span>, <span class="t-va">$email</span>, <span class="t-va">$body</span>, <span class="t-va">$verifyCode</span>;
+    <span class="t-kw">public</span> <span class="t-va">$name</span>;
+    <span class="t-kw">public</span> <span class="t-va">$email</span>;
+    <span class="t-kw">public</span> <span class="t-va">$body</span>;
+
     <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">rules</span>()
     {
         <span class="t-kw">return</span> [
-            [[<span class="t-st">'name'</span>, <span class="t-st">'email'</span>, <span class="t-st">'body'</span>], <span class="t-st">'required'</span>], [[<span class="t-st">'name'</span>, <span class="t-st">'email'</span>], <span class="t-st">'trim'</span>],
-            [<span class="t-st">'email'</span>, <span class="t-st">'email'</span>], [<span class="t-st">'name'</span>, <span class="t-st">'string'</span>, <span class="t-st">'max'</span> =&gt; <span class="t-nu">50</span>],
-            [<span class="t-st">'verifyCode'</span>, <span class="t-st">'captcha'</span>], [<span class="t-st">'body'</span>, <span class="t-st">'filter'</span>, <span class="t-st">'filter'</span> =&gt; <span class="t-st">'strip_tags'</span>],
+            [[<span class="t-st">'name'</span>, <span class="t-st">'email'</span>, <span class="t-st">'body'</span>], <span class="t-st">'required'</span>],
+            [[<span class="t-st">'name'</span>, <span class="t-st">'email'</span>], <span class="t-st">'trim'</span>],
+            [<span class="t-st">'email'</span>, <span class="t-st">'email'</span>],
+            [<span class="t-st">'name'</span>, <span class="t-st">'string'</span>, <span class="t-st">'max'</span> =&gt; <span class="t-nu">50</span>],
+            [<span class="t-st">'body'</span>, <span class="t-st">'filter'</span>, <span class="t-st">'filter'</span> =&gt; <span class="t-st">'strip_tags'</span>],
             [<span class="t-st">'age'</span>, <span class="t-st">'integer'</span>, <span class="t-st">'min'</span> =&gt; <span class="t-nu">18</span>, <span class="t-st">'on'</span> =&gt; <span class="t-st">'adult'</span>],
-            [<span class="t-st">'url'</span>, <span class="t-st">'url'</span>, <span class="t-st">'defaultScheme'</span> =&gt; <span class="t-st">'https'</span>, <span class="t-st">'skipOnEmpty'</span> =&gt; <span class="t-lt">true</span>],
-            [<span class="t-st">'status'</span>, <span class="t-st">'in'</span>, <span class="t-st">'range'</span> =&gt; [<span class="t-nu">1</span>, <span class="t-nu">2</span>]], [<span class="t-st">'status'</span>, <span class="t-st">'default'</span>, <span class="t-st">'value'</span> =&gt; <span class="t-nu">1</span>],
+            [<span class="t-st">'url'</span>, <span class="t-st">'url'</span>, <span class="t-st">'defaultScheme'</span> =&gt; <span class="t-st">'https'</span>],
+            [<span class="t-st">'status'</span>, <span class="t-st">'in'</span>, <span class="t-st">'range'</span> =&gt; [<span class="t-nu">1</span>, <span class="t-nu">2</span>]],
+            [<span class="t-st">'status'</span>, <span class="t-st">'default'</span>, <span class="t-st">'value'</span> =&gt; <span class="t-nu">1</span>],
             [<span class="t-st">'password_repeat'</span>, <span class="t-st">'compare'</span>, <span class="t-st">'compareAttribute'</span> =&gt; <span class="t-st">'password'</span>],
-            [<span class="t-st">'username'</span>, <span class="t-st">'unique'</span>, <span class="t-st">'targetClass'</span> =&gt; <span class="t-cl">User</span>::<span class="t-kw">class</span>], [<span class="t-st">'category_id'</span>, <span class="t-st">'exist'</span>, <span class="t-st">'targetClass'</span> =&gt; <span class="t-cl">Category</span>::<span class="t-kw">class</span>, <span class="t-st">'targetAttribute'</span> =&gt; <span class="t-st">'id'</span>],
+            [<span class="t-st">'username'</span>, <span class="t-st">'unique'</span>, <span class="t-st">'targetClass'</span> =&gt; <span class="t-cl">User</span>::<span class="t-kw">class</span>],
+            [<span class="t-st">'category_id'</span>, <span class="t-st">'exist'</span>, <span class="t-st">'targetClass'</span> =&gt; <span class="t-cl">Category</span>::<span class="t-kw">class</span>, <span class="t-st">'targetAttribute'</span> =&gt; <span class="t-st">'id'</span>],
             [<span class="t-st">'file'</span>, <span class="t-st">'file'</span>, <span class="t-st">'extensions'</span> =&gt; <span class="t-st">'png, jpg'</span>, <span class="t-st">'maxSize'</span> =&gt; <span class="t-nu">1024</span> * <span class="t-nu">1024</span>],
-            [<span class="t-st">'tags'</span>, <span class="t-st">'each'</span>, <span class="t-st">'rule'</span> =&gt; [<span class="t-st">'string'</span>]], [<span class="t-st">'name'</span>, <span class="t-st">'validateName'</span>],   <span class="t-cm">// inline</span>
-            [<span class="t-st">'state'</span>, <span class="t-st">'required'</span>, <span class="t-st">'when'</span> =&gt; <span class="t-kw">fn</span>(<span class="t-va">$m</span>) =&gt; <span class="t-va">$m</span>-&gt;country === <span class="t-st">'US'</span>],
+            [<span class="t-st">'tags'</span>, <span class="t-st">'each'</span>, <span class="t-st">'rule'</span> =&gt; [<span class="t-st">'string'</span>]],
+            [<span class="t-st">'name'</span>, <span class="t-st">'validateName'</span>],                                   <span class="t-cm">// inline-валидатор</span>
+            [<span class="t-st">'state'</span>, <span class="t-st">'required'</span>, <span class="t-st">'when'</span> =&gt; <span class="t-kw">fn</span> (<span class="t-va">$m</span>) =&gt; <span class="t-va">$m</span>-&gt;country === <span class="t-st">'US'</span>],
         ];
     }
+
     <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">attributeLabels</span>() { <span class="t-kw">return</span> [<span class="t-st">'email'</span> =&gt; <span class="t-st">'E-mail'</span>]; }
-    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">scenarios</span>() { <span class="t-kw">return</span> [<span class="t-st">'create'</span> =&gt; [<span class="t-st">'name'</span>, <span class="t-st">'email'</span>], <span class="t-st">'update'</span> =&gt; [<span class="t-st">'name'</span>]]; }
-}
-<span class="t-cm">// $m-&gt;load($post) → $m-&gt;validate() → $m-&gt;errors / getFirstErrors();  DynamicModel::validateData($data, $rules)</span></code></pre></figure>
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">scenarios</span>()
+    {
+        <span class="t-kw">return</span> [<span class="t-st">'create'</span> =&gt; [<span class="t-st">'name'</span>, <span class="t-st">'email'</span>, <span class="t-st">'body'</span>], <span class="t-st">'update'</span> =&gt; [<span class="t-st">'name'</span>]];
+    }
+}</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$model</span>-&gt;<span class="t-fn">load</span>(<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;<span class="t-fn">post</span>());   <span class="t-cm">// массовое присваивание безопасных атрибутов</span>
+<span class="t-va">$model</span>-&gt;<span class="t-fn">validate</span>();                          <span class="t-cm">// true / false</span>
+<span class="t-va">$model</span>-&gt;errors;  <span class="t-va">$model</span>-&gt;<span class="t-fn">getFirstErrors</span>();  <span class="t-va">$model</span>-&gt;<span class="t-fn">addError</span>(<span class="t-st">'name'</span>, <span class="t-st">'Занято'</span>);
+
+<span class="t-cl">DynamicModel</span>::<span class="t-fn">validateData</span>(<span class="t-fn">compact</span>(<span class="t-st">'email'</span>), [[<span class="t-st">'email'</span>, <span class="t-st">'email'</span>]]);   <span class="t-cm">// без класса</span></code></pre></figure>
 <h2 id="active-record-active-record-active-record-query-builder-quer">Active Record → <a href="active-record.html" class="int">Active Record</a>, <a href="query-builder.html" class="int">Query Builder</a>, <a href="dao.html" class="int">DAO</a><a class="anchor" href="#active-record-active-record-active-record-query-builder-quer" aria-label="Ссылка на раздел">#</a></h2>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">Post</span> <span class="t-kw">extends</span> <span class="t-cl">ActiveRecord</span>
 {
     <span class="t-kw">public</span> <span class="t-kw">static</span> <span class="t-kw">function</span> <span class="t-fn">tableName</span>() { <span class="t-kw">return</span> <span class="t-st">'{{%post}}'</span>; }
+
     <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">behaviors</span>() { <span class="t-kw">return</span> [<span class="t-cl">TimestampBehavior</span>::<span class="t-kw">class</span>]; }
-    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">getAuthor</span>() { <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">hasOne</span>(<span class="t-cl">User</span>::<span class="t-kw">class</span>, [<span class="t-st">'id'</span> =&gt; <span class="t-st">'author_id'</span>]); }
-    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">getTags</span>() { <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">hasMany</span>(<span class="t-cl">Tag</span>::<span class="t-kw">class</span>, [<span class="t-st">'id'</span> =&gt; <span class="t-st">'tag_id'</span>])-&gt;<span class="t-fn">viaTable</span>(<span class="t-st">'post_tag'</span>, [<span class="t-st">'post_id'</span> =&gt; <span class="t-st">'id'</span>]); }
-}
-<span class="t-cl">Post</span>::<span class="t-fn">findOne</span>(<span class="t-nu">1</span>);  <span class="t-cl">Post</span>::<span class="t-fn">findOne</span>([<span class="t-st">'slug'</span> =&gt; <span class="t-va">$s</span>]);  <span class="t-cl">Post</span>::<span class="t-fn">findAll</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>]);
-<span class="t-cl">Post</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>])-&gt;<span class="t-fn">andWhere</span>([<span class="t-st">'like'</span>, <span class="t-st">'title'</span>, <span class="t-va">$q</span>])-&gt;<span class="t-fn">andFilterWhere</span>([<span class="t-st">'author_id'</span> =&gt; <span class="t-va">$a</span>])
-    -&gt;<span class="t-fn">with</span>(<span class="t-st">'author'</span>)-&gt;<span class="t-fn">joinWith</span>(<span class="t-st">'tags'</span>)-&gt;<span class="t-fn">orderBy</span>([<span class="t-st">'id'</span> =&gt; <span class="t-ct">SORT_DESC</span>])-&gt;<span class="t-fn">limit</span>(<span class="t-nu">10</span>)-&gt;<span class="t-fn">offset</span>(<span class="t-nu">20</span>)-&gt;<span class="t-fn">asArray</span>()-&gt;<span class="t-fn">all</span>();
--&gt;<span class="t-fn">one</span>() -&gt;<span class="t-fn">count</span>() -&gt;<span class="t-fn">exists</span>() -&gt;<span class="t-fn">column</span>() -&gt;<span class="t-fn">scalar</span>() -&gt;<span class="t-fn">indexBy</span>(<span class="t-st">'id'</span>) -&gt;<span class="t-fn">batch</span>(<span class="t-nu">100</span>) -&gt;<span class="t-fn">cache</span>(<span class="t-nu">60</span>)
-where: <span class="t-st">'a=1'</span> | [<span class="t-st">'a'</span> =&gt; <span class="t-nu">1</span>, <span class="t-st">'b'</span> =&gt; [<span class="t-nu">1</span>,<span class="t-nu">2</span>], <span class="t-st">'c'</span> =&gt; <span class="t-lt">null</span>] | [<span class="t-st">'and'</span>, [<span class="t-st">'&gt;'</span>, <span class="t-st">'a'</span>, <span class="t-nu">1</span>], [<span class="t-st">'or'</span>, ..., ...]] | [<span class="t-st">'between'</span>, <span class="t-st">'a'</span>, <span class="t-nu">1</span>, <span class="t-nu">9</span>] | [<span class="t-st">'not in'</span>, <span class="t-st">'id'</span>, <span class="t-va">$ids</span>]
-<span class="t-va">$m</span> = <span class="t-kw">new</span> <span class="t-cl">Post</span>(); <span class="t-va">$m</span>-&gt;attributes = <span class="t-va">$data</span>; <span class="t-va">$m</span>-&gt;<span class="t-fn">save</span>();  <span class="t-va">$m</span>-&gt;<span class="t-fn">save</span>(<span class="t-lt">false</span>);  <span class="t-va">$m</span>-&gt;<span class="t-fn">delete</span>();  <span class="t-va">$m</span>-&gt;<span class="t-fn">refresh</span>();
-<span class="t-cl">Post</span>::<span class="t-fn">updateAll</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">0</span>], [<span class="t-st">'&lt;'</span>, <span class="t-st">'created_at'</span>, <span class="t-va">$ts</span>]);  <span class="t-cl">Post</span>::<span class="t-fn">deleteAll</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">0</span>]);  <span class="t-va">$m</span>-&gt;<span class="t-fn">updateCounters</span>([<span class="t-st">'views'</span> =&gt; <span class="t-nu">1</span>]);
-<span class="t-va">$post</span>-&gt;<span class="t-fn">link</span>(<span class="t-st">'tags'</span>, <span class="t-va">$tag</span>);  <span class="t-va">$post</span>-&gt;<span class="t-fn">unlink</span>(<span class="t-st">'tags'</span>, <span class="t-va">$tag</span>, <span class="t-lt">true</span>);  <span class="t-va">$post</span>-&gt;<span class="t-fn">author</span> (лениво) / <span class="t-fn">with</span>(<span class="t-st">'author'</span>) (жадно)
-<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;db-&gt;<span class="t-fn">transaction</span>(<span class="t-kw">function</span> () { ... });  <span class="t-va">$db</span>-&gt;<span class="t-fn">createCommand</span>(<span class="t-st">'SELECT ... WHERE id=:id'</span>, [<span class="t-st">':id'</span> =&gt; <span class="t-nu">1</span>])-&gt;<span class="t-fn">queryOne</span>();
-<span class="t-va">$db</span>-&gt;<span class="t-fn">createCommand</span>()-&gt;<span class="t-fn">insert</span>(<span class="t-st">'t'</span>, [...])-&gt;<span class="t-fn">execute</span>();  batchInsert  update  delete  upsert</code></pre></figure>
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">getAuthor</span>()
+    {
+        <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">hasOne</span>(<span class="t-cl">User</span>::<span class="t-kw">class</span>, [<span class="t-st">'id'</span> =&gt; <span class="t-st">'author_id'</span>]);
+    }
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">getTags</span>()
+    {
+        <span class="t-kw">return</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">hasMany</span>(<span class="t-cl">Tag</span>::<span class="t-kw">class</span>, [<span class="t-st">'id'</span> =&gt; <span class="t-st">'tag_id'</span>])
+            -&gt;<span class="t-fn">viaTable</span>(<span class="t-st">'post_tag'</span>, [<span class="t-st">'post_id'</span> =&gt; <span class="t-st">'id'</span>]);
+    }
+}</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// чтение</span>
+<span class="t-cl">Post</span>::<span class="t-fn">findOne</span>(<span class="t-nu">1</span>);
+<span class="t-cl">Post</span>::<span class="t-fn">findOne</span>([<span class="t-st">'slug'</span> =&gt; <span class="t-va">$slug</span>]);
+<span class="t-cl">Post</span>::<span class="t-fn">findAll</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>]);
+<span class="t-cl">Post</span>::<span class="t-fn">find</span>()
+    -&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>])
+    -&gt;<span class="t-fn">andWhere</span>([<span class="t-st">'like'</span>, <span class="t-st">'title'</span>, <span class="t-va">$q</span>])
+    -&gt;<span class="t-fn">andFilterWhere</span>([<span class="t-st">'author_id'</span> =&gt; <span class="t-va">$authorId</span>])   <span class="t-cm">// пропускается, если пусто</span>
+    -&gt;<span class="t-fn">with</span>(<span class="t-st">'author'</span>)                                <span class="t-cm">// отдельный запрос для связи</span>
+    -&gt;<span class="t-fn">joinWith</span>(<span class="t-st">'tags'</span>)                              <span class="t-cm">// JOIN — можно фильтровать по tags.*</span>
+    -&gt;<span class="t-fn">orderBy</span>([<span class="t-st">'id'</span> =&gt; <span class="t-ct">SORT_DESC</span>])
+    -&gt;<span class="t-fn">limit</span>(<span class="t-nu">10</span>)-&gt;<span class="t-fn">offset</span>(<span class="t-nu">20</span>)
+    -&gt;<span class="t-fn">all</span>();
+<span class="t-cm">// -&gt;one()  -&gt;count()  -&gt;exists()  -&gt;column()  -&gt;scalar()  -&gt;asArray()</span>
+<span class="t-cm">// -&gt;indexBy('id')  -&gt;batch(100)  -&gt;cache(60)</span>
+
+<span class="t-cm">// форматы where</span>
+-&gt;<span class="t-fn">where</span>(<span class="t-st">'status = 1'</span>)
+-&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>, <span class="t-st">'type'</span> =&gt; [<span class="t-nu">1</span>, <span class="t-nu">2</span>], <span class="t-st">'deleted_at'</span> =&gt; <span class="t-lt">null</span>])   <span class="t-cm">// = , IN, IS NULL</span>
+-&gt;<span class="t-fn">where</span>([<span class="t-st">'and'</span>, [<span class="t-st">'&gt;'</span>, <span class="t-st">'id'</span>, <span class="t-nu">10</span>], [<span class="t-st">'or'</span>, [<span class="t-st">'a'</span> =&gt; <span class="t-nu">1</span>], [<span class="t-st">'b'</span> =&gt; <span class="t-nu">2</span>]]])
+-&gt;<span class="t-fn">where</span>([<span class="t-st">'between'</span>, <span class="t-st">'price'</span>, <span class="t-nu">10</span>, <span class="t-nu">100</span>])
+-&gt;<span class="t-fn">where</span>([<span class="t-st">'not in'</span>, <span class="t-st">'id'</span>, <span class="t-va">$ids</span>])
+
+<span class="t-cm">// запись</span>
+<span class="t-va">$post</span> = <span class="t-kw">new</span> <span class="t-cl">Post</span>();
+<span class="t-va">$post</span>-&gt;attributes = <span class="t-va">$data</span>;
+<span class="t-va">$post</span>-&gt;<span class="t-fn">save</span>();              <span class="t-cm">// валидация + INSERT/UPDATE</span>
+<span class="t-va">$post</span>-&gt;<span class="t-fn">save</span>(<span class="t-lt">false</span>);         <span class="t-cm">// без валидации</span>
+<span class="t-va">$post</span>-&gt;<span class="t-fn">delete</span>();
+<span class="t-va">$post</span>-&gt;<span class="t-fn">refresh</span>();
+<span class="t-cl">Post</span>::<span class="t-fn">updateAll</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">0</span>], [<span class="t-st">'&lt;'</span>, <span class="t-st">'created_at'</span>, <span class="t-va">$ts</span>]);   <span class="t-cm">// без событий</span>
+<span class="t-cl">Post</span>::<span class="t-fn">deleteAll</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">0</span>]);
+<span class="t-va">$post</span>-&gt;<span class="t-fn">updateCounters</span>([<span class="t-st">'views'</span> =&gt; <span class="t-nu">1</span>]);
+
+<span class="t-cm">// связи</span>
+<span class="t-va">$post</span>-&gt;author;                       <span class="t-cm">// ленивая загрузка</span>
+<span class="t-va">$post</span>-&gt;<span class="t-fn">link</span>(<span class="t-st">'tags'</span>, <span class="t-va">$tag</span>);
+<span class="t-va">$post</span>-&gt;<span class="t-fn">unlink</span>(<span class="t-st">'tags'</span>, <span class="t-va">$tag</span>, <span class="t-lt">true</span>);
+
+<span class="t-cm">// транзакции и DAO</span>
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;db-&gt;<span class="t-fn">transaction</span>(<span class="t-kw">function</span> (<span class="t-va">$db</span>) { <span class="t-cm">/* … */</span> });
+<span class="t-va">$db</span>-&gt;<span class="t-fn">createCommand</span>(<span class="t-st">'SELECT * FROM post WHERE id = :id'</span>, [<span class="t-st">':id'</span> =&gt; <span class="t-nu">1</span>])-&gt;<span class="t-fn">queryOne</span>();
+<span class="t-va">$db</span>-&gt;<span class="t-fn">createCommand</span>()-&gt;<span class="t-fn">insert</span>(<span class="t-st">'post'</span>, [<span class="t-st">'title'</span> =&gt; <span class="t-st">'x'</span>])-&gt;<span class="t-fn">execute</span>();
+<span class="t-cm">// batchInsert()  update()  delete()  upsert()</span></code></pre></figure>
 <h2 id="predstavleniya-i-formy-predstavleniya-views-formy-forms-vidz">Представления и формы → <a href="views.html" class="int">Представления</a>, <a href="forms.html" class="int">Формы</a>, <a href="data-widgets.html" class="int">Виджеты данных</a><a class="anchor" href="#predstavleniya-i-formy-predstavleniya-views-formy-forms-vidz" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;title = <span class="t-st">'Заголовок'</span>; <span class="t-va">$this</span>-&gt;params[<span class="t-st">'breadcrumbs'</span>][] = <span class="t-va">$this</span>-&gt;title; <span class="t-tg">?&gt;</span>
-<span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$model</span>-&gt;title) <span class="t-tg">?&gt;</span>  <span class="t-tg">&lt;?=</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">render</span>(<span class="t-st">'_item'</span>, [<span class="t-st">'model'</span> =&gt; <span class="t-va">$m</span>]) <span class="t-tg">?&gt;</span>  <span class="t-tg">&lt;?=</span> <span class="t-va">$this</span>-&gt;context-&gt;id <span class="t-tg">?&gt;</span>
-<span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">registerJs</span>(<span class="t-st">"alert(1)"</span>); <span class="t-va">$this</span>-&gt;<span class="t-fn">registerCss</span>(<span class="t-st">'.x{}'</span>); <span class="t-cl">AppAsset</span>::<span class="t-fn">register</span>(<span class="t-va">$this</span>); <span class="t-tg">?&gt;</span>
-<span class="t-tg">&lt;?php</span> <span class="t-va">$form</span> = <span class="t-cl">ActiveForm</span>::<span class="t-fn">begin</span>([<span class="t-st">'id'</span> =&gt; <span class="t-st">'f'</span>, <span class="t-st">'options'</span> =&gt; [<span class="t-st">'enctype'</span> =&gt; <span class="t-st">'multipart/form-data'</span>]]) <span class="t-tg">?&gt;</span>
-    <span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'title'</span>)-&gt;<span class="t-fn">textInput</span>([<span class="t-st">'maxlength'</span> =&gt; <span class="t-lt">true</span>]) <span class="t-tg">?&gt;</span>
-    <span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'body'</span>)-&gt;<span class="t-fn">textarea</span>([<span class="t-st">'rows'</span> =&gt; <span class="t-nu">6</span>]) <span class="t-tg">?&gt;</span>
-    <span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'category_id'</span>)-&gt;<span class="t-fn">dropDownList</span>(<span class="t-cl">ArrayHelper</span>::<span class="t-fn">map</span>(<span class="t-cl">Category</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">all</span>(), <span class="t-st">'id'</span>, <span class="t-st">'name'</span>), [<span class="t-st">'prompt'</span> =&gt; <span class="t-st">'—'</span>]) <span class="t-tg">?&gt;</span>
-    <span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'agree'</span>)-&gt;<span class="t-fn">checkbox</span>() <span class="t-tg">?&gt;</span>  <span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'file'</span>)-&gt;<span class="t-fn">fileInput</span>() <span class="t-tg">?&gt;</span>
-    <span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">submitButton</span>(<span class="t-st">'Сохранить'</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'btn btn-primary'</span>]) <span class="t-tg">?&gt;</span>
-<span class="t-tg">&lt;?php</span> <span class="t-cl">ActiveForm</span>::<span class="t-fn">end</span>() <span class="t-tg">?&gt;</span>
-// файл: $model-&gt;file = UploadedFile::getInstance($model, 'file'); $model-&gt;file-&gt;saveAs($path);
-// список: GridView::widget(['dataProvider' =&gt; $dp, 'filterModel' =&gt; $s, 'columns' =&gt; ['id', 'title', 'created_at:datetime', ['class' =&gt; ActionColumn::class]]]);
-// DetailView::widget(['model' =&gt; $m, 'attributes' =&gt; ['title', 'author.name', 'created_at:date']]);  ListView с itemView
-// $dp = new ActiveDataProvider(['query' =&gt; Post::find(), 'pagination' =&gt; ['pageSize' =&gt; 20], 'sort' =&gt; ['defaultOrder' =&gt; ['id' =&gt; SORT_DESC]]]);</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">views/post/create.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span>
+<span class="t-va">$this</span>-&gt;title = <span class="t-st">'Новый пост'</span>;
+<span class="t-va">$this</span>-&gt;params[<span class="t-st">'breadcrumbs'</span>][] = <span class="t-va">$this</span>-&gt;title;
+<span class="t-va">$this</span>-&gt;<span class="t-fn">registerJs</span>(<span class="t-st">"console.log('hi')"</span>);
+<span class="t-cl">AppAsset</span>::<span class="t-fn">register</span>(<span class="t-va">$this</span>);
+<span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;h1</span><span class="t-tg">&gt;</span><span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$this</span>-&gt;title) <span class="t-tg">?&gt;</span><span class="t-tg">&lt;/h1</span><span class="t-tg">&gt;</span>
+<span class="t-tg">&lt;?=</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">render</span>(<span class="t-st">'_form'</span>, [<span class="t-st">'model'</span> =&gt; <span class="t-va">$model</span>]) <span class="t-tg">?&gt;</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-title">views/post/_form.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-tg">&lt;?php</span> <span class="t-va">$form</span> = <span class="t-cl">ActiveForm</span>::<span class="t-fn">begin</span>([
+    <span class="t-st">'id'</span> =&gt; <span class="t-st">'post-form'</span>,
+    <span class="t-st">'options'</span> =&gt; [<span class="t-st">'enctype'</span> =&gt; <span class="t-st">'multipart/form-data'</span>],
+]) <span class="t-tg">?&gt;</span>
+
+<span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'title'</span>)-&gt;<span class="t-fn">textInput</span>([<span class="t-st">'maxlength'</span> =&gt; <span class="t-lt">true</span>]) <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'body'</span>)-&gt;<span class="t-fn">textarea</span>([<span class="t-st">'rows'</span> =&gt; <span class="t-nu">6</span>]) <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'category_id'</span>)-&gt;<span class="t-fn">dropDownList</span>(
+    <span class="t-cl">ArrayHelper</span>::<span class="t-fn">map</span>(<span class="t-cl">Category</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">all</span>(), <span class="t-st">'id'</span>, <span class="t-st">'name'</span>),
+    [<span class="t-st">'prompt'</span> =&gt; <span class="t-st">'—'</span>]
+) <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'agree'</span>)-&gt;<span class="t-fn">checkbox</span>() <span class="t-tg">?&gt;</span>
+<span class="t-tg">&lt;?=</span> <span class="t-va">$form</span>-&gt;<span class="t-fn">field</span>(<span class="t-va">$model</span>, <span class="t-st">'file'</span>)-&gt;<span class="t-fn">fileInput</span>() <span class="t-tg">?&gt;</span>
+
+<span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">submitButton</span>(<span class="t-st">'Сохранить'</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'btn btn-primary'</span>]) <span class="t-tg">?&gt;</span>
+
+<span class="t-tg">&lt;?php</span> <span class="t-cl">ActiveForm</span>::<span class="t-fn">end</span>() <span class="t-tg">?&gt;</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// файл из формы</span>
+<span class="t-va">$model</span>-&gt;file = <span class="t-cl">UploadedFile</span>::<span class="t-fn">getInstance</span>(<span class="t-va">$model</span>, <span class="t-st">'file'</span>);
+<span class="t-va">$model</span>-&gt;file-&gt;<span class="t-fn">saveAs</span>(<span class="t-st">'@webroot/uploads/'</span> . <span class="t-va">$model</span>-&gt;file-&gt;name);
+
+<span class="t-cm">// список</span>
+<span class="t-va">$dataProvider</span> = <span class="t-kw">new</span> <span class="t-cl">ActiveDataProvider</span>([
+    <span class="t-st">'query'</span> =&gt; <span class="t-cl">Post</span>::<span class="t-fn">find</span>(),
+    <span class="t-st">'pagination'</span> =&gt; [<span class="t-st">'pageSize'</span> =&gt; <span class="t-nu">20</span>],
+    <span class="t-st">'sort'</span> =&gt; [<span class="t-st">'defaultOrder'</span> =&gt; [<span class="t-st">'id'</span> =&gt; <span class="t-ct">SORT_DESC</span>]],
+]);
+
+<span class="t-kw">echo</span> <span class="t-cl">GridView</span>::<span class="t-fn">widget</span>([
+    <span class="t-st">'dataProvider'</span> =&gt; <span class="t-va">$dataProvider</span>,
+    <span class="t-st">'filterModel'</span> =&gt; <span class="t-va">$searchModel</span>,
+    <span class="t-st">'columns'</span> =&gt; [
+        <span class="t-st">'id'</span>,
+        <span class="t-st">'title'</span>,
+        <span class="t-st">'created_at:datetime'</span>,
+        [<span class="t-st">'class'</span> =&gt; <span class="t-cl">ActionColumn</span>::<span class="t-kw">class</span>],
+    ],
+]);
+
+<span class="t-kw">echo</span> <span class="t-cl">DetailView</span>::<span class="t-fn">widget</span>([
+    <span class="t-st">'model'</span> =&gt; <span class="t-va">$model</span>,
+    <span class="t-st">'attributes'</span> =&gt; [<span class="t-st">'title'</span>, <span class="t-st">'author.name'</span>, <span class="t-st">'created_at:date'</span>],
+]);
+<span class="t-cm">// ListView::widget(['dataProvider' =&gt; $dp, 'itemView' =&gt; '_item'])</span></code></pre></figure>
 <h2 id="url-i-marshruty-marshrutizaciya-routing">URL и маршруты → <a href="routing.html" class="int">Маршрутизация</a><a class="anchor" href="#url-i-marshruty-marshrutizaciya-routing" aria-label="Ссылка на раздел">#</a></h2>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'rules'</span> =&gt; [
-    <span class="t-st">''</span> =&gt; <span class="t-st">'site/index'</span>, <span class="t-st">'login'</span> =&gt; <span class="t-st">'site/login'</span>,
-    <span class="t-st">'post/&lt;id:\d+&gt;'</span> =&gt; <span class="t-st">'post/view'</span>, <span class="t-st">'posts/&lt;page:\d+&gt;'</span> =&gt; <span class="t-st">'post/index'</span>,
+    <span class="t-st">''</span> =&gt; <span class="t-st">'site/index'</span>,
+    <span class="t-st">'login'</span> =&gt; <span class="t-st">'site/login'</span>,
+    <span class="t-st">'post/&lt;id:\d+&gt;'</span> =&gt; <span class="t-st">'post/view'</span>,
+    <span class="t-st">'posts/&lt;page:\d+&gt;'</span> =&gt; <span class="t-st">'post/index'</span>,
     <span class="t-st">'&lt;controller:\w+&gt;/&lt;action:\w+&gt;'</span> =&gt; <span class="t-st">'&lt;controller&gt;/&lt;action&gt;'</span>,
-    <span class="t-st">'PUT,PATCH users/&lt;id&gt;'</span> =&gt; <span class="t-st">'user/update'</span>, <span class="t-st">'DELETE users/&lt;id&gt;'</span> =&gt; <span class="t-st">'user/delete'</span>,
+    <span class="t-st">'PUT,PATCH users/&lt;id&gt;'</span> =&gt; <span class="t-st">'user/update'</span>,
+    <span class="t-st">'DELETE users/&lt;id&gt;'</span> =&gt; <span class="t-st">'user/delete'</span>,
     [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\rest\UrlRule'</span>, <span class="t-st">'controller'</span> =&gt; <span class="t-st">'user'</span>],
-    <span class="t-st">'http://&lt;sub:\w+&gt;.example.com/&lt;page&gt;'</span> =&gt; <span class="t-st">'site/page'</span>, <span class="t-st">'&lt;lang:(ru|en)&gt;/&lt;url:.*&gt;'</span> =&gt; <span class="t-st">'...'</span>,
-],
-<span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>]);  <span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'/site/index'</span>], <span class="t-lt">true</span>);  <span class="t-cl">Url</span>::<span class="t-fn">current</span>([<span class="t-st">'page'</span> =&gt; <span class="t-nu">2</span>]);  <span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-st">'x'</span>, [<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>]);
-<span class="t-cm">// маршрут: module/controller/action;  контроллер `PostTagController` → post-tag;  actionViewAll → view-all</span></code></pre></figure>
+    <span class="t-st">'http://&lt;sub:\w+&gt;.example.com/&lt;page&gt;'</span> =&gt; <span class="t-st">'site/page'</span>,
+],</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>]);        <span class="t-cm">// /post/1</span>
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>([<span class="t-st">'/site/index'</span>], <span class="t-lt">true</span>);           <span class="t-cm">// абсолютный, от корня приложения</span>
+<span class="t-cl">Url</span>::<span class="t-fn">current</span>([<span class="t-st">'page'</span> =&gt; <span class="t-nu">2</span>]);              <span class="t-cm">// текущий URL с изменённым параметром</span>
+<span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-st">'Пост'</span>, [<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>]);
+
+<span class="t-cm">// маршрут: module/controller/action</span>
+<span class="t-cm">// PostTagController → post-tag, actionViewAll → view-all</span></code></pre></figure>
 <h2 id="polzovateli-i-dostup-autentifikaciya-authentication-avtoriza">Пользователи и доступ → <a href="authentication.html" class="int">Аутентификация</a>, <a href="authorization.html" class="int">Авторизация</a>, <a href="security.html" class="int">Безопасность</a><a class="anchor" href="#polzovateli-i-dostup-autentifikaciya-authentication-avtoriza" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">User</span> <span class="t-kw">extends</span> <span class="t-cl">ActiveRecord</span> <span class="t-kw">implements</span> <span class="t-cl">IdentityInterface</span> { findIdentity, findIdentityByAccessToken, getId, getAuthKey, validateAuthKey }
-<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">login</span>(<span class="t-va">$user</span>, <span class="t-va">$rememberMe</span> ? <span class="t-nu">3600</span> * <span class="t-nu">24</span> * <span class="t-nu">30</span> : <span class="t-nu">0</span>);  -&gt;<span class="t-fn">logout</span>();  -&gt;isGuest;  -&gt;id;  -&gt;identity;  -&gt;<span class="t-fn">can</span>(<span class="t-st">'updatePost'</span>, [<span class="t-st">'post'</span> =&gt; <span class="t-va">$p</span>]);
-<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">generatePasswordHash</span>(<span class="t-va">$pw</span>);  -&gt;<span class="t-fn">validatePassword</span>(<span class="t-va">$pw</span>, <span class="t-va">$hash</span>);  -&gt;<span class="t-fn">generateRandomString</span>();
-<span class="t-cm">// ACF: ['allow' =&gt; true, 'actions' =&gt; ['login'], 'roles' =&gt; ['?']],  ['allow' =&gt; true, 'roles' =&gt; ['@']],  'matchCallback' =&gt; fn() =&gt; ..., 'ips', 'verbs'</span>
-<span class="t-cm">// RBAC: $auth = Yii::$app-&gt;authManager; $p = $auth-&gt;createPermission('updatePost'); $auth-&gt;add($p); $r = $auth-&gt;createRole('author'); $auth-&gt;add($r);</span>
-<span class="t-cm">//       $auth-&gt;addChild($r, $p); $auth-&gt;assign($r, $userId);  Rule::execute($user, $item, $params)</span>
-<span class="t-cm">// CSRF включён; Html::encode() везде; параметры в SQL; YII_DEBUG=false в prod; cookieValidationKey</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// модель User реализует IdentityInterface:</span>
+<span class="t-cm">// findIdentity(), findIdentityByAccessToken(), getId(), getAuthKey(), validateAuthKey()</span>
+
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">login</span>(<span class="t-va">$user</span>, <span class="t-va">$rememberMe</span> ? <span class="t-nu">3600</span> * <span class="t-nu">24</span> * <span class="t-nu">30</span> : <span class="t-nu">0</span>);
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">logout</span>();
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;isGuest;   <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;id;   <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;identity;
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">can</span>(<span class="t-st">'updatePost'</span>, [<span class="t-st">'post'</span> =&gt; <span class="t-va">$post</span>]);
+
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">generatePasswordHash</span>(<span class="t-va">$password</span>);
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">validatePassword</span>(<span class="t-va">$password</span>, <span class="t-va">$hash</span>);
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">generateRandomString</span>();</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// ACF</span>
+<span class="t-st">'rules'</span> =&gt; [
+    [<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'login'</span>], <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'?'</span>]],   <span class="t-cm">// гости</span>
+    [<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'@'</span>]],                            <span class="t-cm">// вошедшие</span>
+    [<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'matchCallback'</span> =&gt; <span class="t-kw">fn</span> () =&gt; <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;identity-&gt;isAdmin],
+    <span class="t-cm">// также: 'ips', 'verbs', 'controllers', 'denyCallback'</span>
+],
+
+<span class="t-cm">// RBAC</span>
+<span class="t-va">$auth</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;authManager;
+<span class="t-va">$updatePost</span> = <span class="t-va">$auth</span>-&gt;<span class="t-fn">createPermission</span>(<span class="t-st">'updatePost'</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">add</span>(<span class="t-va">$updatePost</span>);
+<span class="t-va">$author</span> = <span class="t-va">$auth</span>-&gt;<span class="t-fn">createRole</span>(<span class="t-st">'author'</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">add</span>(<span class="t-va">$author</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">addChild</span>(<span class="t-va">$author</span>, <span class="t-va">$updatePost</span>);
+<span class="t-va">$auth</span>-&gt;<span class="t-fn">assign</span>(<span class="t-va">$author</span>, <span class="t-va">$userId</span>);
+<span class="t-cm">// правило: class MyRule extends Rule { public function execute($user, $item, $params) {…} }</span></code></pre></figure>
+<p>Безопасность по умолчанию: CSRF включён, <code>Html::encode()</code> везде, параметры в SQL, <code>YII_DEBUG = false</code> в production, случайный <code>cookieValidationKey</code>.</p>
 <h2 id="sessii-fleshi-cookie-sessii-i-cookie-sessions">Сессии, флеши, cookie → <a href="sessions.html" class="int">Сессии и cookie</a><a class="anchor" href="#sessii-fleshi-cookie-sessii-i-cookie-sessions" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$s</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;session; <span class="t-va">$s</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'k'</span>, <span class="t-va">$v</span>); <span class="t-va">$s</span>-&gt;<span class="t-fn">get</span>(<span class="t-st">'k'</span>, <span class="t-va">$default</span>); <span class="t-va">$s</span>-&gt;<span class="t-fn">remove</span>(<span class="t-st">'k'</span>); <span class="t-va">$s</span>[<span class="t-st">'k'</span>] = <span class="t-va">$v</span>; <span class="t-va">$s</span>-&gt;<span class="t-fn">has</span>(<span class="t-st">'k'</span>);
-<span class="t-va">$s</span>-&gt;<span class="t-fn">setFlash</span>(<span class="t-st">'success'</span>, <span class="t-st">'Готово'</span>);  <span class="t-va">$s</span>-&gt;<span class="t-fn">getFlash</span>(<span class="t-st">'success'</span>);  <span class="t-va">$s</span>-&gt;<span class="t-fn">hasFlash</span>();  <span class="t-va">$s</span>-&gt;<span class="t-fn">getAllFlashes</span>();   <span class="t-cm">// Alert::widget() в layout</span>
-<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;cookies-&gt;<span class="t-fn">add</span>(<span class="t-kw">new</span> <span class="t-cl">Cookie</span>([<span class="t-st">'name'</span> =&gt; <span class="t-st">'lang'</span>, <span class="t-st">'value'</span> =&gt; <span class="t-st">'ru'</span>, <span class="t-st">'expire'</span> =&gt; <span class="t-fn">time</span>() + <span class="t-nu">86400</span> * <span class="t-nu">365</span>]));
-<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;cookies-&gt;<span class="t-fn">getValue</span>(<span class="t-st">'lang'</span>, <span class="t-st">'en'</span>);  -&gt;<span class="t-fn">remove</span>(<span class="t-st">'lang'</span>)   <span class="t-cm">// cookie подписаны cookieValidationKey</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$session</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;session;
+<span class="t-va">$session</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'key'</span>, <span class="t-va">$value</span>);   <span class="t-va">$session</span>-&gt;<span class="t-fn">get</span>(<span class="t-st">'key'</span>, <span class="t-va">$default</span>);   <span class="t-va">$session</span>-&gt;<span class="t-fn">remove</span>(<span class="t-st">'key'</span>);
+<span class="t-va">$session</span>[<span class="t-st">'key'</span>] = <span class="t-va">$value</span>;       <span class="t-va">$session</span>-&gt;<span class="t-fn">has</span>(<span class="t-st">'key'</span>);
+
+<span class="t-va">$session</span>-&gt;<span class="t-fn">setFlash</span>(<span class="t-st">'success'</span>, <span class="t-st">'Готово'</span>);          <span class="t-cm">// показать на следующей странице</span>
+<span class="t-va">$session</span>-&gt;<span class="t-fn">getFlash</span>(<span class="t-st">'success'</span>);   <span class="t-va">$session</span>-&gt;<span class="t-fn">hasFlash</span>(<span class="t-st">'success'</span>);   <span class="t-va">$session</span>-&gt;<span class="t-fn">getAllFlashes</span>();
+
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;cookies-&gt;<span class="t-fn">add</span>(<span class="t-kw">new</span> <span class="t-cl">Cookie</span>([
+    <span class="t-st">'name'</span> =&gt; <span class="t-st">'lang'</span>,
+    <span class="t-st">'value'</span> =&gt; <span class="t-st">'ru'</span>,
+    <span class="t-st">'expire'</span> =&gt; <span class="t-fn">time</span>() + <span class="t-nu">86400</span> * <span class="t-nu">365</span>,
+]));
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;cookies-&gt;<span class="t-fn">getValue</span>(<span class="t-st">'lang'</span>, <span class="t-st">'en'</span>);   <span class="t-cm">// cookie подписаны cookieValidationKey</span></code></pre></figure>
 <h2 id="kesh-keshirovanie-dannyh-caching-keshirovanie-vyvoda-caching">Кэш → <a href="caching.html" class="int">Кэширование данных</a>, <a href="caching-output.html" class="int">Кэширование вывода</a><a class="anchor" href="#kesh-keshirovanie-dannyh-caching-keshirovanie-vyvoda-caching" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>$data = Yii::$app-&gt;cache-&gt;getOrSet(['posts', $page], fn() =&gt; Post::find()-&gt;all(), 3600, new TagDependency(['tags' =&gt; 'posts']));
-TagDependency::invalidate(Yii::$app-&gt;cache, 'posts');  $cache-&gt;set/get/delete/exists/flush;  Post::find()-&gt;cache(60)-&gt;all();
-<span class="t-tg">&lt;?php</span> <span class="t-kw">if</span> (<span class="t-va">$this</span>-&gt;<span class="t-fn">beginCache</span>(<span class="t-st">'sidebar'</span>, [<span class="t-st">'duration'</span> =&gt; <span class="t-nu">600</span>, <span class="t-st">'variations'</span> =&gt; [<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;language]])) { <span class="t-tg">?&gt;</span> ... <span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">endCache</span>(); } <span class="t-tg">?&gt;</span>
-'behaviors': ['class' =&gt; PageCache::class, 'only' =&gt; ['index'], 'duration' =&gt; 60],  ['class' =&gt; HttpCache::class, 'lastModified' =&gt; fn() =&gt; $ts, 'etagSeed' =&gt; fn() =&gt; $seed]</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$posts</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;cache-&gt;<span class="t-fn">getOrSet</span>([<span class="t-st">'posts'</span>, <span class="t-va">$page</span>], <span class="t-kw">function</span> () {
+    <span class="t-kw">return</span> <span class="t-cl">Post</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">all</span>();
+}, <span class="t-nu">3600</span>, <span class="t-kw">new</span> <span class="t-cl">TagDependency</span>([<span class="t-st">'tags'</span> =&gt; <span class="t-st">'posts'</span>]));
+
+<span class="t-cl">TagDependency</span>::<span class="t-fn">invalidate</span>(<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;cache, <span class="t-st">'posts'</span>);   <span class="t-cm">// сбросить по тегу</span>
+<span class="t-va">$cache</span>-&gt;<span class="t-fn">set</span>(<span class="t-va">$key</span>, <span class="t-va">$value</span>, <span class="t-nu">60</span>);   <span class="t-va">$cache</span>-&gt;<span class="t-fn">get</span>(<span class="t-va">$key</span>);   <span class="t-va">$cache</span>-&gt;<span class="t-fn">delete</span>(<span class="t-va">$key</span>);   <span class="t-va">$cache</span>-&gt;<span class="t-fn">flush</span>();
+<span class="t-cl">Post</span>::<span class="t-fn">find</span>()-&gt;<span class="t-fn">cache</span>(<span class="t-nu">60</span>)-&gt;<span class="t-fn">all</span>();                          <span class="t-cm">// кэш запроса</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>// фрагмент представления
+<span class="t-tg">&lt;?php</span> <span class="t-kw">if</span> (<span class="t-va">$this</span>-&gt;<span class="t-fn">beginCache</span>(<span class="t-st">'sidebar'</span>, [<span class="t-st">'duration'</span> =&gt; <span class="t-nu">600</span>, <span class="t-st">'variations'</span> =&gt; [<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;language]])) { <span class="t-tg">?&gt;</span>
+    …
+<span class="t-tg">&lt;?php</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">endCache</span>(); } <span class="t-tg">?&gt;</span>
+
+// страница целиком и HTTP-кэш — фильтры контроллера
+['class' =&gt; PageCache::class, 'only' =&gt; ['index'], 'duration' =&gt; 60],
+['class' =&gt; HttpCache::class, 'lastModified' =&gt; fn () =&gt; $timestamp, 'etagSeed' =&gt; fn () =&gt; $seed],</code></pre></figure>
 <h2 id="migracii-migracii-migrations">Миграции → <a href="migrations.html" class="int">Миграции</a><a class="anchor" href="#migracii-migracii-migrations" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">./yii</span> migrate/create create_post_table <span class="t-at">--fields</span>=<span class="t-st">"title:string:notNull,body:text,author_id:integer:notNull:foreignKey(user)"</span>
+<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">./yii</span> migrate/create create_post_table \
+    <span class="t-at">--fields</span>=<span class="t-st">"title:string:notNull,body:text,author_id:integer:notNull:foreignKey(user)"</span>
 <span class="t-kw">./yii</span> migrate/create add_status_column_to_post_table <span class="t-at">--fields</span>=<span class="t-st">"status:smallInteger:defaultValue(1)"</span>
-<span class="t-kw">./yii</span> migrate | migrate/down | migrate/redo | migrate/history | migrate/new | migrate/fresh | migrate <span class="t-at">--migrationPath</span>=@yii/rbac/migrations <span class="t-at">--interactive</span>=<span class="t-nu">0</span></code></pre></figure>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">safeUp</span>() { <span class="t-va">$this</span>-&gt;<span class="t-fn">createTable</span>(<span class="t-st">'{{%post}}'</span>, [<span class="t-st">'id'</span> =&gt; <span class="t-va">$this</span>-&gt;<span class="t-fn">primaryKey</span>(), <span class="t-st">'title'</span> =&gt; <span class="t-va">$this</span>-&gt;<span class="t-fn">string</span>()-&gt;<span class="t-fn">notNull</span>(), <span class="t-st">'created_at'</span> =&gt; <span class="t-va">$this</span>-&gt;<span class="t-fn">integer</span>()]); <span class="t-va">$this</span>-&gt;<span class="t-fn">createIndex</span>(<span class="t-st">'idx-post-title'</span>, <span class="t-st">'{{%post}}'</span>, <span class="t-st">'title'</span>); <span class="t-va">$this</span>-&gt;<span class="t-fn">addForeignKey</span>(<span class="t-st">'fk-post-author'</span>, <span class="t-st">'{{%post}}'</span>, <span class="t-st">'author_id'</span>, <span class="t-st">'{{%user}}'</span>, <span class="t-st">'id'</span>, <span class="t-st">'CASCADE'</span>); }
-<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">safeDown</span>() { <span class="t-va">$this</span>-&gt;<span class="t-fn">dropTable</span>(<span class="t-st">'{{%post}}'</span>); }</code></pre></figure>
+<span class="t-kw">
+./yii</span> migrate              <span class="t-cm"># применить</span>
+<span class="t-kw">./yii</span> migrate/down         <span class="t-cm"># откатить последнюю</span>
+<span class="t-kw">./yii</span> migrate/redo         <span class="t-cm"># откатить и применить снова</span>
+<span class="t-kw">./yii</span> migrate/history      <span class="t-cm"># что применено</span>
+<span class="t-kw">./yii</span> migrate/new          <span class="t-cm"># что ещё нет</span>
+<span class="t-kw">./yii</span> migrate <span class="t-at">--migrationPath</span>=@yii/rbac/migrations <span class="t-at">--interactive</span>=<span class="t-nu">0</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">safeUp</span>()
+{
+    <span class="t-va">$this</span>-&gt;<span class="t-fn">createTable</span>(<span class="t-st">'{{%post}}'</span>, [
+        <span class="t-st">'id'</span> =&gt; <span class="t-va">$this</span>-&gt;<span class="t-fn">primaryKey</span>(),
+        <span class="t-st">'title'</span> =&gt; <span class="t-va">$this</span>-&gt;<span class="t-fn">string</span>()-&gt;<span class="t-fn">notNull</span>(),
+        <span class="t-st">'author_id'</span> =&gt; <span class="t-va">$this</span>-&gt;<span class="t-fn">integer</span>()-&gt;<span class="t-fn">notNull</span>(),
+        <span class="t-st">'created_at'</span> =&gt; <span class="t-va">$this</span>-&gt;<span class="t-fn">integer</span>(),
+    ]);
+    <span class="t-va">$this</span>-&gt;<span class="t-fn">createIndex</span>(<span class="t-st">'idx-post-title'</span>, <span class="t-st">'{{%post}}'</span>, <span class="t-st">'title'</span>);
+    <span class="t-va">$this</span>-&gt;<span class="t-fn">addForeignKey</span>(<span class="t-st">'fk-post-author'</span>, <span class="t-st">'{{%post}}'</span>, <span class="t-st">'author_id'</span>, <span class="t-st">'{{%user}}'</span>, <span class="t-st">'id'</span>, <span class="t-st">'CASCADE'</span>);
+}
+
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">safeDown</span>()
+{
+    <span class="t-va">$this</span>-&gt;<span class="t-fn">dropTable</span>(<span class="t-st">'{{%post}}'</span>);
+}</code></pre></figure>
 <h2 id="sobytiya-povedeniya-di-sobytiya-events-povedeniya-behaviors">События, поведения, DI → <a href="events.html" class="int">События</a>, <a href="behaviors.html" class="int">Поведения</a>, <a href="di.html" class="int">DI</a><a class="anchor" href="#sobytiya-povedeniya-di-sobytiya-events-povedeniya-behaviors" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$obj</span>-&gt;<span class="t-fn">on</span>(<span class="t-cl">Foo</span>::<span class="t-ct">EVENT_X</span>, <span class="t-kw">function</span> (<span class="t-va">$event</span>) { <span class="t-va">$event</span>-&gt;sender; <span class="t-va">$event</span>-&gt;data; <span class="t-va">$event</span>-&gt;handled = <span class="t-lt">true</span>; }, <span class="t-va">$data</span>);  <span class="t-va">$obj</span>-&gt;<span class="t-fn">trigger</span>(<span class="t-cl">Foo</span>::<span class="t-ct">EVENT_X</span>, <span class="t-kw">new</span> <span class="t-cl">Event</span>());
-<span class="t-cl">Event</span>::<span class="t-fn">on</span>(<span class="t-cl">ActiveRecord</span>::<span class="t-kw">class</span>, <span class="t-cl">ActiveRecord</span>::<span class="t-ct">EVENT_AFTER_INSERT</span>, <span class="t-va">$handler</span>);  <span class="t-st">'on afterOpen'</span> =&gt; <span class="t-va">$handler</span> в конфигурации
-<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">behaviors</span>() { <span class="t-kw">return</span> [[<span class="t-st">'class'</span> =&gt; <span class="t-cl">TimestampBehavior</span>::<span class="t-kw">class</span>], [<span class="t-st">'class'</span> =&gt; <span class="t-cl">SluggableBehavior</span>::<span class="t-kw">class</span>, <span class="t-st">'attribute'</span> =&gt; <span class="t-st">'title'</span>], <span class="t-cl">BlameableBehavior</span>::<span class="t-kw">class</span>]; }
-<span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'app\components\PaymentInterface'</span>, <span class="t-st">'app\components\Stripe'</span>);  <span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">setSingleton</span>(...);  <span class="t-cl">Yii</span>::<span class="t-fn">createObject</span>(<span class="t-cl">Foo</span>::<span class="t-kw">class</span>, [<span class="t-va">$arg</span>]);
-<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">__construct</span>(<span class="t-va">$id</span>, <span class="t-va">$module</span>, <span class="t-cl">PaymentInterface</span> <span class="t-va">$payment</span>, <span class="t-va">$config</span> = []) { ... <span class="t-lt">parent</span>::<span class="t-fn">__construct</span>(<span class="t-va">$id</span>, <span class="t-va">$module</span>, <span class="t-va">$config</span>); }   <span class="t-cm">// в контроллере</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// события</span>
+<span class="t-va">$obj</span>-&gt;<span class="t-fn">on</span>(<span class="t-cl">Foo</span>::<span class="t-ct">EVENT_X</span>, <span class="t-kw">function</span> (<span class="t-va">$event</span>) {
+    <span class="t-va">$event</span>-&gt;sender;   <span class="t-va">$event</span>-&gt;data;
+    <span class="t-va">$event</span>-&gt;handled = <span class="t-lt">true</span>;                        <span class="t-cm">// остановить остальные обработчики</span>
+}, <span class="t-va">$data</span>);
+<span class="t-va">$obj</span>-&gt;<span class="t-fn">trigger</span>(<span class="t-cl">Foo</span>::<span class="t-ct">EVENT_X</span>, <span class="t-kw">new</span> <span class="t-cl">Event</span>());
+<span class="t-cl">Event</span>::<span class="t-fn">on</span>(<span class="t-cl">ActiveRecord</span>::<span class="t-kw">class</span>, <span class="t-cl">ActiveRecord</span>::<span class="t-ct">EVENT_AFTER_INSERT</span>, <span class="t-va">$handler</span>);   <span class="t-cm">// на класс</span>
+
+<span class="t-cm">// поведения</span>
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">behaviors</span>()
+{
+    <span class="t-kw">return</span> [
+        <span class="t-cl">TimestampBehavior</span>::<span class="t-kw">class</span>,
+        [<span class="t-st">'class'</span> =&gt; <span class="t-cl">SluggableBehavior</span>::<span class="t-kw">class</span>, <span class="t-st">'attribute'</span> =&gt; <span class="t-st">'title'</span>],
+        <span class="t-cl">BlameableBehavior</span>::<span class="t-kw">class</span>,
+    ];
+}
+
+<span class="t-cm">// DI</span>
+<span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'app\components\PaymentInterface'</span>, <span class="t-st">'app\components\Stripe'</span>);
+<span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">setSingleton</span>(<span class="t-cl">Mailer</span>::<span class="t-kw">class</span>, [...]);
+<span class="t-va">$obj</span> = <span class="t-cl">Yii</span>::<span class="t-fn">createObject</span>(<span class="t-cl">Foo</span>::<span class="t-kw">class</span>, [<span class="t-va">$arg</span>]);
+
+<span class="t-cm">// внедрение в контроллер</span>
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">__construct</span>(<span class="t-va">$id</span>, <span class="t-va">$module</span>, <span class="t-cl">PaymentInterface</span> <span class="t-va">$payment</span>, <span class="t-va">$config</span> = [])
+{
+    <span class="t-va">$this</span>-&gt;payment = <span class="t-va">$payment</span>;
+    <span class="t-lt">parent</span>::<span class="t-fn">__construct</span>(<span class="t-va">$id</span>, <span class="t-va">$module</span>, <span class="t-va">$config</span>);
+}</code></pre></figure>
 <h2 id="konsol-rest-i18n-pochta-konsol-console-rest-rest-i18n-i18n-p">Консоль, REST, i18n, почта → <a href="console.html" class="int">Консоль</a>, <a href="rest.html" class="int">REST</a>, <a href="i18n.html" class="int">i18n</a>, <a href="mailing.html" class="int">Почта</a><a class="anchor" href="#konsol-rest-i18n-pochta-konsol-console-rest-rest-i18n-i18n-p" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">class</span> <span class="t-cl">ImportController</span> <span class="t-kw">extends</span> <span class="t-cl">\yii\console\Controller</span> { <span class="t-kw">public</span> <span class="t-va">$dry</span> = <span class="t-lt">false</span>; <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">options</span>(<span class="t-va">$a</span>) { <span class="t-kw">return</span> [<span class="t-st">'dry'</span>]; }
-    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionRun</span>(<span class="t-va">$file</span>, <span class="t-kw">array</span> <span class="t-va">$ids</span> = []) { <span class="t-va">$this</span>-&gt;<span class="t-fn">stdout</span>(<span class="t-st">"ok\n"</span>, <span class="t-cl">Console</span>::<span class="t-ct">FG_GREEN</span>); <span class="t-kw">return</span> <span class="t-cl">ExitCode</span>::<span class="t-cl">OK</span>; } }   <span class="t-cm">// ./yii import/run data.csv --dry=1</span>
-<span class="t-kw">class</span> <span class="t-cl">UserController</span> <span class="t-kw">extends</span> <span class="t-cl">\yii\rest\ActiveController</span> { <span class="t-kw">public</span> <span class="t-va">$modelClass</span> = <span class="t-cl">User</span>::<span class="t-kw">class</span>; }   <span class="t-cm">// + yii\rest\UrlRule, JsonParser, HttpBearerAuth</span>
-<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">fields</span>() { <span class="t-va">$f</span> = <span class="t-lt">parent</span>::<span class="t-fn">fields</span>(); <span class="t-kw">unset</span>(<span class="t-va">$f</span>[<span class="t-st">'password_hash'</span>]); <span class="t-kw">return</span> <span class="t-va">$f</span>; }  <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">extraFields</span>() { <span class="t-kw">return</span> [<span class="t-st">'profile'</span>]; }
-<span class="t-cl">Yii</span>::<span class="t-fn">t</span>(<span class="t-st">'app'</span>, <span class="t-st">'Hello, {name}! You have {n, plural, one{# message} other{# messages}}'</span>, [<span class="t-st">'name'</span> =&gt; <span class="t-va">$n</span>, <span class="t-st">'n'</span> =&gt; <span class="t-va">$c</span>]);   <span class="t-cm">// messages/ru-RU/app.php; ./yii message</span>
-<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;mailer-&gt;<span class="t-fn">compose</span>(<span class="t-st">'welcome'</span>, [<span class="t-st">'user'</span> =&gt; <span class="t-va">$u</span>])-&gt;<span class="t-fn">setTo</span>(<span class="t-va">$u</span>-&gt;email)-&gt;<span class="t-fn">setSubject</span>(<span class="t-st">'Hi'</span>)-&gt;<span class="t-fn">send</span>();
-<span class="t-cl">Yii</span>::<span class="t-fn">info</span>(<span class="t-st">'msg'</span>, <span class="t-st">'category'</span>); <span class="t-cl">Yii</span>::<span class="t-fn">warning</span>(); <span class="t-cl">Yii</span>::<span class="t-fn">error</span>(); <span class="t-cl">Yii</span>::<span class="t-fn">debug</span>();  <span class="t-cl">Yii</span>::<span class="t-fn">beginProfile</span>(<span class="t-st">'x'</span>); <span class="t-cl">Yii</span>::<span class="t-fn">endProfile</span>(<span class="t-st">'x'</span>);
-<span class="t-kw">throw</span> <span class="t-kw">new</span> <span class="t-cl">NotFoundHttpException</span>();  <span class="t-cl">ForbiddenHttpException</span>  <span class="t-cl">BadRequestHttpException</span>  <span class="t-cl">ServerErrorHttpException</span>  <span class="t-cl">UserException</span> (сообщение видно пользователю)</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// ./yii import/run data.csv --dry=1</span>
+<span class="t-kw">class</span> <span class="t-cl">ImportController</span> <span class="t-kw">extends</span> <span class="t-cl">\yii\console\Controller</span>
+{
+    <span class="t-kw">public</span> <span class="t-va">$dry</span> = <span class="t-lt">false</span>;
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">options</span>(<span class="t-va">$actionID</span>) { <span class="t-kw">return</span> [<span class="t-st">'dry'</span>]; }
+
+    <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">actionRun</span>(<span class="t-va">$file</span>, <span class="t-kw">array</span> <span class="t-va">$ids</span> = [])
+    {
+        <span class="t-va">$this</span>-&gt;<span class="t-fn">stdout</span>(<span class="t-st">"ok\n"</span>, <span class="t-cl">Console</span>::<span class="t-ct">FG_GREEN</span>);
+        <span class="t-kw">return</span> <span class="t-cl">ExitCode</span>::<span class="t-cl">OK</span>;
+    }
+}
+
+<span class="t-cm">// REST: + yii\rest\UrlRule, JsonParser, HttpBearerAuth</span>
+<span class="t-kw">class</span> <span class="t-cl">UserController</span> <span class="t-kw">extends</span> <span class="t-cl">\yii\rest\ActiveController</span>
+{
+    <span class="t-kw">public</span> <span class="t-va">$modelClass</span> = <span class="t-cl">User</span>::<span class="t-kw">class</span>;
+}
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">fields</span>()
+{
+    <span class="t-va">$fields</span> = <span class="t-lt">parent</span>::<span class="t-fn">fields</span>();
+    <span class="t-kw">unset</span>(<span class="t-va">$fields</span>[<span class="t-st">'password_hash'</span>]);
+    <span class="t-kw">return</span> <span class="t-va">$fields</span>;
+}
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">extraFields</span>() { <span class="t-kw">return</span> [<span class="t-st">'profile'</span>]; }
+
+<span class="t-cm">// i18n: messages/ru-RU/app.php, извлечение — ./yii message</span>
+<span class="t-cl">Yii</span>::<span class="t-fn">t</span>(<span class="t-st">'app'</span>, <span class="t-st">'Hello, {name}! {n, plural, one{# message} other{# messages}}'</span>, [
+    <span class="t-st">'name'</span> =&gt; <span class="t-va">$name</span>,
+    <span class="t-st">'n'</span> =&gt; <span class="t-va">$count</span>,
+]);
+
+<span class="t-cm">// почта</span>
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;mailer-&gt;<span class="t-fn">compose</span>(<span class="t-st">'welcome'</span>, [<span class="t-st">'user'</span> =&gt; <span class="t-va">$user</span>])
+    -&gt;<span class="t-fn">setTo</span>(<span class="t-va">$user</span>-&gt;email)
+    -&gt;<span class="t-fn">setSubject</span>(<span class="t-st">'Добро пожаловать'</span>)
+    -&gt;<span class="t-fn">send</span>();
+
+<span class="t-cm">// логи, профилирование, исключения</span>
+<span class="t-cl">Yii</span>::<span class="t-fn">info</span>(<span class="t-st">'msg'</span>, <span class="t-st">'category'</span>);   <span class="t-cl">Yii</span>::<span class="t-fn">warning</span>();   <span class="t-cl">Yii</span>::<span class="t-fn">error</span>();   <span class="t-cl">Yii</span>::<span class="t-fn">debug</span>();
+<span class="t-cl">Yii</span>::<span class="t-fn">beginProfile</span>(<span class="t-st">'block'</span>);   <span class="t-cl">Yii</span>::<span class="t-fn">endProfile</span>(<span class="t-st">'block'</span>);
+<span class="t-kw">throw</span> <span class="t-kw">new</span> <span class="t-cl">NotFoundHttpException</span>();      <span class="t-cm">// 404; также Forbidden (403), BadRequest (400)</span>
+<span class="t-kw">throw</span> <span class="t-kw">new</span> <span class="t-cl">UserException</span>(<span class="t-st">'Текст'</span>);       <span class="t-cm">// сообщение показывается пользователю</span></code></pre></figure>
 <h2 id="helpery-helpery-helpers-formatirovanie-formatting">Хелперы → <a href="helpers.html" class="int">Хелперы</a>, <a href="formatting.html" class="int">Форматирование</a><a class="anchor" href="#helpery-helpery-helpers-formatirovanie-formatting" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cl">ArrayHelper</span>::<span class="t-fn">getValue</span>(<span class="t-va">$a</span>, <span class="t-st">'x.y'</span>, <span class="t-va">$def</span>);  ::<span class="t-fn">map</span>(<span class="t-va">$rows</span>, <span class="t-st">'id'</span>, <span class="t-st">'name'</span>);  ::<span class="t-fn">index</span>(<span class="t-va">$rows</span>, <span class="t-st">'id'</span>);  ::<span class="t-fn">getColumn</span>(<span class="t-va">$rows</span>, <span class="t-st">'id'</span>);  ::<span class="t-fn">merge</span>(<span class="t-va">$a</span>, <span class="t-va">$b</span>);  ::<span class="t-fn">toArray</span>(<span class="t-va">$obj</span>)
-<span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$s</span>);  <span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-va">$text</span>, <span class="t-va">$route</span>, <span class="t-va">$opts</span>);  <span class="t-cl">Html</span>::<span class="t-fn">img</span>(<span class="t-st">'@web/i.png'</span>);  <span class="t-cl">Html</span>::<span class="t-fn">tag</span>(<span class="t-st">'div'</span>, <span class="t-va">$c</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'x'</span>]);  <span class="t-cl">Html</span>::<span class="t-fn">addCssClass</span>(<span class="t-va">$opts</span>, <span class="t-st">'y'</span>)
-<span class="t-cl">Json</span>::<span class="t-fn">encode</span>(<span class="t-va">$d</span>);  <span class="t-cl">Json</span>::<span class="t-fn">decode</span>(<span class="t-va">$s</span>);  <span class="t-kw">new</span> <span class="t-cl">JsExpression</span>(<span class="t-st">'function(){}'</span>);   <span class="t-cl">Url</span>::<span class="t-fn">to</span>(); <span class="t-cl">Url</span>::<span class="t-fn">current</span>(); <span class="t-cl">Url</span>::<span class="t-fn">home</span>(); <span class="t-cl">Url</span>::<span class="t-fn">previous</span>()
-<span class="t-cl">Inflector</span>::<span class="t-fn">slug</span>(<span class="t-st">'Привет мир'</span>);  ::<span class="t-fn">pluralize</span>(<span class="t-st">'post'</span>);  ::<span class="t-fn">camel2id</span>(<span class="t-st">'PostTag'</span>);   <span class="t-cl">StringHelper</span>::<span class="t-fn">truncate</span>(<span class="t-va">$s</span>, <span class="t-nu">50</span>);   <span class="t-cl">VarDumper</span>::<span class="t-fn">dump</span>(<span class="t-va">$v</span>, <span class="t-nu">10</span>, <span class="t-lt">true</span>)
-<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;formatter-&gt;<span class="t-fn">asDate</span>(<span class="t-va">$t</span>, <span class="t-st">'php:d.m.Y'</span>);  asDatetime  asRelativeTime  <span class="t-fn">asCurrency</span>(<span class="t-va">$v</span>, <span class="t-st">'RUB'</span>)  <span class="t-fn">asDecimal</span>(<span class="t-va">$v</span>, <span class="t-nu">2</span>)  <span class="t-fn">asShortSize</span>(<span class="t-va">$b</span>)  asBoolean  asNtext</code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cl">ArrayHelper</span>::<span class="t-fn">getValue</span>(<span class="t-va">$arr</span>, <span class="t-st">'user.name'</span>, <span class="t-va">$default</span>);
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">map</span>(<span class="t-va">$rows</span>, <span class="t-st">'id'</span>, <span class="t-st">'name'</span>);       <span class="t-cl">ArrayHelper</span>::<span class="t-fn">index</span>(<span class="t-va">$rows</span>, <span class="t-st">'id'</span>);
+<span class="t-cl">ArrayHelper</span>::<span class="t-fn">getColumn</span>(<span class="t-va">$rows</span>, <span class="t-st">'id'</span>);         <span class="t-cl">ArrayHelper</span>::<span class="t-fn">merge</span>(<span class="t-va">$a</span>, <span class="t-va">$b</span>);
+
+<span class="t-cl">Html</span>::<span class="t-fn">encode</span>(<span class="t-va">$text</span>);                         <span class="t-cl">Html</span>::<span class="t-fn">a</span>(<span class="t-va">$text</span>, [<span class="t-st">'post/view'</span>, <span class="t-st">'id'</span> =&gt; <span class="t-nu">1</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">img</span>(<span class="t-st">'@web/img/logo.png'</span>);              <span class="t-cl">Html</span>::<span class="t-fn">tag</span>(<span class="t-st">'div'</span>, <span class="t-va">$content</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'x'</span>]);
+<span class="t-cl">Html</span>::<span class="t-fn">addCssClass</span>(<span class="t-va">$options</span>, <span class="t-st">'active'</span>);
+
+<span class="t-cl">Json</span>::<span class="t-fn">encode</span>(<span class="t-va">$data</span>);   <span class="t-cl">Json</span>::<span class="t-fn">decode</span>(<span class="t-va">$json</span>);   <span class="t-kw">new</span> <span class="t-cl">JsExpression</span>(<span class="t-st">'function () {}'</span>);
+<span class="t-cl">Url</span>::<span class="t-fn">to</span>([...]);   <span class="t-cl">Url</span>::<span class="t-fn">current</span>();   <span class="t-cl">Url</span>::<span class="t-fn">home</span>();   <span class="t-cl">Url</span>::<span class="t-fn">previous</span>();
+
+<span class="t-cl">Inflector</span>::<span class="t-fn">slug</span>(<span class="t-st">'Привет мир'</span>);               <span class="t-cm">// privet-mir</span>
+<span class="t-cl">Inflector</span>::<span class="t-fn">pluralize</span>(<span class="t-st">'post'</span>);                <span class="t-cl">Inflector</span>::<span class="t-fn">camel2id</span>(<span class="t-st">'PostTag'</span>);
+<span class="t-cl">StringHelper</span>::<span class="t-fn">truncate</span>(<span class="t-va">$text</span>, <span class="t-nu">50</span>);           <span class="t-cl">VarDumper</span>::<span class="t-fn">dump</span>(<span class="t-va">$value</span>, <span class="t-nu">10</span>, <span class="t-lt">true</span>);
+
+<span class="t-va">$f</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;formatter;
+<span class="t-va">$f</span>-&gt;<span class="t-fn">asDate</span>(<span class="t-va">$ts</span>, <span class="t-st">'php:d.m.Y'</span>);   <span class="t-va">$f</span>-&gt;<span class="t-fn">asDatetime</span>(<span class="t-va">$ts</span>);   <span class="t-va">$f</span>-&gt;<span class="t-fn">asRelativeTime</span>(<span class="t-va">$ts</span>);
+<span class="t-va">$f</span>-&gt;<span class="t-fn">asCurrency</span>(<span class="t-va">$sum</span>, <span class="t-st">'RUB'</span>);    <span class="t-va">$f</span>-&gt;<span class="t-fn">asDecimal</span>(<span class="t-va">$n</span>, <span class="t-nu">2</span>);   <span class="t-va">$f</span>-&gt;<span class="t-fn">asShortSize</span>(<span class="t-va">$bytes</span>);
+<span class="t-va">$f</span>-&gt;<span class="t-fn">asBoolean</span>(<span class="t-va">$flag</span>);           <span class="t-va">$f</span>-&gt;<span class="t-fn">asNtext</span>(<span class="t-va">$text</span>);</code></pre></figure>
   </div>
 
   <footer class="doc-foot">

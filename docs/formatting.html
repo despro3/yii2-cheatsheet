@@ -211,7 +211,10 @@
 <span class="t-va">$formatter</span>-&gt;<span class="t-fn">asDecimal</span>(<span class="t-nu">1234.5678</span>, <span class="t-nu">2</span>);     <span class="t-cm">// 1,234.57</span>
 <span class="t-va">$formatter</span>-&gt;<span class="t-fn">asCurrency</span>(<span class="t-nu">1234.5</span>, <span class="t-st">'EUR'</span>);   <span class="t-cm">// €1,234.50</span>
 <span class="t-va">$formatter</span>-&gt;<span class="t-fn">asShortSize</span>(<span class="t-nu">1024</span> * <span class="t-nu">1024</span>);    <span class="t-cm">// 1 MB (sizeFormatBase = 1024)</span>
-<span class="t-va">$formatter</span>-&gt;numberFormatterOptions = [<span class="t-cl">NumberFormatter</span>::<span class="t-ct">MIN_FRACTION_DIGITS</span> =&gt; <span class="t-nu">0</span>, <span class="t-cl">NumberFormatter</span>::<span class="t-ct">MAX_FRACTION_DIGITS</span> =&gt; <span class="t-nu">2</span>];
+<span class="t-va">$formatter</span>-&gt;numberFormatterOptions = [
+    <span class="t-cl">NumberFormatter</span>::<span class="t-ct">MIN_FRACTION_DIGITS</span> =&gt; <span class="t-nu">0</span>,
+    <span class="t-cl">NumberFormatter</span>::<span class="t-ct">MAX_FRACTION_DIGITS</span> =&gt; <span class="t-nu">2</span>,
+];
 <span class="t-va">$formatter</span>-&gt;numberFormatterSymbols = [<span class="t-cl">NumberFormatter</span>::<span class="t-ct">CURRENCY_SYMBOL</span> =&gt; <span class="t-st">'€'</span>];</code></pre></figure>
 <p>Настройки <code>NumberFormatter</code> (<code>numberFormatterOptions</code>, <code>numberFormatterTextOptions</code>, <code>numberFormatterSymbols</code>) применяются ко всем числовым форматам; те же ключи можно передать аргументами <code>$options</code>/<code>$textOptions</code> в конкретный вызов.</p>
 <h2 id="prochee">Прочее<a class="anchor" href="#prochee" aria-label="Ссылка на раздел">#</a></h2>

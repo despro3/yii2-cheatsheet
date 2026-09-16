@@ -20,7 +20,9 @@ if (YII_ENV_DEV) {
     $config['modules']['gii'] = [
         'class' => 'yii\gii\Module',
         'allowedIPs' => ['127.0.0.1', '::1', '192.168.0.*'],   // по умолчанию только localhost
-        // 'generators' => ['crud' => ['class' => 'yii\gii\generators\crud\Generator', 'templates' => ['my' => '@app/gii/crud']]],
+        // 'generators' => [
+        //     'crud' => ['class' => 'yii\gii\generators\crud\Generator', 'templates' => ['my' => '@app/gii/crud']],
+        // ],
     ];
 }
 ```

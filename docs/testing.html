@@ -164,7 +164,8 @@
 </tbody></table></div>
 <p>Пирамида: много unit, меньше функциональных, единицы приёмочных.</p>
 <h2 id="okruzhenie">Окружение<a class="anchor" href="#okruzhenie" aria-label="Ссылка на раздел">#</a></h2>
-<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">composer</span> require <span class="t-at">--dev</span> codeception/codeception codeception/module-asserts codeception/module-yii2   <span class="t-cm"># уже есть в шаблонах</span>
+<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm"># уже есть в шаблонах</span>
+<span class="t-kw">composer</span> require <span class="t-at">--dev</span> codeception/codeception codeception/module-asserts codeception/module-yii2
 <span class="t-kw">cp</span> .env.example .env    <span class="t-cm"># (advanced) или config/test_db.php</span>
 ./yii_test migrate      <span class="t-cm"># (advanced: yii_test — консоль с тестовой конфигурацией)</span>
 <span class="t-kw">vendor/bin/codecept</span> run                     <span class="t-cm"># все тесты</span>
@@ -269,8 +270,14 @@ codeception.yml</code></pre></figure>
     <span class="t-kw">public</span> <span class="t-va">$depends</span> = [<span class="t-st">'app\tests\fixtures\ProfileFixture'</span>];   <span class="t-cm">// сначала загрузятся зависимости</span>
 }</code></pre></figure>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-title">tests/_data/user.php</span><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">return</span> [
-    <span class="t-st">'admin'</span> =&gt; [<span class="t-st">'username'</span> =&gt; <span class="t-st">'admin'</span>, <span class="t-st">'email'</span> =&gt; <span class="t-st">'admin@example.com'</span>, <span class="t-st">'auth_key'</span> =&gt; <span class="t-st">'key'</span>, <span class="t-st">'password_hash'</span> =&gt; <span class="t-st">'$2y$13$…'</span>],
-    <span class="t-st">'user1'</span> =&gt; [<span class="t-st">'username'</span> =&gt; <span class="t-st">'user1'</span>, <span class="t-st">'email'</span> =&gt; <span class="t-st">'user1@example.com'</span>, <span class="t-st">'auth_key'</span> =&gt; <span class="t-st">'key2'</span>, <span class="t-st">'password_hash'</span> =&gt; <span class="t-st">'…'</span>],
+    <span class="t-st">'admin'</span> =&gt; [
+        <span class="t-st">'username'</span> =&gt; <span class="t-st">'admin'</span>, <span class="t-st">'email'</span> =&gt; <span class="t-st">'admin@example.com'</span>,
+        <span class="t-st">'auth_key'</span> =&gt; <span class="t-st">'key'</span>, <span class="t-st">'password_hash'</span> =&gt; <span class="t-st">'$2y$13$…'</span>,
+    ],
+    <span class="t-st">'user1'</span> =&gt; [
+        <span class="t-st">'username'</span> =&gt; <span class="t-st">'user1'</span>, <span class="t-st">'email'</span> =&gt; <span class="t-st">'user1@example.com'</span>,
+        <span class="t-st">'auth_key'</span> =&gt; <span class="t-st">'key2'</span>, <span class="t-st">'password_hash'</span> =&gt; <span class="t-st">'…'</span>,
+    ],
 ];</code></pre></figure>
 <p>Ключ строки (<code>admin</code>) — псевдоним записи; поле <code>id</code> подставится автоматически. <code>ActiveFixture::load()</code> очищает таблицу и вставляет данные; <code>unload()</code> — очищает. Своя логика — наследовать <code>yii\test\Fixture</code> (<code>load</code>/<code>unload</code>) или <code>DbFixture</code>.</p>
 <h3 id="ispolzovanie">Использование<a class="anchor" href="#ispolzovanie" aria-label="Ссылка на раздел">#</a></h3>
@@ -287,7 +294,8 @@ codeception.yml</code></pre></figure>
 
 <span class="t-cm">// в PHPUnit без Codeception — FixtureTrait: fixtures() + loadFixtures()/unloadFixtures(), $this-&gt;users('admin')</span></code></pre></figure>
 <h3 id="konsolnaya-zagruzka">Консольная загрузка<a class="anchor" href="#konsolnaya-zagruzka" aria-label="Ссылка на раздел">#</a></h3>
-<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">./yii</span> fixture/load User                 <span class="t-cm"># загрузить фикстуру User из namespace (по умолчанию tests\unit\fixtures)</span>
+<figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm"># загрузить фикстуру User из namespace (по умолчанию tests\unit\fixtures)</span>
+<span class="t-kw">./yii</span> fixture/load User
 <span class="t-kw">./yii</span> fixture/load <span class="t-st">"*"</span>                  <span class="t-cm"># все</span>
 <span class="t-kw">./yii</span> fixture/load User Profile <span class="t-at">--namespace</span>=app\\tests\\fixtures
 <span class="t-kw">./yii</span> fixture/unload User

@@ -39,7 +39,8 @@ $encrypted = Yii::$app->security->encryptByPassword($data, $secretKey);
 $data = Yii::$app->security->decryptByPassword($encrypted, $secretKey);
 
 // шифрование по ключу (ключ — случайные байты подходящей длины)
-$encrypted = Yii::$app->security->encryptByKey($data, $key, $info);   // $info — контекст (например, ID пользователя)
+// $info — контекст (например, ID пользователя)
+$encrypted = Yii::$app->security->encryptByKey($data, $key, $info);
 $data = Yii::$app->security->decryptByKey($encrypted, $key, $info);
 
 // подпись: гарантирует, что данные не изменены

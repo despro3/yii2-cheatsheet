@@ -108,7 +108,9 @@ return [
                     'class' => 'yii\log\EmailTarget',
                     'levels' => ['error'],
                     'categories' => ['yii\db\*'],
-                    'message' => ['from' => ['log@example.com'], 'to' => ['admin@example.com'], 'subject' => 'Ошибки БД'],
+                    'message' => [
+                        'from' => ['log@example.com'], 'to' => ['admin@example.com'], 'subject' => 'Ошибки БД',
+                    ],
                 ],
             ],
         ],

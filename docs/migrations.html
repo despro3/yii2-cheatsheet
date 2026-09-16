@@ -199,7 +199,8 @@
 <p>Команда <code>migrate/create</code> понимает шаблоны имён и заполняет тело за вас:</p>
 <figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">./yii</span> migrate/create create_post_table                       <span class="t-cm"># createTable + dropTable</span>
 <span class="t-kw">./yii</span> migrate/create create_post_table <span class="t-at">--fields</span>=<span class="t-st">"title:string(12):notNull:unique,body:text"</span>
-<span class="t-kw">./yii</span> migrate/create create_post_table <span class="t-at">--fields</span>=<span class="t-st">"author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey"</span>
+<span class="t-kw">./yii</span> migrate/create create_post_table \
+    <span class="t-at">--fields</span>=<span class="t-st">"author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey"</span>
 <span class="t-kw">./yii</span> migrate/create drop_post_table <span class="t-at">--fields</span>=<span class="t-st">"title:string(12):notNull"</span>    <span class="t-cm"># dropTable + createTable в down</span>
 <span class="t-kw">./yii</span> migrate/create add_position_column_to_post_table <span class="t-at">--fields</span>=<span class="t-st">"position:integer"</span>
 <span class="t-kw">./yii</span> migrate/create drop_position_column_from_post_table <span class="t-at">--fields</span>=<span class="t-st">"position:integer"</span>
@@ -208,7 +209,8 @@
 <h2 id="primenit-i-otkatit">Применить и откатить<a class="anchor" href="#primenit-i-otkatit" aria-label="Ссылка на раздел">#</a></h2>
 <figure class="code" data-lang="bash"><div class="code-head"><span class="code-lang">Консоль</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">./yii</span> migrate                    <span class="t-cm"># применить все новые (спросит подтверждение)</span>
 <span class="t-kw">./yii</span> migrate <span class="t-nu">3</span>                  <span class="t-cm"># только 3 следующие</span>
-<span class="t-kw">./yii</span> migrate/to 150101_185401   <span class="t-cm"># до указанной (или m150101_185401_create_news_table, или timestamp, или 'yyyy-mm-dd hh:mm:ss')</span>
+<span class="t-cm"># до указанной (или m150101_185401_create_news_table, или timestamp, или 'yyyy-mm-dd hh:mm:ss')</span>
+<span class="t-kw">./yii</span> migrate/to 150101_185401
 <span class="t-kw">./yii</span> migrate/down               <span class="t-cm"># откатить последнюю</span>
 <span class="t-kw">./yii</span> migrate/down <span class="t-nu">3</span>             <span class="t-cm"># три последние; migrate/down all — все</span>
 <span class="t-kw">./yii</span> migrate/redo               <span class="t-cm"># откатить и снова применить последнюю (redo 3, redo all)</span>

@@ -167,7 +167,8 @@
 <span class="t-va">$data</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">decryptByPassword</span>(<span class="t-va">$encrypted</span>, <span class="t-va">$secretKey</span>);
 
 <span class="t-cm">// шифрование по ключу (ключ — случайные байты подходящей длины)</span>
-<span class="t-va">$encrypted</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">encryptByKey</span>(<span class="t-va">$data</span>, <span class="t-va">$key</span>, <span class="t-va">$info</span>);   <span class="t-cm">// $info — контекст (например, ID пользователя)</span>
+<span class="t-cm">// $info — контекст (например, ID пользователя)</span>
+<span class="t-va">$encrypted</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">encryptByKey</span>(<span class="t-va">$data</span>, <span class="t-va">$key</span>, <span class="t-va">$info</span>);
 <span class="t-va">$data</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">decryptByKey</span>(<span class="t-va">$encrypted</span>, <span class="t-va">$key</span>, <span class="t-va">$info</span>);
 
 <span class="t-cm">// подпись: гарантирует, что данные не изменены</span>

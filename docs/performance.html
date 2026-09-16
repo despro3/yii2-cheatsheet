@@ -169,7 +169,8 @@
 </ul>
 <h2 id="3-sessii">3. Сессии<a class="anchor" href="#3-sessii" aria-label="Ссылка на раздел">#</a></h2>
 <p>Файловые сессии на одном сервере — нормально; при нескольких серверах или тысячах пользователей:</p>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'session'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\web\DbSession'</span>, <span class="t-st">'sessionTable'</span> =&gt; <span class="t-st">'session'</span>],   <span class="t-cm">// или CacheSession с Redis/Memcached</span></code></pre></figure>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// или CacheSession с Redis/Memcached</span>
+<span class="t-st">'session'</span> =&gt; [<span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\web\DbSession'</span>, <span class="t-st">'sessionTable'</span> =&gt; <span class="t-st">'session'</span>],</code></pre></figure>
 <p>Не открывать сессию, когда не нужно (например, для API: <code>enableSession =&gt; false</code>); сборка мусора — <code>gcProbability</code>. Кэшированная сессия быстрее, но теряется при рестарте кэша.</p>
 <h2 id="4-baza-dannyh">4. База данных<a class="anchor" href="#4-baza-dannyh" aria-label="Ссылка на раздел">#</a></h2>
 <ul>

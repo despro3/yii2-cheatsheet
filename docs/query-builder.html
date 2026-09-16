@@ -253,7 +253,8 @@
 
 <span class="t-va">$query1</span>-&gt;<span class="t-fn">union</span>(<span class="t-va">$query2</span>);              <span class="t-cm">// UNION; union($q, true) — UNION ALL</span>
 
-<span class="t-va">$query</span>-&gt;<span class="t-fn">withQuery</span>(<span class="t-va">$cte</span>, <span class="t-st">'posts'</span>, <span class="t-va">$recursive</span> = <span class="t-lt">false</span>);   <span class="t-cm">// WITH posts AS (…) — общие табличные выражения (2.0.35)</span></code></pre></figure>
+<span class="t-cm">// WITH posts AS (…) — общие табличные выражения (2.0.35)</span>
+<span class="t-va">$query</span>-&gt;<span class="t-fn">withQuery</span>(<span class="t-va">$cte</span>, <span class="t-st">'posts'</span>, <span class="t-va">$recursive</span> = <span class="t-lt">false</span>);</code></pre></figure>
 <h2 id="vypolnenie-i-rezultat">Выполнение и результат<a class="anchor" href="#vypolnenie-i-rezultat" aria-label="Ссылка на раздел">#</a></h2>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$rows</span>  = <span class="t-va">$query</span>-&gt;<span class="t-fn">all</span>();                     <span class="t-cm">// все строки</span>
 <span class="t-va">$row</span>   = <span class="t-va">$query</span>-&gt;<span class="t-fn">one</span>();                     <span class="t-cm">// первая строка или false (добавляет LIMIT 1)</span>
@@ -291,7 +292,8 @@
 <span class="t-va">$query</span>-&gt;<span class="t-fn">where</span>([<span class="t-st">'&gt;'</span>, <span class="t-st">'expires'</span>, <span class="t-kw">new</span> <span class="t-cl">Expression</span>(<span class="t-st">'NOW()'</span>)]);
 
 <span class="t-va">$sub</span> = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">select</span>(<span class="t-st">'user_id'</span>)-&gt;<span class="t-fn">from</span>(<span class="t-st">'post'</span>)-&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>]);
-<span class="t-va">$q</span>   = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)-&gt;<span class="t-fn">where</span>([<span class="t-st">'id'</span> =&gt; <span class="t-va">$sub</span>]);   <span class="t-cm">// WHERE id IN (SELECT user_id FROM post WHERE status=1)</span></code></pre></figure>
+<span class="t-cm">// WHERE id IN (SELECT user_id FROM post WHERE status=1)</span>
+<span class="t-va">$q</span>   = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)-&gt;<span class="t-fn">where</span>([<span class="t-st">'id'</span> =&gt; <span class="t-va">$sub</span>]);</code></pre></figure>
 <p><code>Expression</code> вставляется в SQL как есть — никогда не подставляйте в него пользовательские данные без параметров.</p>
 <h2 id="query-kak-stroitel-dlya-dao">Query как строитель для DAO<a class="anchor" href="#query-kak-stroitel-dlya-dao" aria-label="Ссылка на раздел">#</a></h2>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-va">$command</span> = (<span class="t-kw">new</span> <span class="t-cl">Query</span>())-&gt;<span class="t-fn">from</span>(<span class="t-st">'user'</span>)-&gt;<span class="t-fn">where</span>([<span class="t-st">'status'</span> =&gt; <span class="t-nu">1</span>])-&gt;<span class="t-fn">createCommand</span>();

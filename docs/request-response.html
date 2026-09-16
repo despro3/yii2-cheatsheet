@@ -235,7 +235,8 @@
 
 <span class="t-cm">// данные + формат: отформатирует JsonResponseFormatter</span>
 <span class="t-va">$response</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response;
-<span class="t-va">$response</span>-&gt;format = <span class="t-cl">\yii\web\Response</span>::<span class="t-ct">FORMAT_JSON</span>;   <span class="t-cm">// FORMAT_HTML | FORMAT_XML | FORMAT_JSON | FORMAT_JSONP | FORMAT_RAW</span>
+<span class="t-cm">// FORMAT_HTML | FORMAT_XML | FORMAT_JSON | FORMAT_JSONP | FORMAT_RAW</span>
+<span class="t-va">$response</span>-&gt;format = <span class="t-cl">\yii\web\Response</span>::<span class="t-ct">FORMAT_JSON</span>;
 <span class="t-va">$response</span>-&gt;data = [<span class="t-st">'message'</span> =&gt; <span class="t-st">'hello'</span>];
 
 <span class="t-cm">// обычно проще вернуть данные из действия</span>
@@ -269,7 +270,8 @@
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-kw">return</span> <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;<span class="t-fn">sendFile</span>(<span class="t-st">'/path/to/report.pdf'</span>);                    <span class="t-cm">// существующий файл</span>
 <span class="t-kw">return</span> <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;<span class="t-fn">sendContentAsFile</span>(<span class="t-va">$csv</span>, <span class="t-st">'export.csv'</span>);              <span class="t-cm">// строка как файл</span>
 <span class="t-kw">return</span> <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;<span class="t-fn">sendStreamAsFile</span>(<span class="t-va">$stream</span>, <span class="t-st">'big.zip'</span>);               <span class="t-cm">// поток — для больших файлов</span>
-<span class="t-kw">return</span> <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;<span class="t-fn">xSendFile</span>(<span class="t-st">'/path/to/file'</span>);   <span class="t-cm">// отдачу делает веб-сервер (X-Sendfile / X-Accel-Redirect)</span></code></pre></figure>
+<span class="t-cm">// отдачу делает веб-сервер (X-Sendfile / X-Accel-Redirect)</span>
+<span class="t-kw">return</span> <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;response-&gt;<span class="t-fn">xSendFile</span>(<span class="t-st">'/path/to/file'</span>);</code></pre></figure>
 <p>Все поддерживают заголовок <code>Range</code> (докачку).</p>
 <h3 id="kak-otpravlyaetsya-otvet">Как отправляется ответ<a class="anchor" href="#kak-otpravlyaetsya-otvet" aria-label="Ссылка на раздел">#</a></h3>
 <p><code>send()</code> вызывается автоматически в конце <code>run()</code>, но его можно вызвать и раньше; повторный вызов игнорируется:</p>

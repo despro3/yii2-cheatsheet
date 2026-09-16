@@ -123,7 +123,8 @@ Yii::$app->response->content = 'hello';
 
 // данные + формат: отформатирует JsonResponseFormatter
 $response = Yii::$app->response;
-$response->format = \yii\web\Response::FORMAT_JSON;   // FORMAT_HTML | FORMAT_XML | FORMAT_JSON | FORMAT_JSONP | FORMAT_RAW
+// FORMAT_HTML | FORMAT_XML | FORMAT_JSON | FORMAT_JSONP | FORMAT_RAW
+$response->format = \yii\web\Response::FORMAT_JSON;
 $response->data = ['message' => 'hello'];
 
 // обычно проще вернуть данные из действия
@@ -171,7 +172,8 @@ Yii::$app->response->redirect($url)->send();
 return Yii::$app->response->sendFile('/path/to/report.pdf');                    // существующий файл
 return Yii::$app->response->sendContentAsFile($csv, 'export.csv');              // строка как файл
 return Yii::$app->response->sendStreamAsFile($stream, 'big.zip');               // поток — для больших файлов
-return Yii::$app->response->xSendFile('/path/to/file');   // отдачу делает веб-сервер (X-Sendfile / X-Accel-Redirect)
+// отдачу делает веб-сервер (X-Sendfile / X-Accel-Redirect)
+return Yii::$app->response->xSendFile('/path/to/file');
 ```
 
 Все поддерживают заголовок `Range` (докачку).

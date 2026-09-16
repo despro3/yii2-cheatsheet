@@ -17,7 +17,8 @@ use yii\helpers\ArrayHelper;
 
 // достать значение — из массива или объекта, с вложенностью и значением по умолчанию
 $name = ArrayHelper::getValue($user, 'name', 'anon');
-$street = ArrayHelper::getValue($user, 'address.street');           // $user['address']['street'] или $user->address->street
+// $user['address']['street'] или $user->address->street
+$street = ArrayHelper::getValue($user, 'address.street');
 $val = ArrayHelper::getValue($arr, ['x', 'y']);                     // ключ с точкой — массивом
 $fullName = ArrayHelper::getValue($user, function ($user, $default) { return $user->first . ' ' . $user->last; });
 ArrayHelper::setValue($array, 'key.subkey', $value);
@@ -34,7 +35,8 @@ ArrayHelper::index($users, 'id', 'group');                          // [group =>
 ArrayHelper::index($users, null, 'group');                          // [group => [row, row]]
 
 // объединение и сортировка
-$config = ArrayHelper::merge($base, $override);                     // рекурсивно, с UnsetArrayValue / ReplaceArrayValue
+// рекурсивно, с UnsetArrayValue / ReplaceArrayValue
+$config = ArrayHelper::merge($base, $override);
 ArrayHelper::multisort($data, ['age', 'name'], [SORT_ASC, SORT_DESC]);
 ArrayHelper::multisort($data, function ($item) { return $item['a'] . $item['b']; });
 
@@ -57,7 +59,8 @@ ArrayHelper::isTraversable($x);
 use yii\helpers\Html;
 
 Html::encode($text); Html::decode($html);
-Html::tag('div', Html::encode($content), ['class' => 'box', 'data' => ['id' => 5], 'id' => null]);   // null — атрибут не выводится
+// null — атрибут не выводится
+Html::tag('div', Html::encode($content), ['class' => 'box', 'data' => ['id' => 5], 'id' => null]);
 Html::beginTag('div', ['class' => 'x']) … Html::endTag('div');
 Html::a('Профиль', ['user/view', 'id' => 42], ['class' => 'btn']);   // маршрут → URL через Url::to()
 Html::a('Сайт', 'https://example.com', ['target' => '_blank']);
@@ -117,10 +120,13 @@ Html::getInputName($model, 'attr'); Html::getInputId($model, 'attr');
 use yii\helpers\Json;
 use yii\web\JsExpression;
 
-Json::encode($data);                       // JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES по умолчанию (2.0.x), объекты Arrayable → массивы
-Json::encode(['fn' => new JsExpression('function () { return 1; }')]);   // без кавычек — для JS-конфигураций виджетов
+// JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES по умолчанию (2.0.x), объекты Arrayable → массивы
+Json::encode($data);
+// без кавычек — для JS-конфигураций виджетов
+Json::encode(['fn' => new JsExpression('function () { return 1; }')]);
 Json::htmlEncode($data);                   // безопасно для вставки в HTML-атрибуты и <script>
-Json::decode($json);                       // всегда массив (assoc = true); бросает InvalidArgumentException при ошибке
+// всегда массив (assoc = true); бросает InvalidArgumentException при ошибке
+Json::decode($json);
 Json::decode($json, false);                // stdClass
 Json::prettyPrint = true;                  // отладка
 Json::errorSummary($model);                // ошибки модели как JSON
@@ -136,7 +142,8 @@ use yii\helpers\Url;
 Url::to(['post/view', 'id' => 1]);           // маршрут → /post/1 через urlManager
 Url::to(['post/view', 'id' => 1], true);     // абсолютный: https://host/post/1
 Url::to(['post/view', 'id' => 1], 'https'); // с заданной схемой
-Url::to(['/site/index']);                    // ведущий / — от корня приложения (не относительно модуля/контроллера)
+// ведущий / — от корня приложения (не относительно модуля/контроллера)
+Url::to(['/site/index']);
 Url::to(['index']);                          // относительно текущего контроллера
 Url::to(['']);                               // текущий маршрут (с параметрами — нет; см. current)
 Url::to('@web/images/logo.png');             // псевдоним

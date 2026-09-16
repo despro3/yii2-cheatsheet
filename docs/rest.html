@@ -198,7 +198,8 @@
     <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">fields</span>()
     {
         <span class="t-va">$fields</span> = <span class="t-lt">parent</span>::<span class="t-fn">fields</span>();               <span class="t-cm">// все атрибуты</span>
-        <span class="t-kw">unset</span>(<span class="t-va">$fields</span>[<span class="t-st">'auth_key'</span>], <span class="t-va">$fields</span>[<span class="t-st">'password_hash'</span>], <span class="t-va">$fields</span>[<span class="t-st">'password_reset_token'</span>]);   <span class="t-cm">// 🔐 убрать секреты</span>
+        <span class="t-cm">// 🔐 убрать секреты</span>
+        <span class="t-kw">unset</span>(<span class="t-va">$fields</span>[<span class="t-st">'auth_key'</span>], <span class="t-va">$fields</span>[<span class="t-st">'password_hash'</span>], <span class="t-va">$fields</span>[<span class="t-st">'password_reset_token'</span>]);
         <span class="t-va">$fields</span>[<span class="t-st">'full_name'</span>] = <span class="t-kw">function</span> (<span class="t-va">$model</span>) { <span class="t-kw">return</span> <span class="t-va">$model</span>-&gt;first_name . <span class="t-st">' '</span> . <span class="t-va">$model</span>-&gt;last_name; };
         <span class="t-va">$fields</span>[<span class="t-st">'email_short'</span>] = <span class="t-st">'email'</span>;         <span class="t-cm">// переименовать</span>
         <span class="t-kw">return</span> <span class="t-va">$fields</span>;

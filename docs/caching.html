@@ -154,7 +154,8 @@
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-st">'components'</span> =&gt; [
     <span class="t-st">'cache'</span> =&gt; [
         <span class="t-st">'class'</span> =&gt; <span class="t-st">'yii\caching\FileCache'</span>,                 <span class="t-cm">// файлы в @runtime/cache</span>
-        <span class="t-cm">// 'class' =&gt; 'yii\caching\ApcCache',               // APCu — быстрее всего, но локально и в памяти процесса</span>
+        <span class="t-cm">// APCu — быстрее всего, но локально и в памяти процесса</span>
+        <span class="t-cm">// 'class' =&gt; 'yii\caching\ApcCache',</span>
         <span class="t-cm">// 'class' =&gt; 'yii\caching\MemCache', 'servers' =&gt; [['host' =&gt; 'server1', 'port' =&gt; 11211, 'weight' =&gt; 100]],</span>
         <span class="t-cm">// 'class' =&gt; 'yii\redis\Cache',                    // расширение yii2-redis</span>
         <span class="t-cm">// 'class' =&gt; 'yii\caching\DbCache', 'cacheTable' =&gt; 'cache',   // таблица в БД</span>

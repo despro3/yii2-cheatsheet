@@ -47,7 +47,8 @@ use yii\widgets\ListView;
 
 echo ListView::widget([
     'dataProvider' => $dataProvider,
-    'itemView' => '_post',                          // views/post/_post.php, получает $model, $key, $index, $widget
+    // views/post/_post.php, получает $model, $key, $index, $widget
+    'itemView' => '_post',
     // 'itemView' => function ($model, $key, $index, $widget) { return Html::tag('div', $model->title); },
     'viewParams' => ['fullView' => true],           // дополнительно в $itemView
     'itemOptions' => ['class' => 'item'],
@@ -105,7 +106,8 @@ echo GridView::widget([
     'contentOptions' => ['class' => 'text-end'],
     'headerOptions' => ['style' => 'width: 100px'],
     'enableSorting' => true,
-    'filter' => ['1' => 'Активен', '0' => 'Заблокирован'],   // <select> вместо текстового поля; false — без фильтра
+    // <select> вместо текстового поля; false — без фильтра
+    'filter' => ['1' => 'Активен', '0' => 'Заблокирован'],
     'filterInputOptions' => ['class' => 'form-control', 'placeholder' => 'Поиск'],
     'visible' => !Yii::$app->user->isGuest,
     'content' => function ($model) { … },   // полностью свой HTML (не экранируется)

@@ -88,7 +88,8 @@ sources: tutorial-core-validators
 ```php
 [['from_date', 'to_date'], 'date'],
 ['birthday', 'date', 'format' => 'php:d.m.Y', 'timestampAttribute' => 'birthday_ts'],
-['created', 'datetime', 'format' => 'php:Y-m-d H:i:s', 'timestampAttribute' => 'created', 'timestampAttributeFormat' => 'php:Y-m-d H:i:s'],
+['created', 'datetime', 'format' => 'php:Y-m-d H:i:s',
+    'timestampAttribute' => 'created', 'timestampAttributeFormat' => 'php:Y-m-d H:i:s'],
 ['start', 'date', 'min' => date('Y-m-d'), 'tooSmall' => 'Дата уже прошла'],
 ```
 
@@ -117,8 +118,10 @@ sources: tutorial-core-validators
 ```php
 ['a1', 'exist'],                                                  // столбец a1 в таблице модели
 ['category_id', 'exist', 'targetClass' => Category::class, 'targetAttribute' => 'id'],
-['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],               // пара (a1, a2) должна существовать; ошибка — только у a1
-['a1', 'exist', 'targetAttribute' => ['a2' => 'a1']],             // значение a2 ищется в столбце a1: [атрибут модели => столбец таблицы]
+// пара (a1, a2) должна существовать; ошибка — только у a1
+['a1', 'exist', 'targetAttribute' => ['a1', 'a2']],
+// значение a2 ищется в столбце a1: [атрибут модели => столбец таблицы]
+['a1', 'exist', 'targetAttribute' => ['a2' => 'a1']],
 ['a1', 'exist', 'filter' => ['status' => 1]],
 ['user_id', 'exist', 'targetRelation' => 'user'],
 

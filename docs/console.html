@@ -229,7 +229,8 @@
 <span class="t-va">$this</span>-&gt;<span class="t-fn">stderr</span>(<span class="t-st">"Ошибка\n"</span>, <span class="t-cl">Console</span>::<span class="t-ct">FG_RED</span>);
 <span class="t-kw">echo</span> <span class="t-va">$this</span>-&gt;<span class="t-fn">ansiFormat</span>(<span class="t-st">'внимание'</span>, <span class="t-cl">Console</span>::<span class="t-ct">FG_YELLOW</span>);
 <span class="t-cl">Console</span>::<span class="t-fn">startProgress</span>(<span class="t-nu">0</span>, <span class="t-va">$total</span>);  <span class="t-cl">Console</span>::<span class="t-fn">updateProgress</span>(<span class="t-va">$done</span>, <span class="t-va">$total</span>);  <span class="t-cl">Console</span>::<span class="t-fn">endProgress</span>();
-<span class="t-va">$this</span>-&gt;<span class="t-fn">isColorEnabled</span>();                                        <span class="t-cm">// цвета включаются, если терминал их поддерживает (--color)</span></code></pre></figure>
+<span class="t-cm">// цвета включаются, если терминал их поддерживает (--color)</span>
+<span class="t-va">$this</span>-&gt;<span class="t-fn">isColorEnabled</span>();</code></pre></figure>
 <p>Не используйте <code>exit()</code> — верните код; не используйте <code>echo</code> для ошибок — <code>stderr</code>.</p>
 <h2 id="vstroennye-komandy">Встроенные команды<a class="anchor" href="#vstroennye-komandy" aria-label="Ссылка на раздел">#</a></h2>
 <div class="table-wrap"><table>

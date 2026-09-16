@@ -34,7 +34,9 @@ $provider->getCount();             // моделей на странице
 ```php
 use yii\data\SqlDataProvider;
 
-$count = Yii::$app->db->createCommand('SELECT COUNT(*) FROM post WHERE status=:status', [':status' => 1])->queryScalar();
+$count = Yii::$app->db
+    ->createCommand('SELECT COUNT(*) FROM post WHERE status=:status', [':status' => 1])
+    ->queryScalar();
 
 $provider = new SqlDataProvider([
     'sql' => 'SELECT * FROM post WHERE status=:status',
@@ -107,7 +109,8 @@ echo LinkPager::widget([
     'prevPageLabel' => '‹', 'nextPageLabel' => '›',
     'hideOnSinglePage' => true,
     'options' => ['class' => 'pagination justify-content-center'],
-    'linkContainerOptions' => ['class' => 'page-item'], 'linkOptions' => ['class' => 'page-link'],   // Bootstrap 4/5
+    // Bootstrap 4/5
+    'linkContainerOptions' => ['class' => 'page-item'], 'linkOptions' => ['class' => 'page-link'],
 ]);
 ```
 

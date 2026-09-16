@@ -237,7 +237,8 @@
     <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">upload</span>()
     {
         <span class="t-kw">if</span> (<span class="t-va">$this</span>-&gt;<span class="t-fn">validate</span>()) {
-            <span class="t-va">$this</span>-&gt;imageFile-&gt;<span class="t-fn">saveAs</span>(<span class="t-st">'@webroot/uploads/'</span> . <span class="t-va">$this</span>-&gt;imageFile-&gt;baseName . <span class="t-st">'.'</span> . <span class="t-va">$this</span>-&gt;imageFile-&gt;extension);
+            <span class="t-va">$file</span> = <span class="t-va">$this</span>-&gt;imageFile;
+            <span class="t-va">$file</span>-&gt;<span class="t-fn">saveAs</span>(<span class="t-st">'@webroot/uploads/'</span> . <span class="t-va">$file</span>-&gt;baseName . <span class="t-st">'.'</span> . <span class="t-va">$file</span>-&gt;extension);
             <span class="t-kw">return</span> <span class="t-lt">true</span>;
         }
         <span class="t-kw">return</span> <span class="t-lt">false</span>;

@@ -93,7 +93,8 @@ $this->insert('{{%category}}', ['name' => 'Общее']);
 ```bash
 ./yii migrate/create create_post_table                       # createTable + dropTable
 ./yii migrate/create create_post_table --fields="title:string(12):notNull:unique,body:text"
-./yii migrate/create create_post_table --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey"
+./yii migrate/create create_post_table \
+    --fields="author_id:integer:notNull:foreignKey(user),category_id:integer:defaultValue(1):foreignKey"
 ./yii migrate/create drop_post_table --fields="title:string(12):notNull"    # dropTable + createTable в down
 ./yii migrate/create add_position_column_to_post_table --fields="position:integer"
 ./yii migrate/create drop_position_column_from_post_table --fields="position:integer"
@@ -107,7 +108,8 @@ $this->insert('{{%category}}', ['name' => 'Общее']);
 ```bash
 ./yii migrate                    # применить все новые (спросит подтверждение)
 ./yii migrate 3                  # только 3 следующие
-./yii migrate/to 150101_185401   # до указанной (или m150101_185401_create_news_table, или timestamp, или 'yyyy-mm-dd hh:mm:ss')
+# до указанной (или m150101_185401_create_news_table, или timestamp, или 'yyyy-mm-dd hh:mm:ss')
+./yii migrate/to 150101_185401
 ./yii migrate/down               # откатить последнюю
 ./yii migrate/down 3             # три последние; migrate/down all — все
 ./yii migrate/redo               # откатить и снова применить последнюю (redo 3, redo all)

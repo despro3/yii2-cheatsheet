@@ -101,7 +101,8 @@ Url::remember();  Url::previous();               // запомнить и вер
     [
         'pattern' => 'posts/<page:\d+>/<tag>',
         'route' => 'post/index',
-        'defaults' => ['page' => 1, 'tag' => ''],   // необязательные параметры: /posts, /posts/2, /posts/2/news, /posts/news
+        // необязательные параметры: /posts, /posts/2, /posts/2/news, /posts/news
+        'defaults' => ['page' => 1, 'tag' => ''],
         'suffix' => '.json',
     ],
 
@@ -121,7 +122,8 @@ Url::remember();  Url::previous();               // запомнить и вер
 
 ```php
 'urlManager' => [
-    'suffix' => '.html',          // все URL — с .html; без суффикса → 404 (хорошо для SEO); '/' — завершающий слеш
+    // все URL — с .html; без суффикса → 404 (хорошо для SEO); '/' — завершающий слеш
+    'suffix' => '.html',
     'normalizer' => [
         'class' => 'yii\web\UrlNormalizer',   // /path/ и /path//x → 301 на канонический вид
         'action' => \yii\web\UrlNormalizer::ACTION_REDIRECT_TEMPORARY,

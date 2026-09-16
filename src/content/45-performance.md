@@ -34,7 +34,8 @@ Yii быстр по умолчанию, но большинство «медле
 Файловые сессии на одном сервере — нормально; при нескольких серверах или тысячах пользователей:
 
 ```php
-'session' => ['class' => 'yii\web\DbSession', 'sessionTable' => 'session'],   // или CacheSession с Redis/Memcached
+// или CacheSession с Redis/Memcached
+'session' => ['class' => 'yii\web\DbSession', 'sessionTable' => 'session'],
 ```
 
 Не открывать сессию, когда не нужно (например, для API: `enableSession => false`); сборка мусора — `gcProbability`. Кэшированная сессия быстрее, но теряется при рестарте кэша.
