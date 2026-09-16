@@ -29,6 +29,7 @@ CONTENT = os.path.join(SRC, 'content')
 TEMPLATES = os.path.join(SRC, 'templates')
 ASSETS = os.path.join(SRC, 'assets')
 DIAGRAMS = os.path.join(SRC, 'diagrams')
+ARCHIVE = os.path.join(SRC, 'archive')
 OUT = os.path.join(ROOT, 'docs')
 
 GUIDE_URL = 'https://www.yiiframework.com/doc/guide/2.0/ru/%s'
@@ -1018,6 +1019,9 @@ def main():
         else:
             os.remove(path)
     shutil.copytree(ASSETS, os.path.join(OUT, 'assets'))
+    if os.path.isdir(ARCHIVE):          # прежние версии сайта: src/archive/v1 → docs/v1
+        for name in sorted(os.listdir(ARCHIVE)):
+            shutil.copytree(os.path.join(ARCHIVE, name), os.path.join(OUT, name))
     write(os.path.join(OUT, '.nojekyll'), '')
 
     base = template('base.html')
