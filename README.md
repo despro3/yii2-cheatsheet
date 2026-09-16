@@ -66,7 +66,9 @@ sources: db-active-record
 
 ## GitHub Pages
 
-В настройках репозитория: **Settings → Pages → Source: Deploy from a branch → `/docs`**.
+В настройках репозитория: **Settings → Pages → Source: Deploy from a branch**, ветка `main`, папка `/docs`, затем **Save**.
+
+Через минуту сайт будет доступен по адресу `https://<владелец>.github.io/<репозиторий>/`. После каждой пересборки достаточно закоммитить изменённую папку `docs/` — Pages обновится сам.
 
 ## Источники
 
