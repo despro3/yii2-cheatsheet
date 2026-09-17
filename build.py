@@ -20,6 +20,7 @@ import html
 import json
 import os
 import re
+import hashlib
 import shutil
 import sys
 
@@ -763,7 +764,7 @@ class Renderer:
 
     def tabs(self, inner, args):
         groups = self._split_sections(inner)
-        gid = 'tabs-%d' % (abs(hash(''.join(inner))) % 100000)
+        gid = 'tabs-%s' % hashlib.md5(''.join(inner).encode('utf-8')).hexdigest()[:8]
         heads, panels = [], []
         for k, (label, body) in enumerate(groups):
             heads.append('<button type="button" role="tab" class="tab%s" aria-selected="%s" data-tab="%d">%s</button>' % (
