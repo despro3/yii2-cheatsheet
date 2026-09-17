@@ -704,6 +704,106 @@ td code { white-space: nowrap; }
   .code { break-inside: avoid; }
   body { background: #fff; color: #000; font-size: 11pt; }
 }
+
+
+/* ---------- прогресс изучения ---------- */
+
+.progress-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 10px 0 7px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.progress-btn:hover { color: var(--accent); border-color: var(--border-strong); }
+.progress-btn.has-progress { color: var(--accent); border-color: var(--accent); background: var(--accent-tint); }
+.progress-btn .ring { width: 18px; height: 18px; transform: rotate(-90deg); }
+.ring-bg, .ring-fg { fill: none; stroke-width: 4; }
+.ring-bg { stroke: var(--border-strong); }
+.ring-fg {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-dasharray: 0 100;
+  transition: stroke-dasharray .35s ease;
+}
+
+.nav-item { grid-template-columns: 26px minmax(0, 1fr) 16px; }
+.nav-done {
+  display: inline-flex;
+  align-self: center;
+  opacity: 0;
+  color: var(--accent);
+  transition: opacity .15s;
+}
+.nav-done svg { width: 14px; height: 14px; }
+.nav-item.done .nav-done { opacity: 1; }
+.nav-item.done span { color: var(--muted); }
+
+.eyebrow::after { order: 1; }
+.eyebrow .learned { order: 2; }
+
+.learned {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+.learned:hover { color: var(--accent); }
+.learned input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.learned.big {
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 14px;
+}
+.learned.big:hover { border-color: var(--accent); }
+.learned-cta { margin-top: 34px; }
+
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.link-btn:hover { color: var(--accent-hover); }
+
+@media (max-width: 720px) {
+  .progress-btn span { display: none; }
+  .progress-btn { padding: 0 7px; }
+}
+
+@media print {
+  .progress-btn, .learned, .learned-cta, .nav-done, .link-btn { display: none !important; }
+}
 </style>
 
 <header class="topbar">
@@ -722,6 +822,10 @@ td code { white-space: nowrap; }
   <button type="button" id="all-btn" class="icon-btn" aria-pressed="false" aria-label="Показать все разделы одной страницей" title="Все разделы одной страницей">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 21 8l-9 4.5L3 8z"/><path d="m4.5 12.5 7.5 3.8 7.5-3.8M4.5 16.8l7.5 3.7 7.5-3.7"/></svg>
   </button>
+  <button type="button" id="progress-btn" class="progress-btn" aria-label="Прогресс изучения">
+    <svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+    <span id="progress-num">0%</span>
+  </button>
   <button type="button" id="theme-btn" class="icon-btn" aria-label="Тёмная тема"></button>
 </header>
 
@@ -729,23 +833,23 @@ td code { white-space: nowrap; }
   <aside class="sidebar" id="sidebar">
     <div class="nav-label">Разделы</div>
     <nav class="nav">
-<button type="button" class="nav-item" data-id="intro"><i>01</i><span>Старт</span></button>
-<button type="button" class="nav-item" data-id="structure"><i>02</i><span>Структура (MVC)</span></button>
-<button type="button" class="nav-item" data-id="widgets"><i>03</i><span>Виджеты, фильтры, ресурсы</span></button>
-<button type="button" class="nav-item" data-id="lifecycle"><i>04</i><span>Запрос и ответ</span></button>
-<button type="button" class="nav-item" data-id="concepts"><i>05</i><span>Ключевые концепции</span></button>
-<button type="button" class="nav-item" data-id="db"><i>06</i><span>БД: DAO и Query Builder</span></button>
-<button type="button" class="nav-item" data-id="ar"><i>07</i><span>Active Record</span></button>
-<button type="button" class="nav-item" data-id="migrations"><i>08</i><span>Миграции</span></button>
-<button type="button" class="nav-item" data-id="forms"><i>09</i><span>Формы и валидация</span></button>
-<button type="button" class="nav-item" data-id="output"><i>10</i><span>Вывод данных</span></button>
-<button type="button" class="nav-item" data-id="security"><i>11</i><span>Безопасность</span></button>
-<button type="button" class="nav-item" data-id="caching"><i>12</i><span>Кеширование</span></button>
-<button type="button" class="nav-item" data-id="rest"><i>13</i><span>REST API</span></button>
-<button type="button" class="nav-item" data-id="console"><i>14</i><span>Консоль, i18n, почта</span></button>
-<button type="button" class="nav-item" data-id="helpers"><i>15</i><span>Хелперы</span></button>
-<button type="button" class="nav-item" data-id="testing"><i>16</i><span>Тесты и производительность</span></button>
-<button type="button" class="nav-item" data-id="cheatsheet"><i>17</i><span>Быстрая шпаргалка</span></button>
+<button type="button" class="nav-item" data-id="intro"><i>01</i><span>Старт</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="structure"><i>02</i><span>Структура (MVC)</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="widgets"><i>03</i><span>Виджеты, фильтры, ресурсы</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="lifecycle"><i>04</i><span>Запрос и ответ</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="concepts"><i>05</i><span>Ключевые концепции</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="db"><i>06</i><span>БД: DAO и Query Builder</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="ar"><i>07</i><span>Active Record</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="migrations"><i>08</i><span>Миграции</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="forms"><i>09</i><span>Формы и валидация</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="output"><i>10</i><span>Вывод данных</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="security"><i>11</i><span>Безопасность</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="caching"><i>12</i><span>Кеширование</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="rest"><i>13</i><span>REST API</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="console"><i>14</i><span>Консоль, i18n, почта</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="helpers"><i>15</i><span>Хелперы</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="testing"><i>16</i><span>Тесты и производительность</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
+<button type="button" class="nav-item" data-id="cheatsheet"><i>17</i><span>Быстрая шпаргалка</span><em class="nav-done" aria-hidden="true"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></em></button>
     </nav>
     <div class="nav-foot">
       <p>Выжимка официального руководства Yii&nbsp;2.0 — все 100 глав <span class="mono">guide-ru</span> в 17 разделах.</p>
@@ -754,6 +858,7 @@ td code { white-space: nowrap; }
         <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Описание классов ↗</a>
       </p>
       <p><span class="mono">/</span> — поиск, <span class="mono">Esc</span> — закрыть</p>
+      <p><button type="button" id="reset-progress" class="link-btn">Сбросить прогресс</button></p>
     </div>
   </aside>
 
@@ -761,7 +866,7 @@ td code { white-space: nowrap; }
     <div class="wrap">
       <div class="doc">
 <section id="intro" data-sec="intro">
-<header class="sec-head"><div class="eyebrow"><span>раздел 01</span></div><h1>Старт: установка и первый запуск</h1><p class="sec-summary">Что такое Yii2, установка, структура каталогов, входной скрипт, режимы окружения.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 01</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="intro"><span>Изучено</span></label></div><h1>Старт: установка и первый запуск</h1><p class="sec-summary">Что такое Yii2, установка, структура каталогов, входной скрипт, режимы окружения.</p></header>
 <p>Yii 2 — компонентный full-stack PHP-фреймворк на паттерне MVC. Требует <strong>PHP 7.4+</strong> (2.0.x работает и на более новых версиях PHP). Ставится Composer'ом вместе с шаблоном приложения: фреймворк и «скелет» проекта — это один установочный шаг.</p>
 <h2 id="ustanovka-za-odnu-komandu" data-title="Установка за одну команду">Установка за одну команду<a class="anchor" href="#ustanovka-za-odnu-komandu" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">shell</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="bash"># базовый шаблон — один сайт, самый простой старт
@@ -878,10 +983,10 @@ if (YII_ENV_DEV) {
     ];
 }</code></pre></div>
 <div class="note is-warn"><span class="note-label">важно</span><div class="note-body"><p><code>gii</code> и <code>debug</code> <strong>никогда</strong> не включаются на продакшене — это прямой доступ к генерации файлов и внутренностям приложения.</p></div></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 10 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/intro-yii" target="_blank" rel="noopener">Что такое Yii?</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-prerequisites" target="_blank" rel="noopener">Что нужно знать</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-installation" target="_blank" rel="noopener">Установка Yii</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-workflow" target="_blank" rel="noopener">Запуск приложения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-hello" target="_blank" rel="noopener">Говорим «Привет»</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-forms" target="_blank" rel="noopener">Работа с формами</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-databases" target="_blank" rel="noopener">Работа с базами данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-gii" target="_blank" rel="noopener">Генерация кода при помощи Gii</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-looking-ahead" target="_blank" rel="noopener">Взгляд в будущее</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-overview" target="_blank" rel="noopener">Обзор</a></div></aside><nav class="pager"><a class="pager-card to-next" href="#structure"><span>02 →</span><b>Структура (MVC)</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 10 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/intro-yii" target="_blank" rel="noopener">Что такое Yii?</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-prerequisites" target="_blank" rel="noopener">Что нужно знать</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-installation" target="_blank" rel="noopener">Установка Yii</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-workflow" target="_blank" rel="noopener">Запуск приложения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-hello" target="_blank" rel="noopener">Говорим «Привет»</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-forms" target="_blank" rel="noopener">Работа с формами</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-databases" target="_blank" rel="noopener">Работа с базами данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-gii" target="_blank" rel="noopener">Генерация кода при помощи Gii</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/start-looking-ahead" target="_blank" rel="noopener">Взгляд в будущее</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-overview" target="_blank" rel="noopener">Обзор</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="intro"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card to-next" href="#structure"><span>02 →</span><b>Структура (MVC)</b></a></nav>
 </section>
 <section id="structure" data-sec="structure" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 02</span></div><h1>Структура приложения: MVC по-Yii-евски</h1><p class="sec-summary">Приложение и его конфиг, компоненты, контроллеры, модели, представления, layout, модули.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 02</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="structure"><span>Изучено</span></label></div><h1>Структура приложения: MVC по-Yii-евски</h1><p class="sec-summary">Приложение и его конфиг, компоненты, контроллеры, модели, представления, layout, модули.</p></header>
 <p>Приложение — глобальный объект-одиночка <code>Yii::$app</code>. Он же <strong>Service Locator</strong>: через него достаются все компоненты (<code>Yii::$app-&gt;db</code>, <code>-&gt;user</code>, <code>-&gt;cache</code>, …). Всё приложение описывается одним массивом конфигурации.</p>
 <h2 id="konfiguraciya-prilozheniya" data-title="Конфигурация приложения">Конфигурация приложения<a class="anchor" href="#konfiguraciya-prilozheniya" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">// config/web.php
@@ -1140,10 +1245,10 @@ class Module extends \yii\base\Module
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">// подключение
 'modules' =&gt; ['admin' =&gt; ['class' =&gt; 'app\modules\admin\Module']],</code></pre></div>
 <ul><li>Маршрут: <code>admin/default/index</code>; только <code>admin</code> → <code>defaultRoute</code> (<code>default</code>) → <code>defaultAction</code>.</li><li>Доступ к модулю: <code>Yii::$app-&gt;getModule('admin')</code>, <code>Module::getInstance()</code>, <code>Yii::$app-&gt;controller-&gt;module</code>.</li><li>Модули вкладываются друг в друга: <code>forum/admin/dashboard/index</code>.</li><li>URL-правила модуля добавляются в <code>bootstrap()</code> (реализуйте <code>BootstrapInterface</code>), а не в <code>init()</code> — иначе они опоздают к разбору запроса.</li></ul>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 7 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-entry-scripts" target="_blank" rel="noopener">Входные скрипты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-applications" target="_blank" rel="noopener">Приложения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-application-components" target="_blank" rel="noopener">Компоненты приложения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-controllers" target="_blank" rel="noopener">Контроллеры</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-models" target="_blank" rel="noopener">Модели</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-views" target="_blank" rel="noopener">Виды</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-modules" target="_blank" rel="noopener">Модули</a></div></aside><nav class="pager"><a class="pager-card" href="#intro"><span>← 01</span><b>Старт</b></a><a class="pager-card to-next" href="#widgets"><span>03 →</span><b>Виджеты, фильтры, ресурсы</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 7 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-entry-scripts" target="_blank" rel="noopener">Входные скрипты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-applications" target="_blank" rel="noopener">Приложения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-application-components" target="_blank" rel="noopener">Компоненты приложения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-controllers" target="_blank" rel="noopener">Контроллеры</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-models" target="_blank" rel="noopener">Модели</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-views" target="_blank" rel="noopener">Виды</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-modules" target="_blank" rel="noopener">Модули</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="structure"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#intro"><span>← 01</span><b>Старт</b></a><a class="pager-card to-next" href="#widgets"><span>03 →</span><b>Виджеты, фильтры, ресурсы</b></a></nav>
 </section>
 <section id="widgets" data-sec="widgets" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 03</span></div><h1>Виджеты, фильтры и ресурсы</h1><p class="sec-summary">Виджеты, стандартные фильтры (ACF, VerbFilter, CORS, кеш), asset bundles, расширения.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 03</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="widgets"><span>Изучено</span></label></div><h1>Виджеты, фильтры и ресурсы</h1><p class="sec-summary">Виджеты, стандартные фильтры (ACF, VerbFilter, CORS, кеш), asset bundles, расширения.</p></header>
 <h2 id="vidzhety" data-title="Виджеты">Виджеты<a class="anchor" href="#vidzhety" aria-label="Ссылка на раздел">#</a></h2>
 <p>Виджет — переиспользуемый блок UI: класс + собственные представления + собственные ресурсы.</p>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">// вариант 1: всё сразу
@@ -1314,10 +1419,10 @@ yii asset assets.php config/assets-prod.php</code></pre></div>
 }</code></pre></div>
 <ul><li><code>autoload.psr-4</code> → Yii автоматически создаёт алиас (<code>@vendor/mywidget</code>).</li><li><code>extra.bootstrap</code> → класс с <code>BootstrapInterface::bootstrap($app)</code> выполняется на каждом запросе (удобно для регистрации URL-правил, обработчиков событий).</li><li>Не используйте <code>yii</code>, <code>yii2</code>, <code>yiisoft</code> как имя вендора — они зарезервированы.</li><li>В расширении не привязывайтесь к <code>Yii::$app-&gt;db</code> — заводите настраиваемое свойство <code>db</code>.</li></ul>
 <p>Официальные расширения: <code>yii2-debug</code>, <code>yii2-gii</code>, <code>yii2-bootstrap5</code>, <code>yii2-jui</code>, <code>yii2-imagine</code>, <code>yii2-httpclient</code>, <code>yii2-authclient</code>, <code>yii2-redis</code>, <code>yii2-mongodb</code>, <code>yii2-elasticsearch</code>, <code>yii2-sphinx</code>, <code>yii2-faker</code>, <code>yii2-twig</code>, <code>yii2-smarty</code>, <code>yii2-symfonymailer</code>, <code>yii2-apidoc</code>.</p>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 4 главы</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-widgets" target="_blank" rel="noopener">Виджеты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-filters" target="_blank" rel="noopener">Фильтры</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-assets" target="_blank" rel="noopener">Ресурсы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-extensions" target="_blank" rel="noopener">Расширения</a></div></aside><nav class="pager"><a class="pager-card" href="#structure"><span>← 02</span><b>Структура (MVC)</b></a><a class="pager-card to-next" href="#lifecycle"><span>04 →</span><b>Запрос и ответ</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 4 главы</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-widgets" target="_blank" rel="noopener">Виджеты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-filters" target="_blank" rel="noopener">Фильтры</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-assets" target="_blank" rel="noopener">Ресурсы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/structure-extensions" target="_blank" rel="noopener">Расширения</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="widgets"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#structure"><span>← 02</span><b>Структура (MVC)</b></a><a class="pager-card to-next" href="#lifecycle"><span>04 →</span><b>Запрос и ответ</b></a></nav>
 </section>
 <section id="lifecycle" data-sec="lifecycle" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 04</span></div><h1>Обработка запроса: роутинг, request, response</h1><p class="sec-summary">Маршрутизация и ЧПУ, Request, Response, сессии и куки, обработка ошибок, логирование.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 04</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="lifecycle"><span>Изучено</span></label></div><h1>Обработка запроса: роутинг, request, response</h1><p class="sec-summary">Маршрутизация и ЧПУ, Request, Response, сессии и куки, обработка ошибок, логирование.</p></header>
 <h2 id="marshrutizaciya-i-generaciya-url" data-title="Маршрутизация и генерация URL">Маршрутизация и генерация URL<a class="anchor" href="#marshrutizaciya-i-generaciya-url" aria-label="Ссылка на раздел">#</a></h2>
 <p>Маршрут — это <code>[модуль/]контроллер/действие</code>. Разбором и генерацией URL занимается компонент <code>urlManager</code>.</p>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">'urlManager' =&gt; [
@@ -1504,10 +1609,10 @@ Yii::endProfile('block1');</code></pre></div>
 ],</code></pre></div>
 <p>Цели логов: <code>FileTarget</code>, <code>DbTarget</code>, <code>EmailTarget</code>, <code>SyslogTarget</code>. Уровни: <code>error</code>, <code>warning</code>, <code>info</code>, <code>trace</code>, <code>profile</code>. Категория <code>yii\db\*</code> — маска по префиксу; HTTP-ошибки логируются как <code>yii\web\HttpException:&lt;код&gt;</code>.</p>
 <div class="note is-tip"><span class="note-label">совет</span><div class="note-body"><p>в долгоживущих консольных командах ставьте <code>flushInterval</code> и <code>exportInterval</code> в 1 — иначе сообщения не увидите до конца работы. На проде так делать не стоит.</p></div></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 8 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-overview" target="_blank" rel="noopener">Обзор</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-bootstrapping" target="_blank" rel="noopener">Предзагрузка</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-routing" target="_blank" rel="noopener">Разбор и генерация URL</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-requests" target="_blank" rel="noopener">Запросы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-responses" target="_blank" rel="noopener">Ответы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-sessions-cookies" target="_blank" rel="noopener">Сессии и куки</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-handling-errors" target="_blank" rel="noopener">Обработка ошибок</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-logging" target="_blank" rel="noopener">Логирование</a></div></aside><nav class="pager"><a class="pager-card" href="#widgets"><span>← 03</span><b>Виджеты, фильтры, ресурсы</b></a><a class="pager-card to-next" href="#concepts"><span>05 →</span><b>Ключевые концепции</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 8 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-overview" target="_blank" rel="noopener">Обзор</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-bootstrapping" target="_blank" rel="noopener">Предзагрузка</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-routing" target="_blank" rel="noopener">Разбор и генерация URL</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-requests" target="_blank" rel="noopener">Запросы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-responses" target="_blank" rel="noopener">Ответы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-sessions-cookies" target="_blank" rel="noopener">Сессии и куки</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-handling-errors" target="_blank" rel="noopener">Обработка ошибок</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/runtime-logging" target="_blank" rel="noopener">Логирование</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="lifecycle"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#widgets"><span>← 03</span><b>Виджеты, фильтры, ресурсы</b></a><a class="pager-card to-next" href="#concepts"><span>05 →</span><b>Ключевые концепции</b></a></nav>
 </section>
 <section id="concepts" data-sec="concepts" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 05</span></div><h1>Ключевые концепции Yii</h1><p class="sec-summary">Компоненты, свойства через геттеры, события, поведения, конфигурации, алиасы, автозагрузка, Service Locator, DI.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 05</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="concepts"><span>Изучено</span></label></div><h1>Ключевые концепции Yii</h1><p class="sec-summary">Компоненты, свойства через геттеры, события, поведения, конфигурации, алиасы, автозагрузка, Service Locator, DI.</p></header>
 <p>Это «ядро» фреймворка: если понять эти восемь вещей, остальное читается интуитивно.</p>
 <h2 id="component-i-baseobject" data-title="Component и BaseObject">Component и BaseObject<a class="anchor" href="#component-i-baseobject" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">text</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="plaintext">yii\base\BaseObject   → свойства (геттеры/сеттеры), init(), конфигурация через массив
@@ -1707,10 +1812,10 @@ Yii::$container-&gt;invoke([$obj, 'doSomething'], ['param1' =&gt; 42]);  // вн
 Yii::$container-&gt;set(BookingInterface::class, BookingService::class);</code></pre></div>
 <p><code>Instance::of('alias')</code> в параметрах ссылается на другую зарегистрированную зависимость. <code>set()</code> создаёт объект каждый раз, <code>setSingleton()</code> — один раз.</p>
 <div class="note is-tip"><span class="note-label">совет</span><div class="note-body"><p>регистрируйте зависимости как можно раньше — в конфигурации приложения или в bootstrap-классе расширения. <code>Yii::createObject()</code> внутри использует контейнер, поэтому переопределение классов ядра работает глобально.</p></div></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 9 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-components" target="_blank" rel="noopener">Компоненты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-properties" target="_blank" rel="noopener">Свойства</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-events" target="_blank" rel="noopener">События</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-behaviors" target="_blank" rel="noopener">Поведения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-configurations" target="_blank" rel="noopener">Конфигурации</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-aliases" target="_blank" rel="noopener">Псевдонимы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-autoloading" target="_blank" rel="noopener">Автозагрузка классов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-service-locator" target="_blank" rel="noopener">Service Locator</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-di-container" target="_blank" rel="noopener">Контейнер внедрения зависимостей</a></div></aside><nav class="pager"><a class="pager-card" href="#lifecycle"><span>← 04</span><b>Запрос и ответ</b></a><a class="pager-card to-next" href="#db"><span>06 →</span><b>БД: DAO и Query Builder</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 9 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-components" target="_blank" rel="noopener">Компоненты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-properties" target="_blank" rel="noopener">Свойства</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-events" target="_blank" rel="noopener">События</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-behaviors" target="_blank" rel="noopener">Поведения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-configurations" target="_blank" rel="noopener">Конфигурации</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-aliases" target="_blank" rel="noopener">Псевдонимы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-autoloading" target="_blank" rel="noopener">Автозагрузка классов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-service-locator" target="_blank" rel="noopener">Service Locator</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/concept-di-container" target="_blank" rel="noopener">Контейнер внедрения зависимостей</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="concepts"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#lifecycle"><span>← 04</span><b>Запрос и ответ</b></a><a class="pager-card to-next" href="#db"><span>06 →</span><b>БД: DAO и Query Builder</b></a></nav>
 </section>
 <section id="db" data-sec="db" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 06</span></div><h1>Работа с БД: DAO и построитель запросов</h1><p class="sec-summary">Connection, Command, транзакции, репликация, схема БД, построитель запросов.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 06</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="db"><span>Изучено</span></label></div><h1>Работа с БД: DAO и построитель запросов</h1><p class="sec-summary">Connection, Command, транзакции, репликация, схема БД, построитель запросов.</p></header>
 <p>Три уровня работы с базой: <strong>DAO</strong> (чистый SQL поверх PDO) → <strong>Query Builder</strong> (массивы вместо SQL) → <strong>Active Record</strong> (объекты). Все три можно смешивать.</p>
 <h2 id="podklyuchenie" data-title="Подключение">Подключение<a class="anchor" href="#podklyuchenie" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">'db' =&gt; [
@@ -1869,10 +1974,10 @@ $command = $query-&gt;createCommand();
 echo $command-&gt;getRawSql();          // с подставленными параметрами
 echo $command-&gt;sql; print_r($command-&gt;params);</code></pre></div>
 <div class="note is-tip"><span class="note-label">совет</span><div class="note-body"><p>любой <code>Query</code> можно выполнить на другом соединении — передайте его в метод выборки: <code>$query-&gt;all($db2)</code>.</p></div></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 2 главы</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/db-dao" target="_blank" rel="noopener">Объекты доступа к данным (DAO)</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/db-query-builder" target="_blank" rel="noopener">Построитель запросов</a></div></aside><nav class="pager"><a class="pager-card" href="#concepts"><span>← 05</span><b>Ключевые концепции</b></a><a class="pager-card to-next" href="#ar"><span>07 →</span><b>Active Record</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 2 главы</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/db-dao" target="_blank" rel="noopener">Объекты доступа к данным (DAO)</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/db-query-builder" target="_blank" rel="noopener">Построитель запросов</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="db"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#concepts"><span>← 05</span><b>Ключевые концепции</b></a><a class="pager-card to-next" href="#ar"><span>07 →</span><b>Active Record</b></a></nav>
 </section>
 <section id="ar" data-sec="ar" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 07</span></div><h1>Active Record</h1><p class="sec-summary">Поиск, сохранение, события, транзакции, оптимистичная блокировка, связи, жадная загрузка.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 07</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="ar"><span>Изучено</span></label></div><h1>Active Record</h1><p class="sec-summary">Поиск, сохранение, события, транзакции, оптимистичная блокировка, связи, жадная загрузка.</p></header>
 <p>Класс = таблица, объект = строка, атрибут = столбец. AR наследует <code>yii\base\Model</code>, поэтому умеет всё, что умеют модели: валидацию, сценарии, метки, <code>toArray()</code>.</p>
 <h2 id="obyavlenie-klassa" data-title="Объявление класса">Объявление класса<a class="anchor" href="#obyavlenie-klassa" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">namespace app\models;
@@ -2060,10 +2165,10 @@ Room::find()
     -&gt;select(['{{room}}.*', '([[length]] * [[width]] * [[height]]) AS volume'])
     -&gt;orderBy('volume DESC')
     -&gt;all();</code></pre></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 1 глава</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/db-active-record" target="_blank" rel="noopener">Active Record</a></div></aside><nav class="pager"><a class="pager-card" href="#db"><span>← 06</span><b>БД: DAO и Query Builder</b></a><a class="pager-card to-next" href="#migrations"><span>08 →</span><b>Миграции</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 1 глава</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/db-active-record" target="_blank" rel="noopener">Active Record</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="ar"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#db"><span>← 06</span><b>БД: DAO и Query Builder</b></a><a class="pager-card to-next" href="#migrations"><span>08 →</span><b>Миграции</b></a></nav>
 </section>
 <section id="migrations" data-sec="migrations" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 08</span></div><h1>Миграции баз данных</h1><p class="sec-summary">Создание, применение и откат миграций, генераторы, типы столбцов, несколько БД.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 08</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="migrations"><span>Изучено</span></label></div><h1>Миграции баз данных</h1><p class="sec-summary">Создание, применение и откат миграций, генераторы, типы столбцов, несколько БД.</p></header>
 <p>Миграция — PHP-класс с методами <code>up()</code>/<code>down()</code> (или транзакционными <code>safeUp()</code>/<code>safeDown()</code>), лежащий в системе контроля версий рядом с кодом. Применённые миграции регистрируются в таблице <code>migration</code>.</p>
 <h2 id="komandy" data-title="Команды">Команды<a class="anchor" href="#komandy" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">shell</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="bash">yii migrate/create create_news_table     # создать миграцию
@@ -2148,10 +2253,10 @@ yii migrate/create create_junction_table_for_post_and_tag_tables</code></pre></d
 yii migrate --migrationPath=@app/migrations/shop  # отдельный набор миграций</code></pre></div>
 <div class="note is-warn"><span class="note-label">важно</span><div class="note-body"><p>не используйте в миграциях классы Active Record. Бизнес-логика меняется, а миграция должна выполняться одинаково всегда — работайте через <code>$this-&gt;insert()</code>, <code>$this-&gt;update()</code> и Query Builder.</p></div></div>
 <div class="note is-tip"><span class="note-label">совет</span><div class="note-body"><p>миграции годятся не только для схемы — ими удобно заполнять справочники, строить иерархию RBAC и чистить кеш после изменения структуры.</p></div></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 1 глава</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/db-migrations" target="_blank" rel="noopener">Миграции баз данных</a></div></aside><nav class="pager"><a class="pager-card" href="#ar"><span>← 07</span><b>Active Record</b></a><a class="pager-card to-next" href="#forms"><span>09 →</span><b>Формы и валидация</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 1 глава</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/db-migrations" target="_blank" rel="noopener">Миграции баз данных</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="migrations"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#ar"><span>← 07</span><b>Active Record</b></a><a class="pager-card to-next" href="#forms"><span>09 →</span><b>Формы и валидация</b></a></nav>
 </section>
 <section id="forms" data-sec="forms" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 09</span></div><h1>Формы и проверка данных</h1><p class="sec-summary">ActiveForm, поля ввода, все встроенные валидаторы, свои валидаторы, AJAX-валидация, загрузка файлов.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 09</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="forms"><span>Изучено</span></label></div><h1>Формы и проверка данных</h1><p class="sec-summary">ActiveForm, поля ввода, все встроенные валидаторы, свои валидаторы, AJAX-валидация, загрузка файлов.</p></header>
 <h2 id="activeform" data-title="ActiveForm">ActiveForm<a class="anchor" href="#activeform" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">&lt;?php
 use yii\helpers\Html;
@@ -2342,10 +2447,10 @@ if (Model::loadMultiple($models, Yii::$app-&gt;request-&gt;post())
 foreach ($models as $i =&gt; $model) {
     echo $form-&gt;field($model, "[$i]name");
 }</code></pre></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 7 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-forms" target="_blank" rel="noopener">Создание форм</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-validation" target="_blank" rel="noopener">Проверка входящих данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-core-validators" target="_blank" rel="noopener">Встроенные валидаторы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-file-upload" target="_blank" rel="noopener">Загрузка файлов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-tabular-input" target="_blank" rel="noopener">Табличный ввод</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-multiple-models" target="_blank" rel="noopener">Работа с несколькими моделями</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-form-javascript" target="_blank" rel="noopener">Расширение ActiveForm на стороне клиента</a></div></aside><nav class="pager"><a class="pager-card" href="#migrations"><span>← 08</span><b>Миграции</b></a><a class="pager-card to-next" href="#output"><span>10 →</span><b>Вывод данных</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 7 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-forms" target="_blank" rel="noopener">Создание форм</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-validation" target="_blank" rel="noopener">Проверка входящих данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-core-validators" target="_blank" rel="noopener">Встроенные валидаторы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-file-upload" target="_blank" rel="noopener">Загрузка файлов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-tabular-input" target="_blank" rel="noopener">Табличный ввод</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-multiple-models" target="_blank" rel="noopener">Работа с несколькими моделями</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/input-form-javascript" target="_blank" rel="noopener">Расширение ActiveForm на стороне клиента</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="forms"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#migrations"><span>← 08</span><b>Миграции</b></a><a class="pager-card to-next" href="#output"><span>10 →</span><b>Вывод данных</b></a></nav>
 </section>
 <section id="output" data-sec="output" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 10</span></div><h1>Вывод данных</h1><p class="sec-summary">Форматтер, пагинация, сортировка, провайдеры данных, GridView/ListView/DetailView, JS/CSS, темы.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 10</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="output"><span>Изучено</span></label></div><h1>Вывод данных</h1><p class="sec-summary">Форматтер, пагинация, сортировка, провайдеры данных, GridView/ListView/DetailView, JS/CSS, темы.</p></header>
 <h2 id="formatter" data-title="Форматтер">Форматтер<a class="anchor" href="#formatter" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">$f = Yii::$app-&gt;formatter;
 
@@ -2545,10 +2650,10 @@ $this-&gt;registerJsVar('yiiOptions', $options);     // безопасная п�
     ],
 ],</code></pre></div>
 <p>Замена работает по частичному совпадению пути: <code>@app/views/site/about.php</code> → <code>@app/themes/basic/site/about.php</code>. В представлении доступны <code>$this-&gt;theme-&gt;getUrl(...)</code> и <code>$this-&gt;theme-&gt;getPath(...)</code>. Значением <code>pathMap</code> может быть массив путей — тогда используется первый существующий файл (удобно для наследования тем).</p>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 7 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-formatting" target="_blank" rel="noopener">Форматирование данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-pagination" target="_blank" rel="noopener">Постраничное разделение данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-sorting" target="_blank" rel="noopener">Сортировка</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-data-providers" target="_blank" rel="noopener">Провайдеры данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-data-widgets" target="_blank" rel="noopener">Виджеты для данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-client-scripts" target="_blank" rel="noopener">Работа с клиентскими скриптами</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-theming" target="_blank" rel="noopener">Темизация</a></div></aside><nav class="pager"><a class="pager-card" href="#forms"><span>← 09</span><b>Формы и валидация</b></a><a class="pager-card to-next" href="#security"><span>11 →</span><b>Безопасность</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 7 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-formatting" target="_blank" rel="noopener">Форматирование данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-pagination" target="_blank" rel="noopener">Постраничное разделение данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-sorting" target="_blank" rel="noopener">Сортировка</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-data-providers" target="_blank" rel="noopener">Провайдеры данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-data-widgets" target="_blank" rel="noopener">Виджеты для данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-client-scripts" target="_blank" rel="noopener">Работа с клиентскими скриптами</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/output-theming" target="_blank" rel="noopener">Темизация</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="output"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#forms"><span>← 09</span><b>Формы и валидация</b></a><a class="pager-card to-next" href="#security"><span>11 →</span><b>Безопасность</b></a></nav>
 </section>
 <section id="security" data-sec="security" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 11</span></div><h1>Безопасность</h1><p class="sec-summary">Аутентификация, ACF и RBAC, пароли, криптография, защита от SQL-инъекций, XSS, CSRF.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 11</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="security"><span>Изучено</span></label></div><h1>Безопасность</h1><p class="sec-summary">Аутентификация, ACF и RBAC, пароли, криптография, защита от SQL-инъекций, XSS, CSRF.</p></header>
 <p>Два базовых принципа: <strong>фильтровать ввод</strong> и <strong>экранировать вывод</strong>.</p>
 <h2 id="autentifikaciya" data-title="Аутентификация">Аутентификация<a class="anchor" href="#autentifikaciya" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">'components' =&gt; [
@@ -2703,10 +2808,10 @@ public function actionList($orderBy = null)
     }
 }</code></pre></div>
 <p>За reverse proxy обязательно настройте <code>request.trustedHosts</code>, иначе IP и схема соединения будут подделываемыми.</p>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 6 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-overview" target="_blank" rel="noopener">Безопасность</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-authentication" target="_blank" rel="noopener">Аутентификация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-authorization" target="_blank" rel="noopener">Авторизация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-passwords" target="_blank" rel="noopener">Работа с паролями</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-cryptography" target="_blank" rel="noopener">Криптография</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-best-practices" target="_blank" rel="noopener">Лучшие практики безопасности</a></div></aside><nav class="pager"><a class="pager-card" href="#output"><span>← 10</span><b>Вывод данных</b></a><a class="pager-card to-next" href="#caching"><span>12 →</span><b>Кеширование</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 6 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-overview" target="_blank" rel="noopener">Безопасность</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-authentication" target="_blank" rel="noopener">Аутентификация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-authorization" target="_blank" rel="noopener">Авторизация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-passwords" target="_blank" rel="noopener">Работа с паролями</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-cryptography" target="_blank" rel="noopener">Криптография</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/security-best-practices" target="_blank" rel="noopener">Лучшие практики безопасности</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="security"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#output"><span>← 10</span><b>Вывод данных</b></a><a class="pager-card to-next" href="#caching"><span>12 →</span><b>Кеширование</b></a></nav>
 </section>
 <section id="caching" data-sec="caching" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 12</span></div><h1>Кеширование</h1><p class="sec-summary">Кеш данных, зависимости, кеш запросов, фрагменты, страницы, HTTP-кеш.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 12</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="caching"><span>Изучено</span></label></div><h1>Кеширование</h1><p class="sec-summary">Кеш данных, зависимости, кеш запросов, фрагменты, страницы, HTTP-кеш.</p></header>
 <p>Четыре уровня: данные → запросы → фрагменты → страница, плюс HTTP-кеш на стороне клиента.</p>
 <h2 id="kesh-dannyh" data-title="Кеш данных">Кеш данных<a class="anchor" href="#kesh-dannyh" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">$cache = Yii::$app-&gt;cache;
@@ -2816,10 +2921,10 @@ yii cache/flush cache1 cache2
 yii cache/flush-all
 yii cache/flush-schema db     # сброс кеша схемы БД</code></pre></div>
 <div class="note is-warn"><span class="note-label">важно</span><div class="note-body"><p>у консольного приложения свой конфиг — проверьте, что кеширующие компоненты в <code>console.php</code> и <code>web.php</code> совпадают, иначе <code>yii cache/flush</code> очистит «не тот» кеш.</p></div></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 5 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-overview" target="_blank" rel="noopener">Кэширование</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-data" target="_blank" rel="noopener">Кэширование данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-fragment" target="_blank" rel="noopener">Кэширование фрагментов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-page" target="_blank" rel="noopener">Кэширование страниц</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-http" target="_blank" rel="noopener">HTTP кэширование</a></div></aside><nav class="pager"><a class="pager-card" href="#security"><span>← 11</span><b>Безопасность</b></a><a class="pager-card to-next" href="#rest"><span>13 →</span><b>REST API</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 5 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-overview" target="_blank" rel="noopener">Кэширование</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-data" target="_blank" rel="noopener">Кэширование данных</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-fragment" target="_blank" rel="noopener">Кэширование фрагментов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-page" target="_blank" rel="noopener">Кэширование страниц</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/caching-http" target="_blank" rel="noopener">HTTP кэширование</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="caching"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#security"><span>← 11</span><b>Безопасность</b></a><a class="pager-card to-next" href="#rest"><span>13 →</span><b>REST API</b></a></nav>
 </section>
 <section id="rest" data-sec="rest" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 13</span></div><h1>REST API</h1><p class="sec-summary">ActiveController, маршруты, ресурсы и поля, форматы ответа, аутентификация, лимиты, версии, ошибки.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 13</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="rest"><span>Изучено</span></label></div><h1>REST API</h1><p class="sec-summary">ActiveController, маршруты, ресурсы и поля, форматы ответа, аутентификация, лимиты, версии, ошибки.</p></header>
 <h2 id="minimalnyy-api-za-tri-shaga" data-title="Минимальный API за три шага">Минимальный API за три шага<a class="anchor" href="#minimalnyy-api-za-tri-shaga" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">// 1. Контроллер
 namespace app\controllers;
@@ -2997,10 +3102,10 @@ return new ActiveDataProvider(['query' =&gt; $query]);</code></pre></div>
     },
 ],</code></pre></div>
 <div class="note is-tip"><span class="note-label">совет</span><div class="note-body"><p>API лучше выносить в отдельное приложение или модуль — так проще не смешивать stateless-логику с сессиями веб-части.</p></div></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 10 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-quick-start" target="_blank" rel="noopener">Быстрый старт</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-resources" target="_blank" rel="noopener">Ресурсы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-controllers" target="_blank" rel="noopener">Контроллеры</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-routing" target="_blank" rel="noopener">Маршрутизация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-response-formatting" target="_blank" rel="noopener">Форматирование ответа</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-authentication" target="_blank" rel="noopener">Аутентификация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-rate-limiting" target="_blank" rel="noopener">Ограничение частоты запросов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-versioning" target="_blank" rel="noopener">Версионирование</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-error-handling" target="_blank" rel="noopener">Обработка ошибок</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-filtering-collections" target="_blank" rel="noopener">Фильтрация коллекций</a></div></aside><nav class="pager"><a class="pager-card" href="#caching"><span>← 12</span><b>Кеширование</b></a><a class="pager-card to-next" href="#console"><span>14 →</span><b>Консоль, i18n, почта</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 10 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-quick-start" target="_blank" rel="noopener">Быстрый старт</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-resources" target="_blank" rel="noopener">Ресурсы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-controllers" target="_blank" rel="noopener">Контроллеры</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-routing" target="_blank" rel="noopener">Маршрутизация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-response-formatting" target="_blank" rel="noopener">Форматирование ответа</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-authentication" target="_blank" rel="noopener">Аутентификация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-rate-limiting" target="_blank" rel="noopener">Ограничение частоты запросов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-versioning" target="_blank" rel="noopener">Версионирование</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-error-handling" target="_blank" rel="noopener">Обработка ошибок</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/rest-filtering-collections" target="_blank" rel="noopener">Фильтрация коллекций</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="rest"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#caching"><span>← 12</span><b>Кеширование</b></a><a class="pager-card to-next" href="#console"><span>14 →</span><b>Консоль, i18n, почта</b></a></nav>
 </section>
 <section id="console" data-sec="console" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 14</span></div><h1>Консоль, интернационализация, почта</h1><p class="sec-summary">Консольные команды, переводы и множественные формы, отправка писем.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 14</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="console"><span>Изучено</span></label></div><h1>Консоль, интернационализация, почта</h1><p class="sec-summary">Консольные команды, переводы и множественные формы, отправка писем.</p></header>
 <h2 id="konsolnye-prilozheniya" data-title="Консольные приложения">Консольные приложения<a class="anchor" href="#konsolnye-prilozheniya" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">shell</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="bash">yii &lt;маршрут&gt; [--опция1=значение1 ... аргумент1 аргумент2]
 yii                       # список всех команд
@@ -3137,10 +3242,10 @@ $message-&gt;attachContent($csv, ['fileName' =&gt; 'report.csv', 'contentType' =
 
 Yii::$app-&gt;mailer-&gt;sendMultiple($messages);      // пачкой, одним соединением</code></pre></div>
 <div class="note is-tip"><span class="note-label">совет</span><div class="note-body"><p>на разработке включайте <code>useFileTransport</code> — письма складываются в <code>@runtime/mail</code> и их можно открыть текстовым редактором, ничего никуда не уходит.</p></div></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 3 главы</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-console" target="_blank" rel="noopener">Консольное приложение</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-i18n" target="_blank" rel="noopener">Интернационализация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-mailing" target="_blank" rel="noopener">Отправка почты</a></div></aside><nav class="pager"><a class="pager-card" href="#rest"><span>← 13</span><b>REST API</b></a><a class="pager-card to-next" href="#helpers"><span>15 →</span><b>Хелперы</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 3 главы</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-console" target="_blank" rel="noopener">Консольное приложение</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-i18n" target="_blank" rel="noopener">Интернационализация</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-mailing" target="_blank" rel="noopener">Отправка почты</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="console"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#rest"><span>← 13</span><b>REST API</b></a><a class="pager-card to-next" href="#helpers"><span>15 →</span><b>Хелперы</b></a></nav>
 </section>
 <section id="helpers" data-sec="helpers" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 15</span></div><h1>Хелперы</h1><p class="sec-summary">ArrayHelper, Html, Url, Json, StringHelper, FileHelper, Inflector и другие.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 15</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="helpers"><span>Изучено</span></label></div><h1>Хелперы</h1><p class="sec-summary">ArrayHelper, Html, Url, Json, StringHelper, FileHelper, Inflector и другие.</p></header>
 <p>Статические классы в <code>yii\helpers</code>. У каждого есть базовый класс (<code>BaseArrayHelper</code>) — используйте всегда конкретный (<code>ArrayHelper</code>), а для подмены реализации наследуйте базовый и подставьте через <code>Yii::$classMap</code>.</p>
 <p>Полный список: <code>ArrayHelper</code>, <code>Html</code>, <code>HtmlPurifier</code>, <code>Url</code>, <code>Json</code>, <code>StringHelper</code>, <code>FileHelper</code>, <code>Inflector</code>, <code>Console</code>, <code>FormatConverter</code>, <code>Markdown</code>, <code>VarDumper</code>, <code>IpHelper</code>, <code>Imagine</code> (расширение <code>yii2-imagine</code>).</p>
 <h2 id="arrayhelper" data-title="ArrayHelper">ArrayHelper<a class="anchor" href="#arrayhelper" aria-label="Ссылка на раздел">#</a></h2>
@@ -3309,10 +3414,10 @@ echo Markdown::process($text, 'gfm');         // Markdown → HTML
 FormatConverter::convertDateIcuToPhp('yyyy-MM-dd');
 IpHelper::inRange('192.168.1.5', '192.168.0.0/16');
 Console::stdout(Console::ansiFormat('OK', [Console::FG_GREEN]));</code></pre></div>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 5 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-overview" target="_blank" rel="noopener">Хелперы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-array" target="_blank" rel="noopener">ArrayHelper</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-html" target="_blank" rel="noopener">Html-помощник</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-json" target="_blank" rel="noopener">Json хелпер</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-url" target="_blank" rel="noopener">Url</a></div></aside><nav class="pager"><a class="pager-card" href="#console"><span>← 14</span><b>Консоль, i18n, почта</b></a><a class="pager-card to-next" href="#testing"><span>16 →</span><b>Тесты и производительность</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 5 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-overview" target="_blank" rel="noopener">Хелперы</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-array" target="_blank" rel="noopener">ArrayHelper</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-html" target="_blank" rel="noopener">Html-помощник</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-json" target="_blank" rel="noopener">Json хелпер</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/helper-url" target="_blank" rel="noopener">Url</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="helpers"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#console"><span>← 14</span><b>Консоль, i18n, почта</b></a><a class="pager-card to-next" href="#testing"><span>16 →</span><b>Тесты и производительность</b></a></nav>
 </section>
 <section id="testing" data-sec="testing" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 16</span></div><h1>Тестирование, производительность, эксплуатация</h1><p class="sec-summary">Codeception и фикстуры, оптимизация, деплой, Docker, микро-фреймворк, шаблонизаторы.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 16</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="testing"><span>Изучено</span></label></div><h1>Тестирование, производительность, эксплуатация</h1><p class="sec-summary">Codeception и фикстуры, оптимизация, деплой, Docker, микро-фреймворк, шаблонизаторы.</p></header>
 <h2 id="testirovanie" data-title="Тестирование">Тестирование<a class="anchor" href="#testirovanie" aria-label="Ссылка на раздел">#</a></h2>
 <p>Yii официально интегрирован с <a href="https://codeception.com/" target="_blank" rel="noopener">Codeception</a>; в шаблонах приложений тесты уже настроены.</p>
 <div class="table-wrap"><table><thead><tr><th>Тип</th><th>Что проверяет</th><th>Скорость</th></tr></thead><tbody><tr><td>Модульные (unit)</td><td>отдельный класс/метод, PHPUnit</td><td>быстро</td></tr><tr><td>Функциональные</td><td>сценарий пользователя, приложение запускается из кода</td><td>средне</td></tr><tr><td>Приёмочные (acceptance)</td><td>сценарий через реальный браузер/PhpBrowser по HTTP</td><td>медленно</td></tr></tbody></table></div>
@@ -3425,10 +3530,10 @@ new yii\web\Application(require __DIR__ . '/../config/yii/web.php');  // без 
     ],
 ],</code></pre></div>
 <p>Расширение выбирается по суффиксу файла представления (<code>index.twig</code>).</p>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 13 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-overview" target="_blank" rel="noopener">Тестирование</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-environment-setup" target="_blank" rel="noopener">Настройка тестового окружения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-unit" target="_blank" rel="noopener">Модульные тесты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-functional" target="_blank" rel="noopener">Функциональные тесты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-acceptance" target="_blank" rel="noopener">Приёмочное тестирование</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-fixtures" target="_blank" rel="noopener">Фикстуры</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-performance-tuning" target="_blank" rel="noopener">Оптимизация производительности</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-shared-hosting" target="_blank" rel="noopener">Окружение виртуального хостинга</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-docker" target="_blank" rel="noopener">Yii и Docker</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-template-engines" target="_blank" rel="noopener">Использование шаблонизаторов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-yii-as-micro-framework" target="_blank" rel="noopener">Использование Yii в качестве микро-framework'а</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-yii-integration" target="_blank" rel="noopener">Работа со сторонним кодом</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-start-from-scratch" target="_blank" rel="noopener">Создание своей структуры приложения</a></div></aside><nav class="pager"><a class="pager-card" href="#helpers"><span>← 15</span><b>Хелперы</b></a><a class="pager-card to-next" href="#cheatsheet"><span>17 →</span><b>Быстрая шпаргалка</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 13 глав</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-overview" target="_blank" rel="noopener">Тестирование</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-environment-setup" target="_blank" rel="noopener">Настройка тестового окружения</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-unit" target="_blank" rel="noopener">Модульные тесты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-functional" target="_blank" rel="noopener">Функциональные тесты</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-acceptance" target="_blank" rel="noopener">Приёмочное тестирование</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/test-fixtures" target="_blank" rel="noopener">Фикстуры</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-performance-tuning" target="_blank" rel="noopener">Оптимизация производительности</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-shared-hosting" target="_blank" rel="noopener">Окружение виртуального хостинга</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-docker" target="_blank" rel="noopener">Yii и Docker</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-template-engines" target="_blank" rel="noopener">Использование шаблонизаторов</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-yii-as-micro-framework" target="_blank" rel="noopener">Использование Yii в качестве микро-framework'а</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-yii-integration" target="_blank" rel="noopener">Работа со сторонним кодом</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/tutorial-start-from-scratch" target="_blank" rel="noopener">Создание своей структуры приложения</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="testing"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#helpers"><span>← 15</span><b>Хелперы</b></a><a class="pager-card to-next" href="#cheatsheet"><span>17 →</span><b>Быстрая шпаргалка</b></a></nav>
 </section>
 <section id="cheatsheet" data-sec="cheatsheet" hidden>
-<header class="sec-head"><div class="eyebrow"><span>раздел 17</span></div><h1>Быстрая шпаргалка</h1><p class="sec-summary">Yii::$app, частые сниппеты, консольные команды, структура проекта — всё на одной странице.</p></header>
+<header class="sec-head"><div class="eyebrow"><span>раздел 17</span><label class="learned"><input type="checkbox" class="learned-box" data-sec="cheatsheet"><span>Изучено</span></label></div><h1>Быстрая шпаргалка</h1><p class="sec-summary">Yii::$app, частые сниппеты, консольные команды, структура проекта — всё на одной странице.</p></header>
 <h2 id="yii-app-chto-gde-lezhit" data-title="Yii::$app — что где лежит">Yii::$app — что где лежит<a class="anchor" href="#yii-app-chto-gde-lezhit" aria-label="Ссылка на раздел">#</a></h2>
 <div class="code"><div class="code-bar"><span class="code-lang">php</span><button type="button" class="copy" aria-label="Скопировать код"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h8"/></svg><span>копировать</span></button></div><pre><code data-lang="php">Yii::$app-&gt;request        // GET/POST, заголовки, куки, IP
 Yii::$app-&gt;response       // код, заголовки, формат, файлы, редиректы
@@ -3578,7 +3683,7 @@ php yii help &lt;команда&gt;</code></pre></div>
 <div class="table-wrap"><table><thead><tr><th>Yii 1.1</th><th>Yii 2.0</th></tr></thead><tbody><tr><td><code>CComponent</code></td><td><code>yii\base\BaseObject</code> (свойства) + <code>yii\base\Component</code> (+ события, поведения)</td></tr><tr><td><code>CWebApplication</code>, <code>Yii::app()</code></td><td><code>yii\web\Application</code>, <code>Yii::$app</code></td></tr><tr><td><code>CActiveRecord::model()-&gt;findAll()</code></td><td><code>Post::find()-&gt;all()</code></td></tr><tr><td><code>relations()</code></td><td>геттеры <code>getOrders()</code> с <code>hasMany()</code>/<code>hasOne()</code></td></tr><tr><td><code>CDbCriteria</code></td><td><code>yii\db\ActiveQuery</code> / <code>yii\db\Query</code></td></tr><tr><td><code>$this</code> в виде = контроллер</td><td><code>$this</code> = объект <code>View</code>, контроллер — <code>$this-&gt;context</code></td></tr><tr><td><code>renderPartial()</code> в виде</td><td><code>echo $this-&gt;render()</code> (возвращает строку)</td></tr><tr><td>фильтры <code>filters()</code></td><td>поведения <code>behaviors()</code> + <code>yii\base\ActionFilter</code></td></tr><tr><td><code>CWebUser</code>, <code>CUserIdentity</code></td><td><code>yii\web\User</code> + <code>yii\web\IdentityInterface</code></td></tr><tr><td>пакеты скриптов</td><td>asset bundles (<code>yii\web\AssetBundle</code>)</td></tr><tr><td>scopes</td><td>свои классы <code>ActiveQuery</code> с методами-фильтрами</td></tr><tr><td><code>unsafe</code> валидатор</td><td><code>scenarios()</code> и префикс <code>!</code></td></tr></tbody></table></div>
 <h2 id="kuda-smotret-dalshe" data-title="Куда смотреть дальше">Куда смотреть дальше<a class="anchor" href="#kuda-smotret-dalshe" aria-label="Ссылка на раздел">#</a></h2>
 <ul><li>Полное руководство: <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">https://www.yiiframework.com/doc/guide/2.0/ru</a></li><li>Описание классов (API): <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">https://www.yiiframework.com/doc/api/2.0</a></li><li>Расширения: <a href="https://www.yiiframework.com/extensions" target="_blank" rel="noopener">https://www.yiiframework.com/extensions</a></li><li>Форум и чат сообщества: <a href="https://forum.yiiframework.com" target="_blank" rel="noopener">https://forum.yiiframework.com</a>, Telegram/Gitter <code>yiisoft/yii2</code></li></ul>
-<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 2 главы</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/glossary" target="_blank" rel="noopener">A</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/intro-upgrade-from-v1" target="_blank" rel="noopener">Обновление с версии 1.1</a></div></aside><nav class="pager"><a class="pager-card" href="#testing"><span>← 16</span><b>Тесты и производительность</b></a></nav>
+<aside class="sources"><div class="sources-label">Первоисточник — руководство Yii 2.0<span>· 2 главы</span></div><div class="sources-list"><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/glossary" target="_blank" rel="noopener">A</a><a class="chip" href="https://www.yiiframework.com/doc/guide/2.0/ru/intro-upgrade-from-v1" target="_blank" rel="noopener">Обновление с версии 1.1</a></div></aside><div class="learned-cta"><label class="learned big"><input type="checkbox" class="learned-box" data-sec="cheatsheet"><span>Отметить раздел изученным</span></label></div><nav class="pager"><a class="pager-card" href="#testing"><span>← 16</span><b>Тесты и производительность</b></a></nav>
 </section>
       </div>
       <aside class="rail" id="rail" aria-label="Содержание раздела"></aside>
@@ -3951,6 +4056,82 @@ window.YII_INDEX=[{"s":0,"a":"intro","t":"Старт","d":1,"x":"Что тако
       (best || links[0]).classList.add('is-active');
     });
   }, { passive: true });
+
+  /* ---------------- прогресс изучения ---------------- */
+
+  var KEY_DONE = 'yii-done';
+  var progressBtn = document.getElementById('progress-btn');
+  var progressNum = document.getElementById('progress-num');
+  var progressRing = document.querySelector('.ring-fg');
+  var resetBtn = document.getElementById('reset-progress');
+  var learnedBoxes = [].slice.call(document.querySelectorAll('.learned-box'));
+
+  function doneList() {
+    try {
+      var list = JSON.parse(read(KEY_DONE) || '[]');
+      return Array.isArray(list) ? list : [];
+    } catch (e) { return []; }
+  }
+
+  function setDone(id, on) {
+    var list = doneList().filter(function (x) { return x !== id; });
+    if (on) list.push(id);
+    store(KEY_DONE, JSON.stringify(list));
+    renderProgress();
+  }
+
+  function nextUnlearned() {
+    var list = doneList();
+    for (var i = 0; i < SECTIONS.length; i++) {
+      if (list.indexOf(SECTIONS[i].id) < 0) return i;
+    }
+    return -1;
+  }
+
+  function renderProgress() {
+    var list = doneList();
+    var total = SECTIONS.length || 1;
+    var pct = Math.round(list.length / total * 100);
+
+    navButtons.forEach(function (btn) {
+      btn.classList.toggle('done', list.indexOf(btn.getAttribute('data-id')) >= 0);
+    });
+    learnedBoxes.forEach(function (box) {
+      box.checked = list.indexOf(box.getAttribute('data-sec')) >= 0;
+    });
+    if (progressNum) progressNum.textContent = pct + '%';
+    if (progressRing) progressRing.style.strokeDasharray = pct + ' 100';
+    if (progressBtn) {
+      progressBtn.classList.toggle('has-progress', list.length > 0);
+      progressBtn.title = list.length >= total
+        ? 'Все ' + total + ' разделов изучены'
+        : 'Изучено ' + list.length + ' из ' + total + '. Открыть следующий неизученный';
+    }
+  }
+
+  learnedBoxes.forEach(function (box) {
+    box.addEventListener('change', function () {
+      setDone(box.getAttribute('data-sec'), box.checked);
+    });
+  });
+
+  if (progressBtn) {
+    progressBtn.addEventListener('click', function () {
+      var idx = nextUnlearned();
+      if (idx >= 0) { closeNav(); show(idx); }
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      if (window.confirm('Сбросить отметки об изученных разделах?')) {
+        store(KEY_DONE, '[]');
+        renderProgress();
+      }
+    });
+  }
+
+  renderProgress();
 
   /* ---------------- syntax highlighting ---------------- */
 
