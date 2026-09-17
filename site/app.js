@@ -359,6 +359,82 @@
     });
   }, { passive: true });
 
+  /* ---------------- прогресс изучения ---------------- */
+
+  var KEY_DONE = 'yii-done';
+  var progressBtn = document.getElementById('progress-btn');
+  var progressNum = document.getElementById('progress-num');
+  var progressRing = document.querySelector('.ring-fg');
+  var resetBtn = document.getElementById('reset-progress');
+  var learnedBoxes = [].slice.call(document.querySelectorAll('.learned-box'));
+
+  function doneList() {
+    try {
+      var list = JSON.parse(read(KEY_DONE) || '[]');
+      return Array.isArray(list) ? list : [];
+    } catch (e) { return []; }
+  }
+
+  function setDone(id, on) {
+    var list = doneList().filter(function (x) { return x !== id; });
+    if (on) list.push(id);
+    store(KEY_DONE, JSON.stringify(list));
+    renderProgress();
+  }
+
+  function nextUnlearned() {
+    var list = doneList();
+    for (var i = 0; i < SECTIONS.length; i++) {
+      if (list.indexOf(SECTIONS[i].id) < 0) return i;
+    }
+    return -1;
+  }
+
+  function renderProgress() {
+    var list = doneList();
+    var total = SECTIONS.length || 1;
+    var pct = Math.round(list.length / total * 100);
+
+    navButtons.forEach(function (btn) {
+      btn.classList.toggle('done', list.indexOf(btn.getAttribute('data-id')) >= 0);
+    });
+    learnedBoxes.forEach(function (box) {
+      box.checked = list.indexOf(box.getAttribute('data-sec')) >= 0;
+    });
+    if (progressNum) progressNum.textContent = pct + '%';
+    if (progressRing) progressRing.style.strokeDasharray = pct + ' 100';
+    if (progressBtn) {
+      progressBtn.classList.toggle('has-progress', list.length > 0);
+      progressBtn.title = list.length >= total
+        ? 'Все ' + total + ' разделов изучены'
+        : 'Изучено ' + list.length + ' из ' + total + '. Открыть следующий неизученный';
+    }
+  }
+
+  learnedBoxes.forEach(function (box) {
+    box.addEventListener('change', function () {
+      setDone(box.getAttribute('data-sec'), box.checked);
+    });
+  });
+
+  if (progressBtn) {
+    progressBtn.addEventListener('click', function () {
+      var idx = nextUnlearned();
+      if (idx >= 0) { closeNav(); show(idx); }
+    });
+  }
+
+  if (resetBtn) {
+    resetBtn.addEventListener('click', function () {
+      if (window.confirm('Сбросить отметки об изученных разделах?')) {
+        store(KEY_DONE, '[]');
+        renderProgress();
+      }
+    });
+  }
+
+  renderProgress();
+
   /* ---------------- syntax highlighting ---------------- */
 
   function highlightCode() {

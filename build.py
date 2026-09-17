@@ -349,11 +349,16 @@ def main():
                        'heading': heading_text, 'body': body,
                        'sources': render_sources(slugs, guide)})
 
+    CHECK_ICON = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" '
+                  'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+                  'stroke-linejoin="round"/></svg>')
+
     # навигация
     nav = []
     for pos, sec in enumerate(sections):
-        nav.append('<button type="button" class="nav-item" data-id="%s"><i>%s</i><span>%s</span></button>'
-                   % (sec['id'], sec['num'], html.escape(sec['title'], quote=False)))
+        nav.append('<button type="button" class="nav-item" data-id="%s"><i>%s</i><span>%s</span>'
+                   '<em class="nav-done" aria-hidden="true">%s</em></button>'
+                   % (sec['id'], sec['num'], html.escape(sec['title'], quote=False), CHECK_ICON))
 
     # разделы
     rendered = []
@@ -369,12 +374,18 @@ def main():
                          % (nxt['id'], nxt['num'], html.escape(nxt['title'], quote=False)))
         rendered.append(
             '<section id="%s" data-sec="%s"%s>\n'
-            '<header class="sec-head"><div class="eyebrow"><span>раздел %s</span></div>'
-            '<h1>%s</h1>%s</header>\n%s\n%s<nav class="pager">%s</nav>\n</section>'
-            % (sec['id'], sec['id'], '' if pos == 0 else ' hidden', sec['num'],
+            '<header class="sec-head"><div class="eyebrow"><span>раздел %s</span>'
+            '<label class="learned"><input type="checkbox" class="learned-box" data-sec="%s">'
+            '<span>Изучено</span></label></div>'
+            '<h1>%s</h1>%s</header>\n%s\n%s'
+            '<div class="learned-cta"><label class="learned big">'
+            '<input type="checkbox" class="learned-box" data-sec="%s">'
+            '<span>Отметить раздел изученным</span></label></div>'
+            '<nav class="pager">%s</nav>\n</section>'
+            % (sec['id'], sec['id'], '' if pos == 0 else ' hidden', sec['num'], sec['id'],
                inline(sec['heading']),
                ('<p class="sec-summary">%s</p>' % inline(sec['summary'])) if sec['summary'] else '',
-               sec['body'], sec['sources'], ''.join(pager)))
+               sec['body'], sec['sources'], sec['id'], ''.join(pager)))
 
     with open(os.path.join(SITE, 'styles.css'), encoding='utf-8') as fh:
         styles = fh.read()

@@ -21,6 +21,10 @@
   <button type="button" id="all-btn" class="icon-btn" aria-pressed="false" aria-label="Показать все разделы одной страницей" title="Все разделы одной страницей">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5 21 8l-9 4.5L3 8z"/><path d="m4.5 12.5 7.5 3.8 7.5-3.8M4.5 16.8l7.5 3.7 7.5-3.7"/></svg>
   </button>
+  <button type="button" id="progress-btn" class="progress-btn" aria-label="Прогресс изучения">
+    <svg class="ring" viewBox="0 0 36 36" aria-hidden="true"><circle class="ring-bg" cx="18" cy="18" r="15.5"/><circle class="ring-fg" cx="18" cy="18" r="15.5" pathLength="100"/></svg>
+    <span id="progress-num">0%</span>
+  </button>
   <button type="button" id="theme-btn" class="icon-btn" aria-label="Тёмная тема"></button>
 </header>
 
@@ -37,6 +41,7 @@
         <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">Описание классов ↗</a>
       </p>
       <p><span class="mono">/</span> — поиск, <span class="mono">Esc</span> — закрыть</p>
+      <p><button type="button" id="reset-progress" class="link-btn">Сбросить прогресс</button></p>
     </div>
   </aside>
 

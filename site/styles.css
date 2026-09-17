@@ -699,3 +699,103 @@ td code { white-space: nowrap; }
   .code { break-inside: avoid; }
   body { background: #fff; color: #000; font-size: 11pt; }
 }
+
+
+/* ---------- прогресс изучения ---------- */
+
+.progress-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  height: 34px;
+  padding: 0 10px 0 7px;
+  flex: 0 0 auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--surface);
+  color: var(--muted);
+  font: inherit;
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.progress-btn:hover { color: var(--accent); border-color: var(--border-strong); }
+.progress-btn.has-progress { color: var(--accent); border-color: var(--accent); background: var(--accent-tint); }
+.progress-btn .ring { width: 18px; height: 18px; transform: rotate(-90deg); }
+.ring-bg, .ring-fg { fill: none; stroke-width: 4; }
+.ring-bg { stroke: var(--border-strong); }
+.ring-fg {
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-dasharray: 0 100;
+  transition: stroke-dasharray .35s ease;
+}
+
+.nav-item { grid-template-columns: 26px minmax(0, 1fr) 16px; }
+.nav-done {
+  display: inline-flex;
+  align-self: center;
+  opacity: 0;
+  color: var(--accent);
+  transition: opacity .15s;
+}
+.nav-done svg { width: 14px; height: 14px; }
+.nav-item.done .nav-done { opacity: 1; }
+.nav-item.done span { color: var(--muted); }
+
+.eyebrow::after { order: 1; }
+.eyebrow .learned { order: 2; }
+
+.learned {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  flex: 0 0 auto;
+  font-family: inherit;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--muted);
+  cursor: pointer;
+  user-select: none;
+}
+.learned:hover { color: var(--accent); }
+.learned input {
+  width: 15px;
+  height: 15px;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.learned.big {
+  padding: 11px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--surface);
+  font-size: 14px;
+}
+.learned.big:hover { border-color: var(--accent); }
+.learned-cta { margin-top: 34px; }
+
+.link-btn {
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--accent);
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.link-btn:hover { color: var(--accent-hover); }
+
+@media (max-width: 720px) {
+  .progress-btn span { display: none; }
+  .progress-btn { padding: 0 7px; }
+}
+
+@media print {
+  .progress-btn, .learned, .learned-cta, .nav-done, .link-btn { display: none !important; }
+}
