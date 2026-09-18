@@ -946,6 +946,21 @@ def reading_time(words, code_lines):
     return max(1, int(round(minutes)))
 
 
+def explorer_counts():
+    """Числа для карточки каталога на главной — берутся из самого каталога."""
+    sys.path.insert(0, os.path.join(SRC, 'explorer'))
+    try:
+        import content as catalogue
+    except ImportError:                      # каталога рядом нет — карточка обойдётся нулями
+        return {'topics': 0, 'refs': 0, 'demos': 0}
+    blocks = [b for t in catalogue.TOPICS for _, _, bl in t['tabs'] for b in bl]
+    return {
+        'topics': len(catalogue.TOPICS),
+        'refs': sum(len(b[1]) for b in blocks if b[0] == 'ref'),
+        'demos': sum(1 for b in blocks if b[0] == 'demo'),
+    }
+
+
 def main():
     check_only = '--check' in sys.argv
     warnings = []
@@ -1103,8 +1118,12 @@ def main():
         "    ->orderBy(['created_at' => SORT_DESC])\n"
         "    ->limit(10)\n"
         "    ->all();", 'php')
+    catalogue = explorer_counts()
     index_main = fill(index_tpl, {
         'hero_code': hero_code,
+        'explorer_topics': str(catalogue['topics']),
+        'explorer_refs': str(catalogue['refs']),
+        'explorer_demos': str(catalogue['demos']),
         'parts': ''.join(parts_html),
         'pages_count': str(len(ordered)),
         'chapters_count': str(len(chapters)),

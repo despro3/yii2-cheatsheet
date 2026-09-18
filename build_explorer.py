@@ -28,6 +28,13 @@ TITLE = 'Разборный Yii 2'
 DESCRIPTION = ('Каталог механизмов Yii 2: карточки основных узлов фреймворка, '
                'полные списки встроенного и живые демонстрации.')
 
+# числительное для лида: счёт узлов берётся из данных, а строка должна читаться словами
+NUMERALS = {
+    10: 'Десять', 11: 'Одиннадцать', 12: 'Двенадцать', 13: 'Тринадцать',
+    14: 'Четырнадцать', 15: 'Пятнадцать', 16: 'Шестнадцать', 17: 'Семнадцать',
+    18: 'Восемнадцать', 19: 'Девятнадцать', 20: 'Двадцать',
+}
+
 GROUP_COLOR = {
     'data': 'var(--g-data)',
     'object': 'var(--g-object)',
@@ -260,10 +267,12 @@ def node(x, y, w, h, num, name, topic=None, cls=''):
 
 
 def build_map():
+    n = data.NUM
     p = []
     p.append('<svg viewBox="0 0 1060 424" role="img" class="mp" '
-             'aria-label="Устройство Yii 2: путь запроса сверху, вызываемые им механизмы посередине '
-             'и общий фундамент из компонентов, поведений и событий снизу">')
+             'aria-label="Устройство Yii 2: сверху путь запроса — браузер, маршруты, фильтры, действие, '
+             'ответ; посередине механизмы, которые действие дёргает; снизу фундамент из компонентов, '
+             'поведений, событий и хелперов">')
     p.append('<defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
              'orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs>')
 
@@ -271,38 +280,52 @@ def build_map():
     p.append('<rect class="mp-slab" x="16" y="268" width="1028" height="132" rx="12" stroke-dasharray="5 4"/>')
     p.append('<text class="mp-label" x="36" y="292">фундамент · на этом стоит всё остальное</text>')
 
-    # путь запроса
-    p.append(node(16, 36, 112, 50, '', 'браузер', None, 'mp-io'))
-    p.append(node(164, 36, 136, 50, '09', 'запрос', 'http'))
-    p.append(node(336, 36, 136, 50, '12', 'фильтры', 'filters'))
-    p.append(node(508, 36, 148, 50, '', 'действие'))
-    p.append(node(692, 36, 136, 50, '09', 'ответ', 'http'))
-    p.append(node(864, 36, 112, 50, '', 'браузер', None, 'mp-io'))
+    # путь запроса: x, ширина, номер, подпись, тема, класс
+    path = [
+        (16, 100, '', 'браузер', None, 'mp-io'),
+        (150, 124, n['http'], 'запрос', 'http', ''),
+        (308, 132, n['routing'], 'маршруты', 'routing', ''),
+        (474, 124, n['filters'], 'фильтры', 'filters', ''),
+        (632, 132, '', 'действие', None, ''),
+        (798, 112, n['http'], 'ответ', 'http', ''),
+        (944, 100, '', 'браузер', None, 'mp-io'),
+    ]
+    for x, w, num, name, tid, cls in path:
+        p.append(node(x, 36, w, 50, num, name, tid, cls))
 
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
-    for x1, x2 in [(128, 158), (300, 330), (472, 502), (656, 686), (828, 858)]:
-        p.append('<path d="M%d 61h%d"/>' % (x1, x2 - x1))
+    for a, b in zip(path, path[1:]):
+        gap_from = a[0] + a[1]
+        p.append('<path d="M%d 61h%d"/>' % (gap_from, b[0] - gap_from))
     p.append('</g>')
 
-    # шина вниз к механизмам
+    # механизмы, которые дёргает действие
+    mech = [
+        (16, 96, 'model', 'модель'),
+        (124, 100, 'rules', 'правила'),
+        (236, 104, 'scenarios', 'сценарии'),
+        (370, 120, 'ar', 'Active Record'),
+        (502, 124, 'query', 'Query Builder'),
+        (638, 100, 'migrations', 'миграции'),
+        (768, 96, 'widgets', 'виджеты'),
+        (876, 168, 'state', 'кэш · сессии · куки'),
+    ]
+    centers = [x + w / 2.0 for x, w, _, _ in mech]
+
+    # шина от действия вниз и разводка по механизмам
     p.append('<g class="mp-flow">')
-    p.append('<path d="M582 86v28"/>')
-    p.append('<path d="M112 114h708"/>')
-    for x in (112, 228, 346, 502, 638, 820):
-        p.append('<path d="M%d 114v30"/>' % x)
+    p.append('<path d="M698 86v28"/>')
+    p.append('<path d="M%g 114h%g"/>' % (centers[0], centers[-1] - centers[0]))
+    for cx in centers:
+        p.append('<path d="M%g 114v30"/>' % cx)
     p.append('</g>')
 
-    # механизмы
-    p.append(node(60, 144, 104, 50, '01', 'модель', 'model'))
-    p.append(node(176, 144, 104, 50, '02', 'правила', 'rules'))
-    p.append(node(292, 144, 108, 50, '03', 'сценарии', 'scenarios'))
-    p.append(node(440, 144, 124, 50, '07', 'Active Record', 'ar'))
-    p.append(node(576, 144, 124, 50, '08', 'Query Builder', 'query'))
-    p.append(node(740, 144, 160, 50, '10', 'кэш · сессии · куки', 'state'))
+    for x, w, tid, name in mech:
+        p.append(node(x, 144, w, 50, n[tid], name, tid))
 
-    p.append('<text class="mp-label" x="60" y="218">данные и правила</text>')
-    p.append('<text class="mp-label" x="440" y="218">база данных</text>')
-    p.append('<text class="mp-label" x="740" y="218">состояние</text>')
+    p.append('<text class="mp-label" x="16" y="218">данные и правила</text>')
+    p.append('<text class="mp-label" x="370" y="218">база данных</text>')
+    p.append('<text class="mp-label" x="768" y="218">вывод и состояние</text>')
 
     # связи фундамента с механизмами
     p.append('<g class="mp-tie">')
@@ -311,10 +334,10 @@ def build_map():
     p.append('</g>')
 
     # фундамент: узлы
-    p.append(node(60, 312, 220, 52, '04', 'компоненты', 'components'))
-    p.append(node(304, 312, 220, 52, '05', 'поведения', 'behaviors'))
-    p.append(node(548, 312, 220, 52, '06', 'события', 'events'))
-    p.append(node(792, 312, 220, 52, '11', 'хелперы', 'helpers'))
+    p.append(node(60, 312, 220, 52, n['components'], 'компоненты', 'components'))
+    p.append(node(304, 312, 220, 52, n['behaviors'], 'поведения', 'behaviors'))
+    p.append(node(548, 312, 220, 52, n['events'], 'события', 'events'))
+    p.append(node(792, 312, 220, 52, n['helpers'], 'хелперы', 'helpers'))
 
     p.append('</svg>')
     return ''.join(p)
@@ -404,11 +427,11 @@ def build_page():
     <section class="hero">
       <p class="eyebrow">каталог механизмов · Yii 2.0</p>
       <h1>Фреймворк, <span>разобранный на узлы</span></h1>
-      <p class="hero-lead">Двенадцать механизмов, из которых состоит почти любое приложение на Yii.
+      <p class="hero-lead">%s механизмов, из которых состоит почти любое приложение на Yii.
         Нажмите на узел: внутри схема работы, полный список всего встроенного, заготовка своего варианта
         и грабли, на которые наступают чаще всего.</p>
       <ul class="hero-stats">
-        <li><b>12</b><span>узлов</span></li>
+        <li><b>%d</b><span>узлов</span></li>
         <li><b>%d</b><span>встроенных возможностей</span></li>
         <li><b>%d</b><span>живые демонстрации</span></li>
       </ul>
@@ -417,9 +440,11 @@ def build_page():
     <section class="map">
       <figure>
         <div class="map-frame">%s</div>
-        <figcaption>Запрос идёт по верхней линии. Действие дёргает механизмы посередине.
-          Внизу — то, на чём держится всё остальное: любой из этих узлов настраивается массивом,
-          слушает события и принимает поведения. Узлы кликабельны.</figcaption>
+        <figcaption>Запрос идёт по верхней линии: маршруты выбирают действие, фильтры решают,
+          пускать ли к нему. Действие дёргает механизмы посередине — модель с правилами, базу,
+          виджеты для вывода, хранилища состояния. Внизу — то, на чём держится всё остальное: любой
+          из этих узлов настраивается массивом, слушает события и принимает поведения.
+          Узлы кликабельны.</figcaption>
       </figure>
     </section>
 
@@ -452,7 +477,8 @@ def build_page():
 
 <script>
 %s
-</script>''' % (refs, demos, build_map(), build_cards(), build_topics(), js)
+</script>''' % (NUMERALS.get(len(data.TOPICS), str(len(data.TOPICS))), len(data.TOPICS),
+                refs, demos, build_map(), build_cards(), build_topics(), js)
 
     return head, body
 

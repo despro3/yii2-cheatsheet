@@ -31,7 +31,7 @@ def topic(**kw):
 # ───────────────────────────────────────────────────────────── 01 Модель
 
 topic(
-    id='model', group='data', num='01',
+    id='model', group='data',
     title='Модель',
     cls='yii\\base\\Model',
     lead='Набор атрибутов с правилами, подписями и ошибками. Основа форм и Active Record.',
@@ -184,7 +184,7 @@ class ContactForm extends Model
 # ─────────────────────────────────────────────────── 02 Правила и валидаторы
 
 topic(
-    id='rules', group='data', num='02',
+    id='rules', group='data',
     title='Правила и валидаторы',
     cls='rules()',
     lead='Декларативная проверка входных данных. Те же правила автоматически работают в браузере.',
@@ -354,7 +354,7 @@ if (!$validator->validate($value, $error)) {
 # ─────────────────────────────────────────────────────────── 03 Сценарии
 
 topic(
-    id='scenarios', group='data', num='03',
+    id='scenarios', group='data',
     title='Сценарии',
     cls='scenarios()',
     lead='Один класс модели, разные наборы проверяемых и разрешённых полей.',
@@ -476,7 +476,7 @@ $model->scenario = 'register';'''),
 # ───────────────────────────────────────────────── 04 Компоненты и свойства
 
 topic(
-    id='components', group='object', num='04',
+    id='components', group='object',
     title='Компоненты и свойства',
     cls='yii\\base\\Component',
     lead='Кирпич, из которого собран весь фреймворк: настройка массивом, свойства через методы, события и поведения.',
@@ -624,7 +624,7 @@ class Application extends \yii\web\Application
 # ───────────────────────────────────────────────────────────── 05 Поведения
 
 topic(
-    id='behaviors', group='object', num='05',
+    id='behaviors', group='object',
     title='Поведения',
     cls='yii\\base\\Behavior',
     lead='Подмешивают компоненту методы, свойства и реакции на его события — без наследования.',
@@ -770,7 +770,7 @@ $post->purifyNow()->save();'''),
 # ─────────────────────────────────────────────────────────────── 06 События
 
 topic(
-    id='events', group='object', num='06',
+    id='events', group='object',
     title='События',
     cls='on() / trigger()',
     lead='Точки, где чужой код может вклиниться в работу компонента, ничего не наследуя.',
@@ -907,7 +907,7 @@ Yii::$app->trigger('app.cache.warmed');'''),
 # ───────────────────────────────────────────────────────── 07 Active Record
 
 topic(
-    id='ar', group='db', num='07',
+    id='ar', group='db',
     title='Active Record',
     cls='yii\\db\\ActiveRecord',
     lead='Таблица — класс, строка — объект, внешние ключи — связи. Плюс жизненный цикл, куда встраиваются поведения.',
@@ -1055,7 +1055,7 @@ Post::deleteAll(['status' => 0]);'''),
 # ───────────────────────────────────────────────────────── 08 Query Builder
 
 topic(
-    id='query', group='db', num='08',
+    id='query', group='db',
     title='Query Builder',
     cls='yii\\db\\Query',
     lead='Сборка SQL объектом: экранирование имён, привязка параметров и совместимость с любой СУБД бесплатно.',
@@ -1154,7 +1154,7 @@ $result = Yii::$app->db->cache(function ($db) {
 # ────────────────────────────────────────────────────────── 09 Запрос и ответ
 
 topic(
-    id='http', group='http', num='09',
+    id='http', group='http',
     title='Запрос и ответ',
     cls='request / response',
     lead='Что пришло от браузера и что уходит обратно: параметры, заголовки, формат, файлы, редиректы.',
@@ -1290,7 +1290,7 @@ return $response->xSendFile('/path/big.zip');            // отдаёт веб-
 # ───────────────────────────────────────────────── 10 Сессии, куки и кэш
 
 topic(
-    id='state', group='http', num='10',
+    id='state', group='http',
     title='Сессии, куки и кэш',
     cls='session / cookies / cache',
     lead='Всё, что живёт дольше одного запроса: данные пользователя, метки в браузере и сохранённые результаты.',
@@ -1453,7 +1453,7 @@ public function afterDelete()
 # ─────────────────────────────────────────────────────────────── 11 Хелперы
 
 topic(
-    id='helpers', group='object', num='11',
+    id='helpers', group='object',
     title='Хелперы',
     cls='yii\\helpers',
     lead='Статические утилиты на каждый день: массивы, HTML, адреса, JSON, строки.',
@@ -1543,7 +1543,7 @@ Html::removeCssStyle($options, 'width');'''),
 # ─────────────────────────────────────────────────────────────── 12 Фильтры
 
 topic(
-    id='filters', group='http', num='12',
+    id='filters', group='http',
     title='Фильтры',
     cls='behaviors() контроллера',
     lead='Поведения контроллера, которые оборачивают действия: доступ, методы, кэш, формат, CORS.',
@@ -1674,3 +1674,522 @@ class Module extends \yii\base\Module
         ]),
     ],
 )
+
+
+# ────────────────────────────────────────────────────────────── Маршруты
+
+topic(
+    id='routing', group='http',
+    title='Маршруты и URL',
+    cls='yii\\web\\UrlManager',
+    lead='Как адрес превращается в контроллер с действием и как из маршрута собирается обратно красивый адрес.',
+    badge='9 видов правил',
+    tabs=[
+        ('how', 'Как устроено', [
+            ('p', 'Маршрут — строка вида `модуль/контроллер/действие`. Компонент `urlManager` работает в обе стороны: '
+                  '**разбирает** входящий адрес в маршрут с параметрами и **собирает** адрес обратно, когда вы зовёте `Url::to()`. '
+                  'Поэтому менять схему адресов можно в одном месте, не трогая шаблоны.'),
+            ('svg', '''<svg viewBox="0 0 760 236" role="img" aria-label="urlManager разбирает адрес в маршрут и собирает адрес обратно из маршрута" class="dg">
+<defs><marker id="m-arr8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#m-arr8)" opacity=".55">
+<path d="M242 56h60"/><path d="M458 56h60"/>
+<path d="M518 170h-60"/><path d="M302 170h-60"/>
+</g>
+<g class="dg-box"><rect x="22" y="30" width="220" height="52" rx="8"/><text x="132" y="52">/post/7?src=ad</text><text x="132" y="69" class="dg-sub">адрес из браузера</text></g>
+<g class="dg-box dg-live"><rect x="302" y="24" width="156" height="128" rx="10"/><text x="380" y="52">urlManager</text><text x="380" y="70" class="dg-sub">rules</text><text x="380" y="104" class="dg-sub">enablePrettyUrl</text><text x="380" y="122" class="dg-sub">suffix, defaults</text></g>
+<g class="dg-box"><rect x="518" y="30" width="220" height="52" rx="8"/><text x="628" y="52">post/view, id=7</text><text x="628" y="69" class="dg-sub">маршрут и параметры</text></g>
+<g class="dg-box"><rect x="518" y="144" width="220" height="52" rx="8"/><text x="628" y="166">Url::to([...])</text><text x="628" y="183" class="dg-sub">маршрут в коде</text></g>
+<g class="dg-box"><rect x="22" y="144" width="220" height="52" rx="8"/><text x="132" y="166">/post/7</text><text x="132" y="183" class="dg-sub">адрес в ссылке</text></g>
+<text x="380" y="216" class="dg-note" text-anchor="middle">одни и те же правила работают в обе стороны</text>
+</svg>''', 'Разбор и сборка адресов идут через один набор правил, поэтому ссылки не ломаются при смене схемы.'),
+            ('h', 'Включить красивые адреса'),
+            ('code', 'php', 'config/web.php', r''''urlManager' => [
+    'enablePrettyUrl' => true,      // без ?r=post/view
+    'showScriptName' => false,      // без index.php в адресе
+    'enableStrictParsing' => false, // true — принимать только описанные адреса
+    'rules' => [
+        'post/<id:\d+>' => 'post/view',
+    ],
+],'''),
+            ('p', 'Для `showScriptName => false` веб-сервер должен направлять все запросы на `index.php`. '
+                  'В nginx это `try_files $uri $uri/ /index.php?$args`, в Apache — правило `mod_rewrite` из шаблона приложения.'),
+            ('h', 'Куда ведёт маршрут'),
+            ('kv', [
+                ('post/view', '`PostController::actionView()`'),
+                ('post-tag/view-all', '`PostTagController::actionViewAll()` — имена переводятся из CamelCase в дефисы'),
+                ('admin/user/index', '`UserController` внутри модуля `admin`'),
+                ('site/index', 'маршрут по умолчанию, задаётся свойством `defaultRoute`'),
+                ('пустой маршрут', 'берётся `defaultRoute` приложения, обычно `site/index`'),
+            ]),
+        ]),
+        ('all', 'Все виды правил', [
+            ('p', 'Правило — пара «шаблон адреса ⇒ маршрут». Порядок важен: побеждает первое подошедшее, '
+                  'поэтому частные случаи пишут выше общих.'),
+            ('ref', [
+                {'n': 'Простое соответствие', 'd': 'Фиксированный адрес ведёт на фиксированный маршрут. Самый предсказуемый вид.', 'o': 'шаблон ⇒ маршрут', 'c': "'rules' => [\n    '' => 'site/index',\n    'about' => 'site/about',\n    'login' => 'site/login',\n],"},
+                {'n': 'Параметры в адресе', 'd': 'Часть адреса становится параметром действия. Имя в угловых скобках совпадает с именем аргумента метода.', 'o': '&lt;имя&gt;', 'c': "'post/<id>' => 'post/view',\n// → actionView($id)\n\n'<controller>/<action>' => '<controller>/<action>',"},
+                {'n': 'Ограничение регулярным выражением', 'd': 'Второй частью задаётся, что именно считать параметром. Без него в id попадёт что угодно.', 'o': '&lt;имя:выражение&gt;', 'c': "'post/<id:\\d+>' => 'post/view',\n'post/<slug:[\\w-]+>' => 'post/view-by-slug',\n'<lang:(ru|en)>/<controller:\\w+>' => '<controller>/index',"},
+                {'n': 'Значения по умолчанию', 'd': 'Делает параметр необязательным: адрес без него тоже подойдёт.', 'o': 'defaults', 'c': "[\n    'pattern' => 'posts/<page:\\d+>/<tag>',\n    'route' => 'post/index',\n    'defaults' => ['page' => 1, 'tag' => ''],\n],\n// подойдут /posts, /posts/2, /posts/2/news"},
+                {'n': 'HTTP-методы', 'd': 'Одно и то же имя адреса ведёт на разные действия в зависимости от метода. Основа REST-маршрутов.', 'o': 'метод перед шаблоном, через запятую', 'c': "'POST users' => 'user/create',\n'PUT,PATCH users/<id:\\d+>' => 'user/update',\n'DELETE users/<id:\\d+>' => 'user/delete',"},
+                {'n': 'Суффикс', 'd': 'Добавляет окончание ко всем адресам или к одному правилу. Исторический приём для «статичных» адресов.', 'o': 'suffix у менеджера или у правила', 'c': "'urlManager' => [\n    'suffix' => '.html',\n    'rules' => [\n        ['pattern' => 'feed', 'route' => 'site/feed',\n         'suffix' => '.xml'],\n    ],\n],"},
+                {'n': 'Поддомены', 'd': 'Правило с хостом в шаблоне: часть адреса берётся из домена.', 'o': 'абсолютный шаблон с http:// или //', 'c': "'http://<shop:\\w+>.example.com/<action>' => 'shop/<action>',\n// magazin.example.com/cart → shop/cart, shop=magazin"},
+                {'n': 'Именованные правила и Url::to', 'd': 'Правилу можно дать имя и строить по нему адрес, не повторяя параметры.', 'o': 'name у правила', 'c': "['pattern' => 'post/<id:\\d+>', 'route' => 'post/view',\n 'name' => 'post-view'],\n\nUrl::to(['post/view', 'id' => 7]);"},
+                {'n': 'yii\\rest\\UrlRule', 'd': 'Разворачивается в целый набор правил для контроллера REST: index, view, create, update, delete, options.', 'o': 'controller, prefix, pluralize, only, except, extraPatterns, tokens', 'c': "['class' => yii\\rest\\UrlRule::class,\n 'controller' => ['v1/user', 'v1/post'],\n 'prefix' => 'api',\n 'except' => ['delete'],\n 'extraPatterns' => [\n     'GET search' => 'search',\n ]],"},
+            ]),
+            ('h', 'Настройки самого менеджера'),
+            ('kv', [
+                ('enablePrettyUrl', 'человекочитаемые адреса вместо `?r=маршрут`'),
+                ('showScriptName', '`false` убирает `index.php` из адреса'),
+                ('enableStrictParsing', '`true` — принимать только адреса, описанные правилами; всё остальное 404'),
+                ('suffix', 'общее окончание для всех адресов'),
+                ('baseUrl, hostInfo', 'база для абсолютных адресов; в консоли задаются вручную'),
+                ('cache', 'кэш скомпилированных правил; по умолчанию компонент `cache`'),
+                ('normalizer', 'приведение адресов: убрать двойные слеши, решить судьбу завершающего слеша'),
+                ('ruleConfig', 'настройки по умолчанию для всех правил'),
+            ]),
+        ]),
+        ('own', 'Своё правило', [
+            ('p', 'Когда адрес нельзя описать шаблоном — например, часть пути берётся из базы — пишут класс правила.'),
+            ('code', 'php', 'components/CategoryUrlRule.php', r'''namespace app\components;
+
+use yii\web\UrlRuleInterface;
+use yii\base\BaseObject;
+
+class CategoryUrlRule extends BaseObject implements UrlRuleInterface
+{
+    // адрес → маршрут
+    public function parseRequest($manager, $request)
+    {
+        $path = $request->getPathInfo();
+
+        if (preg_match('%^catalog/([\w-]+)$%', $path, $m)) {
+            $category = Category::findOne(['slug' => $m[1]]);
+            if ($category === null) {
+                return false;          // правило не подошло
+            }
+            return ['catalog/index', ['id' => $category->id]];
+        }
+
+        return false;
+    }
+
+    // маршрут → адрес
+    public function createUrl($manager, $route, $params)
+    {
+        if ($route === 'catalog/index' && isset($params['id'])) {
+            $category = Category::findOne($params['id']);
+            if ($category !== null) {
+                return 'catalog/' . $category->slug;
+            }
+        }
+
+        return false;                  // пусть попробуют другие правила
+    }
+}'''),
+            ('code', 'php', 'config/web.php', r''''urlManager' => [
+    'enablePrettyUrl' => true,
+    'showScriptName' => false,
+    'rules' => [
+        ['class' => app\components\CategoryUrlRule::class],
+        'post/<id:\d+>' => 'post/view',
+    ],
+],'''),
+            ('note', 'tip', 'Кэшируйте обращения к базе',
+             'Правило вызывается на каждом запросе, а `createUrl` — ещё и на каждой ссылке в списке. '
+             'Держите соответствие «адресная часть ⇒ идентификатор» в кэше, иначе страница со списком категорий даст десятки запросов.'),
+            ('h', 'Сборка адресов в коде'),
+            ('code', 'php', None, r'''Url::to(['post/view', 'id' => 7]);           // /post/7
+Url::to(['post/view', 'id' => 7], true);     // https://host/post/7
+Url::to(['/site/index']);                     // от корня приложения
+Url::to(['index']);                           // относительно текущего контроллера
+Url::current(['page' => 2]);                  // текущий адрес с заменой параметра
+Url::current(['page' => null]);               // и с удалением
+
+Html::a('Пост', ['post/view', 'id' => 7]);
+$this->redirect(['post/view', 'id' => 7]);'''),
+        ]),
+        ('traps', 'Грабли', [
+            ('note', 'trap', 'Порядок правил решает всё',
+             'Правило `<controller>/<action>` в начале списка перехватит всё и более точные правила ниже никогда не сработают. '
+             'Общие шаблоны всегда последними.'),
+            ('note', 'trap', 'Лишние параметры уходят в строку запроса',
+             '`Url::to([\'post/view\', \'id\' => 7, \'src\' => \'ad\'])` при правиле `post/<id:\\d+>` даст `/post/7?src=ad`. '
+             'Это не ошибка, но неожиданность, если вы ждали чистый адрес.'),
+            ('note', 'trap', 'В консоли адреса другие',
+             'У консольного приложения нет запроса, поэтому `Url::to([...], true)` соберёт адрес без домена. '
+             'Задайте `hostInfo` и `baseUrl` у `urlManager` в консольной конфигурации, иначе ссылки в письмах из cron будут битыми.'),
+            ('note', 'warn', 'enableStrictParsing выключен по умолчанию',
+             'Поэтому адрес `/post/view?id=7` работает даже при описанном правиле `post/<id:\\d+>`, и одна страница доступна по двум адресам. '
+             'Для API и для SEO это стоит включить.'),
+        ]),
+    ],
+)
+
+
+# ─────────────────────────────────────────────────────────────── Виджеты
+
+topic(
+    id='widgets', group='http',
+    title='Виджеты',
+    cls='yii\\base\\Widget',
+    lead='Переиспользуемые куски представления со своей логикой: формы, таблицы, меню, навигация.',
+    badge='14 встроенных',
+    tabs=[
+        ('how', 'Как устроено', [
+            ('p', 'Виджет — компонент, который умеет отрисовать себя. Два способа вызова: '
+                  '**однократный** через `widget()` и **парный** через `begin()` и `end()`, когда виджет оборачивает разметку.'),
+            ('svg', '''<svg viewBox="0 0 740 210" role="img" aria-label="Два способа вызвать виджет: однократный widget и парный begin с end" class="dg">
+<g class="dg-box"><rect x="24" y="26" width="320" height="158" rx="10"/><text x="184" y="52">widget()</text><text x="184" y="70" class="dg-sub">отрисовал и вернул строку</text></g>
+<g class="dg-chip"><rect x="48" y="90" width="272" height="30" rx="6"/><text x="184" y="110">init() → run()</text></g>
+<g class="dg-chip"><rect x="48" y="130" width="272" height="30" rx="6"/><text x="184" y="150">GridView, Menu, Breadcrumbs</text></g>
+<g class="dg-box dg-live"><rect x="396" y="26" width="320" height="158" rx="10"/><text x="556" y="52">begin() … end()</text><text x="556" y="70" class="dg-sub">обернул чужую разметку</text></g>
+<g class="dg-chip"><rect x="420" y="90" width="272" height="30" rx="6"/><text x="556" y="110">init() → ваш HTML → run()</text></g>
+<g class="dg-chip dg-live"><rect x="420" y="130" width="272" height="30" rx="6"/><text x="556" y="150">ActiveForm, Pjax, Modal</text></g>
+</svg>''', 'Разница только в том, где находится ваша разметка: снаружи виджета или внутри него.'),
+            ('h', 'Однократный вызов'),
+            ('code', 'php', 'views/post/index.php', r'''<?= GridView::widget([
+    'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
+    'columns' => [
+        ['class' => yii\grid\SerialColumn::class],
+        'title',
+        'created_at:datetime',
+        ['class' => yii\grid\ActionColumn::class],
+    ],
+]) ?>'''),
+            ('h', 'Парный вызов'),
+            ('code', 'php', 'views/post/_form.php', r'''<?php $form = ActiveForm::begin([
+    'id' => 'post-form',
+    'options' => ['enctype' => 'multipart/form-data'],
+]) ?>
+
+    <?= $form->field($model, 'title')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'body')->textarea(['rows' => 8]) ?>
+    <?= Html::submitButton('Сохранить', ['class' => 'btn btn-primary']) ?>
+
+<?php ActiveForm::end() ?>'''),
+            ('note', 'trap', 'Забытый end()',
+             'Парный виджет без `end()` не отрисуется вовсе: содержимое останется в буфере вывода и молча пропадёт. '
+             'Если из шаблона исчез целый блок, ищите незакрытый виджет.'),
+            ('h', 'Настройки по умолчанию для всех экземпляров'),
+            ('code', 'php', 'config/web.php', r''''container' => [
+    'definitions' => [
+        yii\widgets\LinkPager::class => ['maxButtonCount' => 5],
+        yii\grid\GridView::class => [
+            'tableOptions' => ['class' => 'table table-sm table-striped'],
+        ],
+    ],
+],'''),
+        ]),
+        ('all', 'Все 14 встроенных', [
+            ('ref', [
+                {'n': 'ActiveForm', 'd': 'Форма по модели: имена полей, клиентская проверка по rules(), вывод ошибок, токен CSRF.', 'o': 'id, action, method, options, fieldConfig, enableClientValidation, enableAjaxValidation, validateOnBlur, validationUrl', 'c': "$form = ActiveForm::begin([\n    'id' => 'login-form',\n    'enableAjaxValidation' => true,\n    'fieldConfig' => [\n        'template' => \"{label}\\n{input}\\n{error}\",\n    ],\n]);\nActiveForm::end();"},
+                {'n': 'ActiveField', 'd': 'Одно поле формы. Возвращается из $form->field() и настраивается цепочкой.', 'o': 'textInput, passwordInput, textarea, dropDownList, checkbox, radioList, checkboxList, fileInput, hiddenInput, widget, label, hint, error', 'c': "$form->field($model, 'email')->input('email');\n$form->field($model, 'city_id')->dropDownList($items,\n    ['prompt' => '—']);\n$form->field($model, 'date')\n    ->widget(DatePicker::class, ['dateFormat' => 'yyyy-MM-dd']);\n$form->field($model, 'agree')->checkbox()->hint('Обязательно');"},
+                {'n': 'GridView', 'd': 'Таблица с сортировкой, фильтрами и постраничной навигацией. Главный виджет админок.', 'o': 'dataProvider, filterModel, columns, layout, rowOptions, tableOptions, summary, emptyText, pager', 'c': "GridView::widget([\n    'dataProvider' => $dp,\n    'filterModel' => $search,\n    'columns' => ['id', 'title', 'price:currency'],\n    'rowOptions' => function ($model) {\n        return ['class' => $model->is_new ? 'table-warning' : ''];\n    },\n]);"},
+                {'n': 'Колонки GridView', 'd': 'Пять готовых типов колонок. DataColumn стоит по умолчанию, остальные указывают классом.', 'o': 'DataColumn, ActionColumn, CheckboxColumn, SerialColumn, RadioButtonColumn', 'c': "['class' => SerialColumn::class],\n['attribute' => 'price', 'format' => ['currency', 'RUB'],\n 'contentOptions' => ['class' => 'text-end']],\n['class' => ActionColumn::class,\n 'template' => '{view} {update}',\n 'visibleButtons' => [\n     'update' => fn ($m) => $m->canEdit(),\n ]],\n['class' => CheckboxColumn::class],"},
+                {'n': 'ListView', 'd': 'Список произвольной вёрстки: каждый элемент рисуется отдельным шаблоном.', 'o': 'dataProvider, itemView, itemOptions, viewParams, layout, summary, emptyText', 'c': "ListView::widget([\n    'dataProvider' => $dp,\n    'itemView' => '_card',      // views/post/_card.php\n    'viewParams' => ['short' => true],\n    'layout' => \"{summary}\\n{items}\\n{pager}\",\n]);"},
+                {'n': 'DetailView', 'd': 'Карточка одной записи: строки «подпись — значение» с форматированием.', 'o': 'model, attributes, template, options', 'c': "DetailView::widget([\n    'model' => $model,\n    'attributes' => [\n        'title',\n        'author.name',\n        'created_at:datetime',\n        ['label' => 'Статус', 'format' => 'raw',\n         'value' => $model->statusBadge()],\n    ],\n]);"},
+                {'n': 'Menu', 'd': 'Вложенное меню со списками. Сам помечает активный пункт по текущему маршруту.', 'o': 'items, activateItems, activateParents, activeCssClass, itemOptions, encodeLabels, submenuTemplate', 'c': "Menu::widget([\n    'items' => [\n        ['label' => 'Главная', 'url' => ['site/index']],\n        ['label' => 'Посты', 'url' => ['post/index'], 'items' => [\n            ['label' => 'Черновики', 'url' => ['post/drafts']],\n        ]],\n        ['label' => 'Выход', 'url' => ['site/logout'],\n         'visible' => !Yii::$app->user->isGuest],\n    ],\n]);"},
+                {'n': 'Breadcrumbs', 'd': 'Хлебные крошки. Берёт цепочку из $this->params, которую страницы наполняют сами.', 'o': 'links, homeLink, itemTemplate, activeItemTemplate', 'c': "// в представлении страницы\n$this->params['breadcrumbs'][] = ['label' => 'Посты',\n    'url' => ['index']];\n$this->params['breadcrumbs'][] = $model->title;\n\n// в layout\nBreadcrumbs::widget([\n    'links' => $this->params['breadcrumbs'] ?? [],\n]);"},
+                {'n': 'LinkPager', 'd': 'Постраничная навигация по объекту Pagination. Обычно вызывается внутри GridView и ListView.', 'o': 'pagination, maxButtonCount, firstPageLabel, lastPageLabel, prevPageLabel, nextPageLabel, hideOnSinglePage, linkOptions', 'c': "LinkPager::widget([\n    'pagination' => $dp->pagination,\n    'maxButtonCount' => 5,\n    'hideOnSinglePage' => true,\n    'linkContainerOptions' => ['class' => 'page-item'],\n    'linkOptions' => ['class' => 'page-link'],\n]);"},
+                {'n': 'LinkSorter', 'd': 'Ссылки сортировки отдельно от таблицы: нужен в ListView, где заголовков колонок нет.', 'o': 'sort, attributes, options', 'c': "LinkSorter::widget([\n    'sort' => $dp->sort,\n    'attributes' => ['title', 'created_at'],\n]);"},
+                {'n': 'Pjax', 'd': 'Обновляет свой кусок страницы через AJAX и подменяет адрес, без перезагрузки.', 'o': 'id, options, linkSelector, formSelector, submitEvent, enablePushState, timeout, scrollTo', 'c': "<?php Pjax::begin(['id' => 'post-grid',\n                   'timeout' => 5000]) ?>\n<?= GridView::widget([...]) ?>\n<?php Pjax::end() ?>\n\n// обновить вручную из JS\n$.pjax.reload({container: '#post-grid'});"},
+                {'n': 'MaskedInput', 'd': 'Поле ввода по маске: телефоны, даты, номера документов.', 'o': 'mask, clientOptions, definitions', 'c': "$form->field($model, 'phone')->widget(MaskedInput::class, [\n    'mask' => '+7 (999) 999-99-99',\n]);"},
+                {'n': 'Captcha', 'd': 'Картинка с кодом и поле ввода. Работает в паре с CaptchaAction и валидатором captcha.', 'o': 'captchaAction, imageOptions, template', 'c': "// контроллер\npublic function actions()\n{\n    return ['captcha' => [\n        'class' => yii\\captcha\\CaptchaAction::class,\n    ]];\n}\n\n// представление\n$form->field($model, 'verifyCode')->widget(Captcha::class);"},
+                {'n': 'Обёртки представления', 'd': 'Три служебных парных виджета: кэш фрагмента, удаление лишних пробелов и обёртка содержимого другим шаблоном.', 'o': 'FragmentCache (через beginCache), Spaceless, ContentDecorator (через beginContent), Block (beginBlock)', 'c': "<?php if ($this->beginCache('menu',\n        ['duration' => 600])) { ?>\n    …тяжёлый блок…\n<?php $this->endCache(); } ?>\n\n<?php $this->beginContent('@app/views/layouts/box.php') ?>\n    содержимое в рамке\n<?php $this->endContent() ?>\n\n<?php $this->beginBlock('sidebar') ?>…<?php $this->endBlock() ?>\n<?= $this->blocks['sidebar'] ?? '' ?>"},
+            ]),
+            ('note', 'tip', 'Виджеты оформления живут в расширениях',
+             'Модальные окна, вкладки, выпадающие меню и кнопки пришли не из ядра, а из `yii2-bootstrap5` (или `yii2-bootstrap4`). '
+             'Устроены они точно так же и вызываются теми же двумя способами.'),
+        ]),
+        ('own', 'Свой виджет', [
+            ('h', 'Однократный: отрисовал и вернул'),
+            ('code', 'php', 'components/StatBadge.php', r'''namespace app\components;
+
+use yii\base\Widget;
+use yii\helpers\Html;
+
+class StatBadge extends Widget
+{
+    public $label;
+    public $value;
+    public $tone = 'neutral';
+
+    public function init()
+    {
+        parent::init();
+        if ($this->label === null) {
+            throw new \yii\base\InvalidConfigException('StatBadge: нужен label.');
+        }
+    }
+
+    public function run()
+    {
+        // вариант попроще — собрать разметку здесь
+        return Html::tag('span',
+            Html::tag('b', Html::encode($this->value)) . ' ' . Html::encode($this->label),
+            ['class' => 'stat stat-' . $this->tone]
+        );
+
+        // вариант с шаблоном: views/statBadge.php рядом с классом
+        // return $this->render('statBadge', ['label' => $this->label]);
+    }
+}
+
+// использование
+echo StatBadge::widget(['label' => 'заказов', 'value' => 42, 'tone' => 'ok']);'''),
+            ('h', 'Парный: оборачивает чужую разметку'),
+            ('code', 'php', 'components/Panel.php', r'''class Panel extends Widget
+{
+    public $title;
+
+    public function init()
+    {
+        parent::init();
+        ob_start();                       // начали перехват вывода
+        echo Html::beginTag('section', ['class' => 'panel']);
+        echo Html::tag('h3', Html::encode($this->title), ['class' => 'panel-title']);
+        echo Html::beginTag('div', ['class' => 'panel-body']);
+    }
+
+    public function run()
+    {
+        $content = ob_get_clean();        // забрали всё, что вывели между begin и end
+        return $content
+            . Html::endTag('div')
+            . Html::endTag('section');
+    }
+}'''),
+            ('code', 'php', None, r'''<?php Panel::begin(['title' => 'Последние заказы']) ?>
+    <?= GridView::widget(['dataProvider' => $dp]) ?>
+<?php Panel::end() ?>'''),
+            ('h', 'Свои ресурсы и скрипты'),
+            ('code', 'php', None, r'''public function run()
+{
+    $view = $this->getView();
+    ChartAsset::register($view);          // свой пакет ресурсов
+
+    $id = $this->options['id'] ?? $this->getId();
+    $options = Json::htmlEncode($this->clientOptions);
+    $view->registerJs("initChart('#$id', $options);");
+
+    return Html::tag('div', '', ['id' => $id, 'class' => 'chart']);
+}'''),
+            ('note', 'tip', 'Кэширование вывода виджета',
+             'Если виджет дорогой, не пишите кэш внутрь `run()`. Прикрепите `CacheableWidgetBehavior`: '
+             'он закэширует результат целиком и учтёт вариации по языку и пользователю.'),
+        ]),
+        ('traps', 'Грабли', [
+            ('note', 'trap', 'Виджет без end() съедает разметку',
+             'Парный виджет открывает буфер вывода в `init()`. Нет `end()` — буфер не закроется, и часть страницы исчезнет без ошибки.'),
+            ('note', 'trap', 'Одинаковые id при повторном вызове',
+             'Два `ActiveForm` или два `Pjax` на странице без явных `id` получат автоматические имена, но их клиентский код может конфликтовать. '
+             'Задавайте `id` вручную, если виджет вызывается больше одного раза.'),
+            ('note', 'warn', 'GridView с сырым HTML',
+             'Колонки по умолчанию экранируют значения. Формат `raw` это отключает, поэтому в него можно отдавать только доверенное содержимое, '
+             'иначе получите внедрение скрипта из данных пользователя.'),
+            ('note', 'trap', 'Ссылки внутри Pjax перехватываются',
+             'Все ссылки внутри блока начинают работать через AJAX. Для выхода наружу помечайте ссылку атрибутом `data-pjax="0"`.'),
+        ]),
+    ],
+)
+
+
+# ────────────────────────────────────────────────────────────── Миграции
+
+topic(
+    id='migrations', group='db',
+    title='Миграции',
+    cls='yii\\db\\Migration',
+    lead='Структура базы в коде и под контролем версий: применяется, откатывается, повторяется на любой машине.',
+    badge='24 метода схемы',
+    tabs=[
+        ('how', 'Как устроено', [
+            ('p', 'Миграция — класс с двумя методами: «применить» и «откатить». Применённые миграции фреймворк запоминает '
+                  'в служебной таблице `migration`, поэтому повторный запуск ничего не сломает.'),
+            ('svg', '''<svg viewBox="0 0 760 210" role="img" aria-label="Команда migrate сравнивает файлы миграций с таблицей migration и применяет только новые" class="dg">
+<defs><marker id="m-arr9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#m-arr9)" opacity=".55">
+<path d="M212 62h56"/><path d="M212 146h56"/><path d="M456 104h56"/>
+</g>
+<g class="dg-box"><rect x="22" y="36" width="190" height="52" rx="8"/><text x="117" y="58">файлы миграций</text><text x="117" y="75" class="dg-sub">m250101_… .php</text></g>
+<g class="dg-box"><rect x="22" y="120" width="190" height="52" rx="8"/><text x="117" y="142">таблица migration</text><text x="117" y="159" class="dg-sub">что уже применено</text></g>
+<g class="dg-box dg-live"><rect x="268" y="66" width="188" height="76" rx="10"/><text x="362" y="96">./yii migrate</text><text x="362" y="114" class="dg-sub">разница между ними</text></g>
+<g class="dg-box dg-ok"><rect x="512" y="78" width="226" height="52" rx="8"/><text x="625" y="100">применить только новые</text><text x="625" y="117" class="dg-sub">safeUp() по очереди</text></g>
+</svg>''', 'Команда не «накатывает всё заново», а вычисляет разницу. Поэтому её безопасно запускать на каждом развёртывании.'),
+            ('h', 'Создать и применить'),
+            ('code', 'bash', None, r'''./yii migrate/create create_post_table
+# → migrations/m250101_120000_create_post_table.php
+
+./yii migrate                    # применить все новые
+./yii migrate --interactive=0    # без вопросов, для развёртывания
+./yii migrate/down               # откатить последнюю
+./yii migrate/history            # что уже применено
+./yii migrate/new                # что ещё не применено'''),
+            ('h', 'Как выглядит файл'),
+            ('code', 'php', 'migrations/m250101_120000_create_post_table.php', r'''use yii\db\Migration;
+
+class m250101_120000_create_post_table extends Migration
+{
+    public function safeUp()
+    {
+        $this->createTable('{{%post}}', [
+            'id' => $this->primaryKey(),
+            'title' => $this->string()->notNull(),
+            'body' => $this->text(),
+            'author_id' => $this->integer()->notNull(),
+            'status' => $this->smallInteger()->notNull()->defaultValue(0),
+            'created_at' => $this->integer()->notNull(),
+        ]);
+
+        $this->createIndex('idx-post-status', '{{%post}}', 'status');
+        $this->addForeignKey('fk-post-author', '{{%post}}', 'author_id',
+            '{{%user}}', 'id', 'CASCADE');
+    }
+
+    public function safeDown()
+    {
+        $this->dropTable('{{%post}}');     // индексы и ключи уйдут вместе с таблицей
+    }
+}'''),
+            ('note', 'tip', 'safeUp вместо up',
+             'Методы с приставкой safe выполняются внутри транзакции: упало на середине — откатится целиком. '
+             'Берите их по умолчанию. Обычные `up()` и `down()` нужны там, где транзакционный DDL не поддерживается или мешает.'),
+        ]),
+        ('all', 'Методы и типы', [
+            ('h', 'Что умеет Migration'),
+            ('ref', [
+                {'n': 'createTable', 'd': 'Создаёт таблицу. Третьим аргументом можно передать настройки СУБД.', 'o': '$table, $columns, $options', 'c': "$this->createTable('{{%post}}', [\n    'id' => $this->primaryKey(),\n    'title' => $this->string(255)->notNull(),\n], $this->db->driverName === 'mysql'\n    ? 'ENGINE=InnoDB DEFAULT CHARSET=utf8mb4'\n    : null);"},
+                {'n': 'dropTable, renameTable, truncateTable', 'd': 'Удалить, переименовать, очистить таблицу.', 'o': '$table, $newName', 'c': "$this->dropTable('{{%post}}');\n$this->renameTable('{{%post}}', '{{%article}}');\n$this->truncateTable('{{%log}}');"},
+                {'n': 'addColumn, dropColumn', 'd': 'Добавить и убрать столбец.', 'o': '$table, $column, $type', 'c': "$this->addColumn('{{%post}}', 'views',\n    $this->integer()->notNull()->defaultValue(0));\n$this->dropColumn('{{%post}}', 'views');"},
+                {'n': 'alterColumn, renameColumn', 'd': 'Изменить тип столбца или его имя.', 'o': '$table, $column, $type | $newName', 'c': "$this->alterColumn('{{%post}}', 'title',\n    $this->string(500)->notNull());\n$this->renameColumn('{{%post}}', 'text', 'body');"},
+                {'n': 'createIndex, dropIndex', 'd': 'Индекс по одному или нескольким столбцам, обычный или уникальный.', 'o': '$name, $table, $columns, $unique', 'c': "$this->createIndex('idx-post-status', '{{%post}}', 'status');\n$this->createIndex('idx-post-slug-lang', '{{%post}}',\n    ['slug', 'lang'], true);   // уникальный\n$this->dropIndex('idx-post-status', '{{%post}}');"},
+                {'n': 'addPrimaryKey, dropPrimaryKey', 'd': 'Первичный ключ, в том числе составной, отдельным шагом.', 'o': '$name, $table, $columns', 'c': "$this->addPrimaryKey('pk-post-tag', '{{%post_tag}}',\n    ['post_id', 'tag_id']);"},
+                {'n': 'addForeignKey, dropForeignKey', 'd': 'Внешний ключ с правилами каскада.', 'o': '$name, $table, $columns, $refTable, $refColumns, $delete, $update', 'c': "$this->addForeignKey('fk-post-author',\n    '{{%post}}', 'author_id',\n    '{{%user}}', 'id',\n    'CASCADE',    // при удалении пользователя\n    'CASCADE');   // при смене id"},
+                {'n': 'addCommentOnColumn, addCommentOnTable', 'd': 'Комментарии к таблице и столбцам. Заметно помогают, когда схему читает другой человек.', 'o': 'и парные dropCommentFrom…', 'c': "$this->addCommentOnColumn('{{%post}}', 'status',\n    '0 черновик, 1 опубликован, 2 в архиве');\n$this->addCommentOnTable('{{%post}}', 'Записи блога');"},
+                {'n': 'insert, batchInsert, upsert', 'd': 'Наполнение справочников прямо в миграции. Так окружения получаются одинаковыми.', 'o': '$table, $columns, $rows', 'c': "$this->insert('{{%role}}', ['name' => 'admin']);\n$this->batchInsert('{{%role}}', ['code', 'name'], [\n    ['editor', 'Редактор'],\n    ['viewer', 'Читатель'],\n]);"},
+                {'n': 'update, delete', 'd': 'Правка существующих данных при изменении схемы.', 'o': '$table, $columns, $condition', 'c': "$this->update('{{%post}}', ['status' => 1],\n    ['status' => null]);\n$this->delete('{{%log}}', ['<', 'created_at', $ts]);"},
+                {'n': 'execute', 'd': 'Произвольный SQL, когда нужного метода нет: представления, триггеры, специфика СУБД.', 'o': '$sql, $params', 'c': "$this->execute('CREATE VIEW {{%active_post}} AS\n    SELECT * FROM {{%post}} WHERE status = 1');"},
+                {'n': 'createView, dropView', 'd': 'Представления отдельными методами, с 2.0.14.', 'o': '$viewName, $subQuery', 'c': "$this->createView('{{%active_post}}',\n    (new Query())->from('{{%post}}')\n        ->where(['status' => 1]));"},
+            ]),
+            ('h', 'Типы столбцов, одинаковые для всех СУБД'),
+            ('ref', [
+                {'n': 'primaryKey, bigPrimaryKey', 'd': 'Автоинкрементный первичный ключ.', 'o': '', 'c': "'id' => $this->primaryKey(),\n'id' => $this->bigPrimaryKey(),"},
+                {'n': 'string, text, char', 'd': 'Текстовые типы. У string по умолчанию 255 символов.', 'o': '$length', 'c': "'title' => $this->string()->notNull(),\n'slug' => $this->string(160)->unique(),\n'body' => $this->text(),\n'code' => $this->char(6),"},
+                {'n': 'integer, bigInteger, smallInteger, tinyInteger', 'd': 'Целые числа разной ширины.', 'o': '$precision', 'c': "'views' => $this->integer()->defaultValue(0),\n'status' => $this->smallInteger()->notNull(),"},
+                {'n': 'decimal, float, double, money', 'd': 'Дробные числа. Для денег берут decimal, а не float.', 'o': '$precision, $scale', 'c': "'price' => $this->decimal(12, 2)->notNull(),\n'rate' => $this->float(),"},
+                {'n': 'boolean', 'd': 'Логическое значение; в MySQL разворачивается в TINYINT(1).', 'o': '', 'c': "'is_active' => $this->boolean()->notNull()\n    ->defaultValue(true),"},
+                {'n': 'date, time, dateTime, timestamp', 'd': 'Дата и время средствами СУБД. Часто вместо них берут integer с меткой времени.', 'o': '$precision', 'c': "'published_at' => $this->dateTime(),\n'created_at' => $this->timestamp()\n    ->defaultExpression('CURRENT_TIMESTAMP'),"},
+                {'n': 'binary, json', 'd': 'Двоичные данные и JSON; json поддержан с 2.0.14 там, где его знает СУБД.', 'o': '', 'c': "'payload' => $this->json(),\n'file' => $this->binary(),"},
+                {'n': 'Модификаторы', 'd': 'Цепочка уточнений после типа. after и first работают только в MySQL.', 'o': 'notNull, null, unique, defaultValue, defaultExpression, comment, after, first, unsigned, check', 'c': "'email' => $this->string()->notNull()->unique()\n    ->comment('Логин пользователя'),\n'position' => $this->integer()->notNull()\n    ->defaultValue(0)->after('id'),"},
+            ]),
+            ('h', 'Команды'),
+            ('kv', [
+                ('migrate', 'применить все новые'),
+                ('migrate 3', 'применить только три следующие'),
+                ('migrate/to 250101_120000', 'дойти до указанной миграции в любую сторону'),
+                ('migrate/down, migrate/down 3', 'откатить последнюю или несколько'),
+                ('migrate/redo', 'откатить и применить заново — удобно при отладке'),
+                ('migrate/history, migrate/new', 'что применено и что осталось'),
+                ('migrate/mark', 'пометить применённой, не выполняя; для приведения окружений в порядок'),
+                ('migrate/fresh', '⚠ удалить все таблицы и применить всё заново, только для разработки'),
+                ('--migrationPath, --migrationNamespaces', 'откуда брать миграции; так применяют миграции расширений'),
+                ('--db=db2', 'применить к другому соединению'),
+            ]),
+        ]),
+        ('own', 'Приёмы', [
+            ('h', 'Генерация по имени файла'),
+            ('p', 'Команда понимает несколько шаблонов имён и заполняет тело миграции сама.'),
+            ('code', 'bash', None, r'''# создание таблицы с полями и внешним ключом
+./yii migrate/create create_post_table \
+    --fields="title:string:notNull,body:text,author_id:integer:notNull:foreignKey(user)"
+
+# добавление и удаление столбца
+./yii migrate/create add_position_column_to_post_table --fields="position:integer"
+./yii migrate/create drop_position_column_from_post_table --fields="position:integer"
+
+# связующая таблица для связи многие-ко-многим
+./yii migrate/create create_junction_table_for_post_and_tag_tables'''),
+            ('h', 'Миграция данных, а не схемы'),
+            ('code', 'php', None, r'''public function safeUp()
+{
+    $this->addColumn('{{%user}}', 'display_name', $this->string());
+
+    // заполняем новое поле из старых, порциями — таблица может быть большой
+    foreach (User::find()->batch(500) as $users) {
+        foreach ($users as $user) {
+            $this->update('{{%user}}',
+                ['display_name' => trim($user->first_name . ' ' . $user->last_name)],
+                ['id' => $user->id]
+            );
+        }
+    }
+}
+
+public function safeDown()
+{
+    $this->dropColumn('{{%user}}', 'display_name');
+}'''),
+            ('h', 'Несколько источников миграций'),
+            ('code', 'php', 'config/console.php', r''''controllerMap' => [
+    'migrate' => [
+        'class' => yii\console\controllers\MigrateController::class,
+        'migrationPath' => null,              // выключаем старый механизм
+        'migrationNamespaces' => [
+            'app\migrations',
+            'app\modules\shop\migrations',
+        ],
+    ],
+],'''),
+            ('code', 'bash', None, r'''# миграции расширений применяются так же
+./yii migrate --migrationPath=@yii/rbac/migrations
+./yii migrate --migrationPath=@yii/caching/migrations'''),
+            ('h', 'Когда откат невозможен'),
+            ('code', 'php', None, r'''public function safeDown()
+{
+    echo "Миграция удаляет данные и не может быть отменена.\n";
+    return false;   // migrate/down остановится с сообщением
+}'''),
+        ]),
+        ('traps', 'Грабли', [
+            ('note', 'trap', 'Правка уже применённой миграции',
+             'У коллег и на сервере она числится выполненной, поэтому исправленный файл там никогда не запустится, '
+             'и схемы разъедутся. Изменения вносят новой миграцией.'),
+            ('note', 'trap', 'Использование моделей внутри миграции',
+             'Класс модели со временем меняется, а миграция должна работать и через год. '
+             'Обращение к `Post::find()` в старой миграции однажды упадёт на несуществующем поле. '
+             'Безопаснее писать запросы явно через методы миграции.'),
+            ('note', 'warn', 'MySQL и транзакционный DDL',
+             'MySQL фиксирует изменения схемы неявно, поэтому `safeUp()` там не откатит уже созданную таблицу. '
+             'Это не повод отказываться от safe-методов, но рассчитывать на полный откат нельзя.'),
+            ('note', 'trap', 'Забытый сброс кэша схемы',
+             'После миграции Active Record может ещё какое-то время видеть старую структуру таблицы. '
+             'Добавьте в развёртывание `./yii cache/flush-schema` сразу после `./yii migrate`.'),
+        ]),
+    ],
+)
+
+
+# порядок узлов внутри групп задаётся явно: так номера не съезжают при пополнении
+ORDER = [
+    'model', 'rules', 'scenarios',
+    'components', 'behaviors', 'events', 'helpers',
+    'ar', 'query', 'migrations',
+    'routing', 'http', 'filters', 'widgets', 'state',
+]
+
+_known = {t['id'] for t in TOPICS}
+assert _known == set(ORDER), 'ORDER и TOPICS разошлись: %s' % (_known ^ set(ORDER))
+TOPICS.sort(key=lambda t: ORDER.index(t['id']))
+
+# группы в ORDER должны идти подряд и в том же порядке, что и в GROUPS,
+# иначе сквозная нумерация разойдётся с порядком карточек на странице
+_gseq = [t['group'] for t in TOPICS]
+_gidx = [g for g, _, _ in GROUPS].index
+assert _gseq == sorted(_gseq, key=_gidx), 'группы в ORDER идут вразнобой: %s' % _gseq
+
+# номера считаются здесь, а не проставляются руками у каждой темы
+for _i, _t in enumerate(TOPICS):
+    _t['num'] = '%02d' % (_i + 1)
+
+NUM = {t['id']: t['num'] for t in TOPICS}
