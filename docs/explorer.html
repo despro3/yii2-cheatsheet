@@ -2692,7 +2692,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
   function store(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* приватный режим */ } }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 
-  /* ─────────────────────────────────────────────────────────────── тема */
+  /* --------------------------------------------------------------------------- тема */
 
   var themeBtn = $('#theme-btn');
 
@@ -2713,7 +2713,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     });
   }
 
-  /* ───────────────────────────────────────────────────────────── панель */
+  /* --------------------------------------------------------------------------- панель */
 
   var panel = $('#panel');
   var scrim = $('#scrim');
@@ -2807,7 +2807,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
   }
   window.addEventListener('popstate', function () { fromHash(false); });
 
-  /* ─────────────────────────────────────────────────── копирование кода */
+  /* --------------------------------------------------------------------------- копирование кода */
 
   $$('.copy').forEach(function (btn) {
     btn.addEventListener('click', function () {
@@ -2832,7 +2832,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     });
   });
 
-  /* ──────────────────────────────────────────────── справочники: фильтр */
+  /* --------------------------------------------------------------------------- справочники: фильтр */
 
   $$('.ref-block').forEach(function (block) {
     var input = $('.ref-search input', block);
@@ -2865,7 +2865,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     });
   });
 
-  /* ════════════════════════════════════════════════════════════════ демо */
+  /* --------------------------------------------------------------------------- демо */
 
   function esc(s) {
     return String(s).replace(/[&<>"]/g, function (c) {
@@ -2873,7 +2873,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     });
   }
 
-  /* ─────────────────────────────── демо 1: проверка валидаторами вживую */
+  /* --------------------------------------------------------------------------- демо 1: проверка валидаторами вживую */
 
   var VALIDATORS = {
     required: {
@@ -3095,7 +3095,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     run();
   }
 
-  /* ───────────────────────────────── демо 2: что даёт выбранный сценарий */
+  /* --------------------------------------------------------------------------- демо 2: что даёт выбранный сценарий */
 
   var SC_RULES = [
     { attrs: ['username', 'email'], rule: 'required', on: null, except: null },
@@ -3158,7 +3158,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     render();
   }
 
-  /* ─────────────────────────── демо 3: жизненный цикл сохранения записи */
+  /* --------------------------------------------------------------------------- демо 3: жизненный цикл сохранения записи */
 
   var LC = {
     insert: [
@@ -3254,7 +3254,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     render(null);
   }
 
-  /* ───────────────────────────── демо 4: из конструктора запроса в SQL */
+  /* --------------------------------------------------------------------------- демо 4: из конструктора запроса в SQL */
 
   var QB = [
     { k: 'status', label: 'where(status)', php: "->where(['status' => Post::STATUS_PUBLISHED])", sql: 'WHERE `status` = 1' },
@@ -3331,7 +3331,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     render();
   }
 
-  /* ────────────────────────────────────────────── запуск всех демо */
+  /* --------------------------------------------------------------------------- запуск всех демо */
 
   var DEMOS = {
     'validator-lab': initValidatorLab,
