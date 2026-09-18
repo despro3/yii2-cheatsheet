@@ -251,23 +251,27 @@ def render_block(b):
 
 # --------------------------------------------------------------------------- схема-карта
 
-def node(x, y, w, h, name, topic=None, color=None, cls=''):
-    """Узел карты: подпись по центру и цветная метка семейства слева."""
+def node(x, y, w, h, num, name, topic=None, color=None, cls=''):
+    """Узел карты: номер и подпись; цвет семейства подмешан в рамку и номер."""
     klass = 'mp-node' + (' mp-hit' if topic else '') + (' ' + cls if cls else '')
     attrs = ' style="--gc: %s"' % color if color else ''
     if topic:
         attrs += ' data-open="%s" role="link" tabindex="0"' % topic
+    cx = x + w / 2.0
     out = '<g class="%s"%s>' % (klass, attrs)
     out += '<rect x="%g" y="%g" width="%g" height="%g" rx="8"/>' % (x, y, w, h)
-    if color:
-        out += '<rect class="mp-tag" x="%g" y="%g" width="3" height="%g" rx="1.5"/>' % (x + 1, y + 9, h - 18)
-    out += '<text x="%g" y="%g">%s</text>' % (x + w / 2.0, y + h / 2.0 + 4, esc(name))
+    if num:
+        out += '<text x="%g" y="%g" class="mp-num">%s</text>' % (cx, y + 19, num)
+        out += '<text x="%g" y="%g">%s</text>' % (cx, y + 37, esc(name))
+    else:
+        out += '<text x="%g" y="%g">%s</text>' % (cx, y + h / 2.0 + 4, esc(name))
     out += '</g>'
     return out
 
 
 def build_map():
     C = GROUP_COLOR
+    n = data.NUM
     p = []
     p.append('<svg viewBox="0 0 1060 424" role="img" class="mp" '
              'aria-label="Устройство Yii 2: сверху путь запроса — браузер, маршруты, фильтры, действие, '
@@ -283,16 +287,16 @@ def build_map():
 
     # путь запроса: x, ширина, подпись, тема, цвет семейства, класс
     path = [
-        (16, 100, 'браузер', None, None, 'mp-io'),
-        (150, 124, 'запрос', 'http', C['http'], ''),
-        (308, 132, 'маршруты', 'routing', C['http'], ''),
-        (474, 124, 'фильтры', 'filters', C['http'], ''),
-        (632, 132, 'действие', None, None, ''),
-        (798, 112, 'ответ', 'http', C['http'], ''),
-        (944, 100, 'браузер', None, None, 'mp-io'),
+        (16, 100, '', 'браузер', None, None, 'mp-io'),
+        (150, 124, n['http'], 'запрос', 'http', C['http'], ''),
+        (308, 132, n['routing'], 'маршруты', 'routing', C['http'], ''),
+        (474, 124, n['filters'], 'фильтры', 'filters', C['http'], ''),
+        (632, 132, '', 'действие', None, None, ''),
+        (798, 112, n['http'], 'ответ', 'http', C['http'], ''),
+        (944, 100, '', 'браузер', None, None, 'mp-io'),
     ]
-    for x, w, name, tid, color, cls in path:
-        p.append(node(x, 36, w, 50, name, tid, color, cls))
+    for x, w, num, name, tid, color, cls in path:
+        p.append(node(x, 36, w, 50, num, name, tid, color, cls))
 
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for a, b in zip(path, path[1:]):
@@ -324,7 +328,7 @@ def build_map():
     p.append('</g>')
 
     for x, w, tid, name in mech:
-        p.append(node(x, 144, w, 50, name, tid, C[group_of[tid]]))
+        p.append(node(x, 144, w, 50, n[tid], name, tid, C[group_of[tid]]))
 
     for x, label, color in [(16, 'данные и правила', C['data']),
                             (370, 'база данных', C['db']),
@@ -340,7 +344,7 @@ def build_map():
     # фундамент: узлы
     for x, tid, name in [(60, 'components', 'компоненты'), (304, 'behaviors', 'поведения'),
                          (548, 'events', 'события'), (792, 'helpers', 'хелперы')]:
-        p.append(node(x, 312, 220, 52, name, tid, C['object']))
+        p.append(node(x, 312, 220, 52, n[tid], name, tid, C['object']))
 
     p.append('</svg>')
     return ''.join(p)

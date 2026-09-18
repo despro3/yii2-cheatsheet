@@ -252,13 +252,19 @@ code, kbd, pre { font-family: var(--font-mono); }
 .map-frame > svg { min-width: 700px; }
 
 .mp-slab { fill: var(--surface-2); stroke: var(--line); }
-.mp-node rect { fill: var(--surface); stroke: var(--line-2); stroke-width: 1.2; }
+.mp-node { --gc: var(--line-2); }
+.mp-node rect {
+  fill: var(--surface); stroke-width: 1.2;
+  /* рамка подкрашена цветом семейства — у узлов без семейства подмешивать нечего */
+  stroke: color-mix(in srgb, var(--gc) 55%, var(--line-2));
+}
 .mp-node text { fill: var(--ink); font-family: var(--font-body); font-size: 13px; font-weight: 600; text-anchor: middle; }
-.mp-node .mp-tag { fill: var(--gc, var(--signal)); stroke: none; }
+.mp-node .mp-num {
+  fill: var(--gc); font-family: var(--font-mono); font-size: 10.5px; font-weight: 500;
+}
 .mp-hit { cursor: pointer; }
-.mp-hit:hover rect { stroke: var(--gc, var(--signal)); stroke-width: 2; }
-.mp-hit:hover .mp-tag { stroke: none; }
-.mp-hit:hover text { fill: var(--gc, var(--signal)); }
+.mp-hit:hover rect { stroke: var(--gc); stroke-width: 2; }
+.mp-hit:hover text { fill: var(--gc); }
 .mp-flow { stroke: var(--line-2); stroke-width: 1.6; fill: none; }
 .mp-head { fill: var(--line-2); }
 .mp-tie { stroke: var(--faint); stroke-width: 1.2; stroke-dasharray: 3 4; fill: none; }
@@ -282,16 +288,12 @@ code, kbd, pre { font-family: var(--font-mono); }
   --gc: var(--signal);
   position: relative; display: flex; flex-direction: column; gap: 10px;
   padding: 18px 18px 16px;
-  border: 1px solid var(--line); border-radius: var(--r);
+  border: 1px solid var(--line); border-left: 3px solid var(--gc);
+  border-radius: var(--r);
   background: var(--surface);
   text-align: left; font: inherit; color: inherit;
   cursor: pointer;
   transition: transform .16s ease, border-color .16s, box-shadow .16s;
-}
-.card::before {
-  content: ""; position: absolute; inset: -1px auto -1px -1px;
-  width: 3px; border-radius: var(--r) 0 0 var(--r);
-  background: var(--gc);
 }
 .card:hover { transform: translateY(-3px); border-color: var(--gc); box-shadow: var(--shadow); }
 .card-top { display: flex; align-items: center; gap: 10px; }
