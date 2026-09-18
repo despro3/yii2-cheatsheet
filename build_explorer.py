@@ -273,7 +273,7 @@ def build_map():
         return {'title': t['title'], 'cls': t['cls'], 'badge': t['badge'], 'lead': t['lead']}
 
     p = []
-    p.append('<svg viewBox="0 0 1060 534" role="img" class="mp" '
+    p.append('<svg viewBox="0 0 1060 592" role="img" class="mp" '
              'aria-label="Устройство Yii 2: сверху путь запроса от браузера через приложение, маршрут, '
              'контроллер и фильтры к действию, откуда ответ возвращается в браузер; ниже три семейства '
              'механизмов, которые действие '
@@ -282,8 +282,8 @@ def build_map():
              'orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs>')
 
     # фундамент
-    p.append('<rect class="mp-slab" x="40" y="390" width="980" height="124" rx="12" stroke-dasharray="5 4"/>')
-    p.append('<text class="mp-label" style="fill: %s" x="530" y="414" text-anchor="middle">'
+    p.append('<rect class="mp-slab" x="40" y="436" width="980" height="140" rx="12" stroke-dasharray="5 4"/>')
+    p.append('<text class="mp-label" style="fill: %s" x="530" y="462" text-anchor="middle">'
              'фундамент · на этом стоит всё остальное</text>' % C['object'])
 
     # путь запроса: порядок ровно такой, в каком его проходит запрос
@@ -304,13 +304,13 @@ def build_map():
         gap_from = a[0] + a[1] + 5
         p.append('<path d="M%d 60h%d"/>' % (gap_from, b[0] - 7 - gap_from))
     # ответ — это сама петля возврата: отдельным блоком он был бы вторым входом в ту же панель
-    p.append('<path d="M1032 60H1044V20H16V60h6"/>')
+    p.append('<path d="M1032 60H1044V22H74v8"/>')
     # доступ не отдельная стадия: его спрашивают фильтры
-    p.append('<path d="M830 86v12"/>')
+    p.append('<path d="M830 86v14"/>')
     p.append('</g>')
-    p.append('<text class="mp-label" style="fill: %s" x="553" y="13" text-anchor="middle">ответ</text>'
+    p.append('<text class="mp-label" style="fill: %s" x="553" y="15" text-anchor="middle">ответ</text>'
              % C['http'])
-    p.append(node(774, 100, 112, 44, 'доступ', None, 'user', C['http'], '', tip('user')))
+    p.append(node(774, 104, 112, 46, 'доступ', None, 'user', C['http'], '', tip('user')))
 
     # механизмы: колонка на семейство
     columns = [
@@ -326,26 +326,26 @@ def build_map():
 
     # шина: действие тянется к каждому семейству
     p.append('<g class="mp-flow">')
-    p.append('<path d="M978 86v66"/>')
-    p.append('<path d="M%g 152H978"/>' % centers[0])
+    p.append('<path d="M978 86v78"/>')
+    p.append('<path d="M%g 164H978"/>' % centers[0])
     p.append('</g>')
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for c in centers:
-        p.append('<path d="M%g 152v10"/>' % c)
+        p.append('<path d="M%g 164v12"/>' % c)
     p.append('</g>')
 
     for i, (label, color, ids, labels) in enumerate(columns):
-        p.append('<text class="mp-label" style="fill: %s" x="%g" y="178" text-anchor="middle">%s</text>'
+        p.append('<text class="mp-label" style="fill: %s" x="%g" y="194" text-anchor="middle">%s</text>'
                  % (color, centers[i], label))
         for row, (tid, name) in enumerate(zip(ids, labels)):
-            p.append(node(cx0 + i * cstep, 190 + row * 62, cw, 54,
+            p.append(node(cx0 + i * cstep, 206 + row * 72, cw, 60,
                           name, by_id[tid]['badge'], tid, color, '', tip(tid)))
 
     # фундамент: узлы
     base = [('components', 'компоненты'), ('di', 'DI-контейнер'), ('behaviors', 'поведения'),
             ('events', 'события'), ('helpers', 'хелперы')]
     for i, (tid, name) in enumerate(base):
-        p.append(node(66 + i * 188, 432, 176, 54, name, by_id[tid]['badge'], tid, C['object'], '', tip(tid)))
+        p.append(node(66 + i * 188, 482, 176, 60, name, by_id[tid]['badge'], tid, C['object'], '', tip(tid)))
 
     p.append('</svg>')
     return ''.join(p)
@@ -418,7 +418,9 @@ def build_page():
     <section class="map">
       <figure>
         <div class="map-frame">%s</div>
-        <figcaption>Нажмите на блок, чтобы открыть разбор; при наведении мышью — короткая справка.</figcaption>
+        <figcaption>Запрос идёт по верхней линии; ниже — механизмы, которые дёргает действие,
+          а внизу то, на чём держится всё остальное. Нажмите на блок, чтобы открыть разбор;
+          при наведении мышью — короткая справка.</figcaption>
       </figure>
     </section>
 
