@@ -274,7 +274,7 @@ def build_map():
     C = GROUP_COLOR
     n = data.NUM
     p = []
-    p.append('<svg viewBox="0 0 1060 424" role="img" class="mp" '
+    p.append('<svg viewBox="0 0 1060 366" role="img" class="mp" '
              'aria-label="Устройство Yii 2: сверху путь запроса — браузер, маршруты, фильтры, действие, '
              'ответ; посередине механизмы, которые действие дёргает; снизу фундамент из компонентов, '
              'поведений, событий и хелперов">')
@@ -282,8 +282,8 @@ def build_map():
              'orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs>')
 
     # фундамент
-    p.append('<rect class="mp-slab" x="16" y="268" width="1028" height="132" rx="12" stroke-dasharray="5 4"/>')
-    p.append('<text class="mp-label" style="fill: %s" x="36" y="292">'
+    p.append('<rect class="mp-slab" x="16" y="222" width="1028" height="128" rx="12" stroke-dasharray="5 4"/>')
+    p.append('<text class="mp-label" style="fill: %s" x="530" y="246" text-anchor="middle">'
              'фундамент · на этом стоит всё остальное</text>' % C['object'])
 
     # путь запроса: x, ширина, подпись, тема, цвет семейства, класс
@@ -297,13 +297,13 @@ def build_map():
         (944, 100, '', 'браузер', None, None, 'mp-io'),
     ]
     for x, w, num, name, tid, color, cls in path:
-        p.append(node(x, 36, w, 50, num, name, tid, color, cls))
+        p.append(node(x, 18, w, 50, num, name, tid, color, cls))
 
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for a, b in zip(path, path[1:]):
         # стрелка не упирается в рамку: остаётся зазор, чтобы не наезжать на метку семейства
         gap_from = a[0] + a[1] + 4
-        p.append('<path d="M%d 61h%d"/>' % (gap_from, b[0] - 6 - gap_from))
+        p.append('<path d="M%d 43h%d"/>' % (gap_from, b[0] - 6 - gap_from))
     p.append('</g>')
 
     # механизмы, которые дёргает действие
@@ -322,33 +322,28 @@ def build_map():
 
     # шина от действия вниз и разводка по механизмам
     p.append('<g class="mp-flow">')
-    p.append('<path d="M698 86v28"/>')
-    p.append('<path d="M%g 114h%g"/>' % (centers[0], centers[-1] - centers[0]))
+    p.append('<path d="M698 68v26"/>')
+    p.append('<path d="M%g 94h%g"/>' % (centers[0], centers[-1] - centers[0]))
     for cx in centers:
-        p.append('<path d="M%g 114v30"/>' % cx)
+        p.append('<path d="M%g 94v30"/>' % cx)
     p.append('</g>')
 
     for x, w, tid, name in mech:
-        p.append(node(x, 144, w, 50, n[tid], name, tid, C[group_of[tid]]))
+        p.append(node(x, 124, w, 50, n[tid], name, tid, C[group_of[tid]]))
 
-    for x, label, color in [(16, 'данные и правила', C['data']),
-                            (370, 'база данных', C['db']),
-                            (768, 'вывод и состояние', C['view'])]:
-        p.append('<text class="mp-label" style="fill: %s" x="%d" y="218">%s</text>' % (color, x, label))
+    for cx, label, color in [(178, 'данные и правила', C['data']),
+                             (554, 'база данных', C['db']),
+                             (906, 'вывод и состояние', C['view'])]:
+        p.append('<text class="mp-label" style="fill: %s" x="%d" y="198" text-anchor="middle">%s</text>'
+                 % (color, cx, label))
 
     # фундамент: узлы, разложенные по плите равными долями
     base = [('components', 'компоненты'), ('di', 'DI-контейнер'), ('behaviors', 'поведения'),
             ('events', 'события'), ('helpers', 'хелперы')]
     bw, step, bx = 176, 194, 60
 
-    # связи фундамента с механизмами
-    p.append('<g class="mp-tie">')
-    for i in range(len(base)):
-        p.append('<path d="M%d 268v-36"/>' % (bx + i * step + bw / 2))
-    p.append('</g>')
-
     for i, (tid, name) in enumerate(base):
-        p.append(node(bx + i * step, 312, bw, 52, n[tid], name, tid, C['object']))
+        p.append(node(bx + i * step, 266, bw, 52, n[tid], name, tid, C['object']))
 
     p.append('</svg>')
     return ''.join(p)
@@ -416,14 +411,14 @@ def build_page():
     head = '''<title>%s</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 %s
 </style>''' % (esc(TITLE), css)
 
     body = '''<header class="top">
   <div class="top-in">
-    <span class="mark"><b>Yii</b>Разборный Yii 2</span>
+    <span class="mark"><b>Yii</b><span class="mark-text">Разборный Yii 2</span></span>
     <span class="top-spacer"></span>
     <a class="back-link" href="index.html">к шпаргалке</a>
     <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему">
@@ -436,11 +431,12 @@ def build_page():
 <main>
   <div class="wrap">
     <section class="hero">
-      <p class="eyebrow">каталог механизмов · Yii 2.0</p>
-      <h1>Фреймворк, <span>разобранный на узлы</span></h1>
-      <p class="hero-lead">%s механизмов, из которых состоит почти любое приложение на Yii.
-        Нажмите на узел: внутри схема работы, полный список всего встроенного, заготовка своего варианта
-        и грабли, на которые наступают чаще всего.</p>
+      <div class="hero-text">
+        <h1>Фреймворк, <span>разобранный на узлы</span></h1>
+        <p class="hero-lead">%s механизмов, из которых состоит почти любое приложение на Yii.
+          Нажмите на узел — внутри схема работы, полный список встроенного, заготовка своего
+          варианта и грабли.</p>
+      </div>
       <ul class="hero-stats">
         <li><b>%d</b><span>узлов</span></li>
         <li><b>%d</b><span>встроенных возможностей</span></li>
@@ -451,11 +447,8 @@ def build_page():
     <section class="map">
       <figure>
         <div class="map-frame">%s</div>
-        <figcaption>Запрос идёт по верхней линии: маршруты выбирают действие, фильтры решают,
-          пускать ли к нему. Действие дёргает механизмы посередине — модель с правилами, базу,
-          виджеты для вывода, хранилища состояния. Внизу — то, на чём держится всё остальное: любой
-          из этих узлов настраивается массивом, слушает события и принимает поведения.
-          Номера идут в том же порядке, в каком узлы встречаются на пути запроса, цвет обозначает
+        <figcaption>Запрос идёт по верхней линии, посередине — механизмы, которые дёргает действие,
+          внизу — то, на чём держится всё остальное. Номера идут по ходу запроса, цвет обозначает
           семейство. Узлы кликабельны.</figcaption>
       </figure>
     </section>

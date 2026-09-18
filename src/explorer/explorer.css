@@ -1,14 +1,13 @@
 /* ==========================================================================
    Разборный Yii 2 — каталог механизмов фреймворка
    Палитра: чертёжная. Холодная бумага / индиговые чернила / бирюзовый сигнал.
-   Типографика: Unbounded (заголовки), Golos Text (текст), JetBrains Mono (код)
+   Типографика: Golos Text (контраст насыщенностью), JetBrains Mono (код и метки)
    ========================================================================== */
 
 :root {
   color-scheme: light dark;
 
-  --bg:        #e9eef4;
-  --bg-grid:   #d6e0ea;
+  --bg:        #eef0f4;
   --surface:   #ffffff;
   --surface-2: #f2f6fa;
   --surface-3: #e5ecf3;
@@ -44,7 +43,7 @@
   --t-lt: #7fd2ea; --t-tg: #8fc2ff; --t-at: #ffd291; --t-pk: #9ed7a8;
   --t-tp: #8fc2ff; --t-ins: #9ed7a8; --t-del: #f0a0a8;
 
-  --font-display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --font-display: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
@@ -56,8 +55,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:        #070e17;
-    --bg-grid:   #0e1a27;
+    --bg:        #080f18;
     --surface:   #0f1c29;
     --surface-2: #142433;
     --surface-3: #1b2e40;
@@ -93,8 +91,7 @@
 }
 
 :root[data-theme="dark"] {
-  --bg:        #070e17;
-  --bg-grid:   #0e1a27;
+  --bg:        #080f18;
   --surface:   #0f1c29;
   --surface-2: #142433;
   --surface-3: #1b2e40;
@@ -134,10 +131,6 @@
 body {
   margin: 0;
   background: var(--bg);
-  background-image:
-    linear-gradient(var(--bg-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
-  background-size: 48px 48px, 48px 48px;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
@@ -204,51 +197,47 @@ code, kbd, pre { font-family: var(--font-mono); }
 :root[data-theme="light"] .ico-moon { display: block; }
 :root[data-theme="light"] .ico-sun { display: none; }
 
-/* ----------------------------------------------------------------- герой */
+/* ----------------------------------------------------------------- шапка */
 
-.hero { padding-block: 44px 24px; }
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--signal); margin: 0 0 14px;
+.hero {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 14px 40px; flex-wrap: wrap;
+  padding-block: 26px 2px;
 }
+.hero-text { flex: 1 1 440px; min-width: 0; }
 .hero h1 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2rem, 1.2rem + 3.4vw, 3.4rem);
-  line-height: 1.02; letter-spacing: -.035em;
-  margin: 0 0 18px; text-wrap: balance;
-  max-width: 16ch;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.1rem);
+  line-height: 1.1; letter-spacing: -.025em;
+  margin: 0 0 7px; text-wrap: balance;
 }
 .hero h1 span { color: var(--signal); }
-.hero-lead {
-  font-size: 18px; color: var(--ink-2);
-  max-width: 62ch; margin: 0 0 26px;
-}
+.hero-lead { margin: 0; font-size: 15px; color: var(--muted); max-width: 72ch; }
 .hero-stats {
-  display: flex; flex-wrap: wrap; gap: 28px;
+  display: flex; flex-wrap: wrap; gap: 6px 24px;
   list-style: none; margin: 0; padding: 0;
+  flex: 0 1 auto; min-width: 0;   /* на узком экране переносится, а не распирает страницу */
 }
+.hero-stats li { display: flex; align-items: baseline; gap: 7px; }
 .hero-stats b {
-  display: block;
-  font-family: var(--font-display); font-weight: 600;
-  font-size: 26px; letter-spacing: -.02em; line-height: 1.1;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 17px; letter-spacing: -.01em;
   font-variant-numeric: tabular-nums;
 }
 .hero-stats span { font-size: 13px; color: var(--muted); }
 
 /* --------------------------------------------------------------- схема */
 
-.map { margin-block: 34px 8px; }
+.map { margin-block: 20px 8px; }
 .map figure { margin: 0; }
 .map svg { display: block; width: 100%; height: auto; }
 .map figcaption {
-  margin-top: 12px; font-size: 13.5px; color: var(--muted); max-width: 70ch;
+  margin-top: 10px; font-size: 13px; color: var(--muted); max-width: 96ch;
 }
 .map-frame {
   border: 1px solid var(--line); border-radius: var(--r);
   background: var(--surface);
-  padding: 18px 18px 14px;
+  padding: 14px 16px 12px;
   overflow-x: auto;
   box-shadow: var(--shadow);
 }
@@ -270,16 +259,15 @@ code, kbd, pre { font-family: var(--font-mono); }
 .mp-hit:hover text { fill: var(--gc); }
 .mp-flow { stroke: var(--line-2); stroke-width: 1.6; fill: none; }
 .mp-head { fill: var(--line-2); }
-.mp-tie { stroke: var(--faint); stroke-width: 1.2; stroke-dasharray: 3 4; fill: none; }
 .mp-label { fill: var(--muted); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
 .mp-io rect { fill: var(--surface-2); stroke-dasharray: 4 3; }
 
 /* --------------------------------------------------------------- группы */
 
-.groups { padding-block: 10px 60px; display: grid; gap: 44px; }
+.groups { padding-block: 28px 64px; display: grid; gap: 40px; }
 .group-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
 .group-head h2 {
-  font-family: var(--font-display); font-weight: 600;
+  font-family: var(--font-display); font-weight: 700;
   font-size: 19px; letter-spacing: -.02em; margin: 0;
 }
 .group-head p { margin: 0; font-size: 14px; color: var(--muted); }
@@ -312,7 +300,7 @@ code, kbd, pre { font-family: var(--font-mono); }
   white-space: nowrap;
 }
 .card h3 {
-  font-family: var(--font-display); font-weight: 600;
+  font-family: var(--font-display); font-weight: 700;
   font-size: 17px; letter-spacing: -.02em; line-height: 1.2;
   margin: 0; text-wrap: balance;
 }
@@ -362,7 +350,7 @@ body.panel-open .panel { transform: none; opacity: 1; }
   text-transform: uppercase; color: var(--pc, var(--signal));
 }
 .panel-bar .pb-title {
-  font-family: var(--font-display); font-weight: 600; font-size: 14px;
+  font-family: var(--font-display); font-weight: 700; font-size: 14px;
   letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .panel-bar .sp { flex: 1 1 auto; }
@@ -375,15 +363,15 @@ body.panel-open .panel { transform: none; opacity: 1; }
 .panel-body { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; background: var(--surface); }
 .panel-body-in { padding: 0 0 60px; }
 
-.panel-hero { padding: 26px 22px 18px; max-width: 900px; }
+.panel-hero { padding: 24px 22px 16px; max-width: 980px; }
 .panel-hero .pe {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--pc, var(--signal));
 }
 .panel-hero h2 {
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2rem);
-  letter-spacing: -.035em; line-height: 1.1;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.4rem, 1.1rem + 1.4vw, 1.95rem);
+  letter-spacing: -.025em; line-height: 1.1;
   margin: 10px 0 8px; text-wrap: balance;
 }
 .panel-hero .panel-lead { margin: 0; color: var(--ink-2); font-size: 15.5px; max-width: 68ch; }
@@ -407,7 +395,7 @@ body.panel-open .panel { transform: none; opacity: 1; }
 .tab:hover { color: var(--ink); }
 .tab[aria-selected="true"] { color: var(--pc, var(--signal)); border-bottom-color: var(--pc, var(--signal)); }
 
-.tab-panel { padding: 24px 22px 0; max-width: 880px; }
+.tab-panel { padding: 22px 22px 0; max-width: 980px; }
 @media (max-width: 760px) {
   .panel-hero { padding: 20px 16px 14px; }
   .tabs { padding-inline: 16px; }
@@ -516,6 +504,7 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 .note p { margin: 0; font-size: 14.5px; color: var(--ink-2); }
 
 /* справочник */
+.ref-block { display: grid; gap: 12px; }
 .ref-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .ref-search {
   flex: 1 1 220px; min-width: 0;
@@ -533,18 +522,18 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 
 .ref { display: grid; gap: 8px; }
 .ref-item { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); overflow: hidden; }
-.ref-item.open { border-color: var(--signal); }
+.ref-item.open { border-color: var(--pc, var(--signal)); }
 .ref-btn {
   width: 100%; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: baseline;
   padding: 12px 14px; border: 0; background: none; color: inherit; font: inherit;
   text-align: left; cursor: pointer;
 }
 .ref-btn:hover { background: var(--surface-2); }
-.ref-n { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--signal); }
+.ref-n { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--pc, var(--signal)); }
 .ref-d { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
 .ref-chev { color: var(--faint); transition: transform .18s; align-self: center; }
 .ref-chev svg { width: 14px; height: 14px; display: block; }
-.ref-item.open .ref-chev { transform: rotate(90deg); color: var(--signal); }
+.ref-item.open .ref-chev { transform: rotate(90deg); color: var(--pc, var(--signal)); }
 .ref-body { padding: 0 14px 14px; display: grid; gap: 12px; }
 .ref-o { font-size: 13.5px; color: var(--muted); }
 .ref-o b { color: var(--ink-2); font-weight: 500; }
@@ -704,4 +693,4 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
   transition: color .15s, border-color .15s;
 }
 .back-link:hover { color: var(--signal); border-color: var(--signal); }
-@media (max-width: 480px) { .back-link { display: none; } }
+@media (max-width: 520px) { .mark-text { display: none; } }

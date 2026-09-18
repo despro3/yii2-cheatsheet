@@ -8,19 +8,18 @@
 <title>Разборный Yii 2</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;700&family=Golos+Text:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
 /* ==========================================================================
    Разборный Yii 2 — каталог механизмов фреймворка
    Палитра: чертёжная. Холодная бумага / индиговые чернила / бирюзовый сигнал.
-   Типографика: Unbounded (заголовки), Golos Text (текст), JetBrains Mono (код)
+   Типографика: Golos Text (контраст насыщенностью), JetBrains Mono (код и метки)
    ========================================================================== */
 
 :root {
   color-scheme: light dark;
 
-  --bg:        #e9eef4;
-  --bg-grid:   #d6e0ea;
+  --bg:        #eef0f4;
   --surface:   #ffffff;
   --surface-2: #f2f6fa;
   --surface-3: #e5ecf3;
@@ -56,7 +55,7 @@
   --t-lt: #7fd2ea; --t-tg: #8fc2ff; --t-at: #ffd291; --t-pk: #9ed7a8;
   --t-tp: #8fc2ff; --t-ins: #9ed7a8; --t-del: #f0a0a8;
 
-  --font-display: "Unbounded", "Golos Text", system-ui, sans-serif;
+  --font-display: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
@@ -68,8 +67,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg:        #070e17;
-    --bg-grid:   #0e1a27;
+    --bg:        #080f18;
     --surface:   #0f1c29;
     --surface-2: #142433;
     --surface-3: #1b2e40;
@@ -105,8 +103,7 @@
 }
 
 :root[data-theme="dark"] {
-  --bg:        #070e17;
-  --bg-grid:   #0e1a27;
+  --bg:        #080f18;
   --surface:   #0f1c29;
   --surface-2: #142433;
   --surface-3: #1b2e40;
@@ -146,10 +143,6 @@
 body {
   margin: 0;
   background: var(--bg);
-  background-image:
-    linear-gradient(var(--bg-grid) 1px, transparent 1px),
-    linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px);
-  background-size: 48px 48px, 48px 48px;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
@@ -216,51 +209,47 @@ code, kbd, pre { font-family: var(--font-mono); }
 :root[data-theme="light"] .ico-moon { display: block; }
 :root[data-theme="light"] .ico-sun { display: none; }
 
-/* ----------------------------------------------------------------- герой */
+/* ----------------------------------------------------------------- шапка */
 
-.hero { padding-block: 44px 24px; }
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 11px; letter-spacing: .18em; text-transform: uppercase;
-  color: var(--signal); margin: 0 0 14px;
+.hero {
+  display: flex; align-items: flex-end; justify-content: space-between;
+  gap: 14px 40px; flex-wrap: wrap;
+  padding-block: 26px 2px;
 }
+.hero-text { flex: 1 1 440px; min-width: 0; }
 .hero h1 {
-  font-family: var(--font-display);
-  font-weight: 700;
-  font-size: clamp(2rem, 1.2rem + 3.4vw, 3.4rem);
-  line-height: 1.02; letter-spacing: -.035em;
-  margin: 0 0 18px; text-wrap: balance;
-  max-width: 16ch;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.5rem, 1.15rem + 1.5vw, 2.1rem);
+  line-height: 1.1; letter-spacing: -.025em;
+  margin: 0 0 7px; text-wrap: balance;
 }
 .hero h1 span { color: var(--signal); }
-.hero-lead {
-  font-size: 18px; color: var(--ink-2);
-  max-width: 62ch; margin: 0 0 26px;
-}
+.hero-lead { margin: 0; font-size: 15px; color: var(--muted); max-width: 72ch; }
 .hero-stats {
-  display: flex; flex-wrap: wrap; gap: 28px;
+  display: flex; flex-wrap: wrap; gap: 6px 24px;
   list-style: none; margin: 0; padding: 0;
+  flex: 0 1 auto; min-width: 0;   /* на узком экране переносится, а не распирает страницу */
 }
+.hero-stats li { display: flex; align-items: baseline; gap: 7px; }
 .hero-stats b {
-  display: block;
-  font-family: var(--font-display); font-weight: 600;
-  font-size: 26px; letter-spacing: -.02em; line-height: 1.1;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: 17px; letter-spacing: -.01em;
   font-variant-numeric: tabular-nums;
 }
 .hero-stats span { font-size: 13px; color: var(--muted); }
 
 /* --------------------------------------------------------------- схема */
 
-.map { margin-block: 34px 8px; }
+.map { margin-block: 20px 8px; }
 .map figure { margin: 0; }
 .map svg { display: block; width: 100%; height: auto; }
 .map figcaption {
-  margin-top: 12px; font-size: 13.5px; color: var(--muted); max-width: 70ch;
+  margin-top: 10px; font-size: 13px; color: var(--muted); max-width: 96ch;
 }
 .map-frame {
   border: 1px solid var(--line); border-radius: var(--r);
   background: var(--surface);
-  padding: 18px 18px 14px;
+  padding: 14px 16px 12px;
   overflow-x: auto;
   box-shadow: var(--shadow);
 }
@@ -282,16 +271,15 @@ code, kbd, pre { font-family: var(--font-mono); }
 .mp-hit:hover text { fill: var(--gc); }
 .mp-flow { stroke: var(--line-2); stroke-width: 1.6; fill: none; }
 .mp-head { fill: var(--line-2); }
-.mp-tie { stroke: var(--faint); stroke-width: 1.2; stroke-dasharray: 3 4; fill: none; }
 .mp-label { fill: var(--muted); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
 .mp-io rect { fill: var(--surface-2); stroke-dasharray: 4 3; }
 
 /* --------------------------------------------------------------- группы */
 
-.groups { padding-block: 10px 60px; display: grid; gap: 44px; }
+.groups { padding-block: 28px 64px; display: grid; gap: 40px; }
 .group-head { display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
 .group-head h2 {
-  font-family: var(--font-display); font-weight: 600;
+  font-family: var(--font-display); font-weight: 700;
   font-size: 19px; letter-spacing: -.02em; margin: 0;
 }
 .group-head p { margin: 0; font-size: 14px; color: var(--muted); }
@@ -324,7 +312,7 @@ code, kbd, pre { font-family: var(--font-mono); }
   white-space: nowrap;
 }
 .card h3 {
-  font-family: var(--font-display); font-weight: 600;
+  font-family: var(--font-display); font-weight: 700;
   font-size: 17px; letter-spacing: -.02em; line-height: 1.2;
   margin: 0; text-wrap: balance;
 }
@@ -374,7 +362,7 @@ body.panel-open .panel { transform: none; opacity: 1; }
   text-transform: uppercase; color: var(--pc, var(--signal));
 }
 .panel-bar .pb-title {
-  font-family: var(--font-display); font-weight: 600; font-size: 14px;
+  font-family: var(--font-display); font-weight: 700; font-size: 14px;
   letter-spacing: -.02em; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
 }
 .panel-bar .sp { flex: 1 1 auto; }
@@ -387,15 +375,15 @@ body.panel-open .panel { transform: none; opacity: 1; }
 .panel-body { flex: 1 1 auto; overflow-y: auto; overscroll-behavior: contain; background: var(--surface); }
 .panel-body-in { padding: 0 0 60px; }
 
-.panel-hero { padding: 26px 22px 18px; max-width: 900px; }
+.panel-hero { padding: 24px 22px 16px; max-width: 980px; }
 .panel-hero .pe {
   font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em;
   text-transform: uppercase; color: var(--pc, var(--signal));
 }
 .panel-hero h2 {
-  font-family: var(--font-display); font-weight: 700;
-  font-size: clamp(1.4rem, 1.1rem + 1.4vw, 2rem);
-  letter-spacing: -.035em; line-height: 1.1;
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.4rem, 1.1rem + 1.4vw, 1.95rem);
+  letter-spacing: -.025em; line-height: 1.1;
   margin: 10px 0 8px; text-wrap: balance;
 }
 .panel-hero .panel-lead { margin: 0; color: var(--ink-2); font-size: 15.5px; max-width: 68ch; }
@@ -419,7 +407,7 @@ body.panel-open .panel { transform: none; opacity: 1; }
 .tab:hover { color: var(--ink); }
 .tab[aria-selected="true"] { color: var(--pc, var(--signal)); border-bottom-color: var(--pc, var(--signal)); }
 
-.tab-panel { padding: 24px 22px 0; max-width: 880px; }
+.tab-panel { padding: 22px 22px 0; max-width: 980px; }
 @media (max-width: 760px) {
   .panel-hero { padding: 20px 16px 14px; }
   .tabs { padding-inline: 16px; }
@@ -528,6 +516,7 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 .note p { margin: 0; font-size: 14.5px; color: var(--ink-2); }
 
 /* справочник */
+.ref-block { display: grid; gap: 12px; }
 .ref-tools { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
 .ref-search {
   flex: 1 1 220px; min-width: 0;
@@ -545,18 +534,18 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 
 .ref { display: grid; gap: 8px; }
 .ref-item { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); overflow: hidden; }
-.ref-item.open { border-color: var(--signal); }
+.ref-item.open { border-color: var(--pc, var(--signal)); }
 .ref-btn {
   width: 100%; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: baseline;
   padding: 12px 14px; border: 0; background: none; color: inherit; font: inherit;
   text-align: left; cursor: pointer;
 }
 .ref-btn:hover { background: var(--surface-2); }
-.ref-n { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--signal); }
+.ref-n { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--pc, var(--signal)); }
 .ref-d { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
 .ref-chev { color: var(--faint); transition: transform .18s; align-self: center; }
 .ref-chev svg { width: 14px; height: 14px; display: block; }
-.ref-item.open .ref-chev { transform: rotate(90deg); color: var(--signal); }
+.ref-item.open .ref-chev { transform: rotate(90deg); color: var(--pc, var(--signal)); }
 .ref-body { padding: 0 14px 14px; display: grid; gap: 12px; }
 .ref-o { font-size: 13.5px; color: var(--muted); }
 .ref-o b { color: var(--ink-2); font-weight: 500; }
@@ -716,14 +705,14 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
   transition: color .15s, border-color .15s;
 }
 .back-link:hover { color: var(--signal); border-color: var(--signal); }
-@media (max-width: 480px) { .back-link { display: none; } }
+@media (max-width: 520px) { .mark-text { display: none; } }
 
 </style>
 </head>
 <body>
 <header class="top">
   <div class="top-in">
-    <span class="mark"><b>Yii</b>Разборный Yii 2</span>
+    <span class="mark"><b>Yii</b><span class="mark-text">Разборный Yii 2</span></span>
     <span class="top-spacer"></span>
     <a class="back-link" href="index.html">к шпаргалке</a>
     <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему">
@@ -736,11 +725,12 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 <main>
   <div class="wrap">
     <section class="hero">
-      <p class="eyebrow">каталог механизмов · Yii 2.0</p>
-      <h1>Фреймворк, <span>разобранный на узлы</span></h1>
-      <p class="hero-lead">Шестнадцать механизмов, из которых состоит почти любое приложение на Yii.
-        Нажмите на узел: внутри схема работы, полный список всего встроенного, заготовка своего варианта
-        и грабли, на которые наступают чаще всего.</p>
+      <div class="hero-text">
+        <h1>Фреймворк, <span>разобранный на узлы</span></h1>
+        <p class="hero-lead">Шестнадцать механизмов, из которых состоит почти любое приложение на Yii.
+          Нажмите на узел — внутри схема работы, полный список встроенного, заготовка своего
+          варианта и грабли.</p>
+      </div>
       <ul class="hero-stats">
         <li><b>16</b><span>узлов</span></li>
         <li><b>216</b><span>встроенных возможностей</span></li>
@@ -750,12 +740,9 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 
     <section class="map">
       <figure>
-        <div class="map-frame"><svg viewBox="0 0 1060 424" role="img" class="mp" aria-label="Устройство Yii 2: сверху путь запроса — браузер, маршруты, фильтры, действие, ответ; посередине механизмы, которые действие дёргает; снизу фундамент из компонентов, поведений, событий и хелперов"><defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs><rect class="mp-slab" x="16" y="268" width="1028" height="132" rx="12" stroke-dasharray="5 4"/><text class="mp-label" style="fill: var(--g-object)" x="36" y="292">фундамент · на этом стоит всё остальное</text><g class="mp-node mp-io"><rect x="16" y="36" width="100" height="50" rx="8"/><text x="66" y="65">браузер</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="http" role="link" tabindex="0"><rect x="150" y="36" width="124" height="50" rx="8"/><text x="212" y="55" class="mp-num">01</text><text x="212" y="73">запрос</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="routing" role="link" tabindex="0"><rect x="308" y="36" width="132" height="50" rx="8"/><text x="374" y="55" class="mp-num">02</text><text x="374" y="73">маршруты</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="filters" role="link" tabindex="0"><rect x="474" y="36" width="124" height="50" rx="8"/><text x="536" y="55" class="mp-num">03</text><text x="536" y="73">фильтры</text></g><g class="mp-node"><rect x="632" y="36" width="132" height="50" rx="8"/><text x="698" y="65">действие</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="http" role="link" tabindex="0"><rect x="798" y="36" width="112" height="50" rx="8"/><text x="854" y="55" class="mp-num">01</text><text x="854" y="73">ответ</text></g><g class="mp-node mp-io"><rect x="944" y="36" width="100" height="50" rx="8"/><text x="994" y="65">браузер</text></g><g class="mp-flow" marker-end="url(#mp-a)"><path d="M120 61h24"/><path d="M278 61h24"/><path d="M444 61h24"/><path d="M602 61h24"/><path d="M768 61h24"/><path d="M914 61h24"/></g><g class="mp-flow"><path d="M698 86v28"/><path d="M64 114h896"/><path d="M64 114v30"/><path d="M174 114v30"/><path d="M288 114v30"/><path d="M430 114v30"/><path d="M564 114v30"/><path d="M688 114v30"/><path d="M816 114v30"/><path d="M960 114v30"/></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="model" role="link" tabindex="0"><rect x="16" y="144" width="96" height="50" rx="8"/><text x="64" y="163" class="mp-num">04</text><text x="64" y="181">модель</text></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="rules" role="link" tabindex="0"><rect x="124" y="144" width="100" height="50" rx="8"/><text x="174" y="163" class="mp-num">05</text><text x="174" y="181">правила</text></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="scenarios" role="link" tabindex="0"><rect x="236" y="144" width="104" height="50" rx="8"/><text x="288" y="163" class="mp-num">06</text><text x="288" y="181">сценарии</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="ar" role="link" tabindex="0"><rect x="370" y="144" width="120" height="50" rx="8"/><text x="430" y="163" class="mp-num">07</text><text x="430" y="181">Active Record</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="query" role="link" tabindex="0"><rect x="502" y="144" width="124" height="50" rx="8"/><text x="564" y="163" class="mp-num">08</text><text x="564" y="181">Query Builder</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="migrations" role="link" tabindex="0"><rect x="638" y="144" width="100" height="50" rx="8"/><text x="688" y="163" class="mp-num">09</text><text x="688" y="181">миграции</text></g><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="widgets" role="link" tabindex="0"><rect x="768" y="144" width="96" height="50" rx="8"/><text x="816" y="163" class="mp-num">10</text><text x="816" y="181">виджеты</text></g><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="state" role="link" tabindex="0"><rect x="876" y="144" width="168" height="50" rx="8"/><text x="960" y="163" class="mp-num">11</text><text x="960" y="181">кэш · сессии · куки</text></g><text class="mp-label" style="fill: var(--g-data)" x="16" y="218">данные и правила</text><text class="mp-label" style="fill: var(--g-db)" x="370" y="218">база данных</text><text class="mp-label" style="fill: var(--g-view)" x="768" y="218">вывод и состояние</text><g class="mp-tie"><path d="M148 268v-36"/><path d="M342 268v-36"/><path d="M536 268v-36"/><path d="M730 268v-36"/><path d="M924 268v-36"/></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="components" role="link" tabindex="0"><rect x="60" y="312" width="176" height="52" rx="8"/><text x="148" y="331" class="mp-num">12</text><text x="148" y="349">компоненты</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="di" role="link" tabindex="0"><rect x="254" y="312" width="176" height="52" rx="8"/><text x="342" y="331" class="mp-num">13</text><text x="342" y="349">DI-контейнер</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="behaviors" role="link" tabindex="0"><rect x="448" y="312" width="176" height="52" rx="8"/><text x="536" y="331" class="mp-num">14</text><text x="536" y="349">поведения</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="events" role="link" tabindex="0"><rect x="642" y="312" width="176" height="52" rx="8"/><text x="730" y="331" class="mp-num">15</text><text x="730" y="349">события</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="helpers" role="link" tabindex="0"><rect x="836" y="312" width="176" height="52" rx="8"/><text x="924" y="331" class="mp-num">16</text><text x="924" y="349">хелперы</text></g></svg></div>
-        <figcaption>Запрос идёт по верхней линии: маршруты выбирают действие, фильтры решают,
-          пускать ли к нему. Действие дёргает механизмы посередине — модель с правилами, базу,
-          виджеты для вывода, хранилища состояния. Внизу — то, на чём держится всё остальное: любой
-          из этих узлов настраивается массивом, слушает события и принимает поведения.
-          Номера идут в том же порядке, в каком узлы встречаются на пути запроса, цвет обозначает
+        <div class="map-frame"><svg viewBox="0 0 1060 366" role="img" class="mp" aria-label="Устройство Yii 2: сверху путь запроса — браузер, маршруты, фильтры, действие, ответ; посередине механизмы, которые действие дёргает; снизу фундамент из компонентов, поведений, событий и хелперов"><defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs><rect class="mp-slab" x="16" y="222" width="1028" height="128" rx="12" stroke-dasharray="5 4"/><text class="mp-label" style="fill: var(--g-object)" x="530" y="246" text-anchor="middle">фундамент · на этом стоит всё остальное</text><g class="mp-node mp-io"><rect x="16" y="18" width="100" height="50" rx="8"/><text x="66" y="47">браузер</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="http" role="link" tabindex="0"><rect x="150" y="18" width="124" height="50" rx="8"/><text x="212" y="37" class="mp-num">01</text><text x="212" y="55">запрос</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="routing" role="link" tabindex="0"><rect x="308" y="18" width="132" height="50" rx="8"/><text x="374" y="37" class="mp-num">02</text><text x="374" y="55">маршруты</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="filters" role="link" tabindex="0"><rect x="474" y="18" width="124" height="50" rx="8"/><text x="536" y="37" class="mp-num">03</text><text x="536" y="55">фильтры</text></g><g class="mp-node"><rect x="632" y="18" width="132" height="50" rx="8"/><text x="698" y="47">действие</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="http" role="link" tabindex="0"><rect x="798" y="18" width="112" height="50" rx="8"/><text x="854" y="37" class="mp-num">01</text><text x="854" y="55">ответ</text></g><g class="mp-node mp-io"><rect x="944" y="18" width="100" height="50" rx="8"/><text x="994" y="47">браузер</text></g><g class="mp-flow" marker-end="url(#mp-a)"><path d="M120 43h24"/><path d="M278 43h24"/><path d="M444 43h24"/><path d="M602 43h24"/><path d="M768 43h24"/><path d="M914 43h24"/></g><g class="mp-flow"><path d="M698 68v26"/><path d="M64 94h896"/><path d="M64 94v30"/><path d="M174 94v30"/><path d="M288 94v30"/><path d="M430 94v30"/><path d="M564 94v30"/><path d="M688 94v30"/><path d="M816 94v30"/><path d="M960 94v30"/></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="model" role="link" tabindex="0"><rect x="16" y="124" width="96" height="50" rx="8"/><text x="64" y="143" class="mp-num">04</text><text x="64" y="161">модель</text></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="rules" role="link" tabindex="0"><rect x="124" y="124" width="100" height="50" rx="8"/><text x="174" y="143" class="mp-num">05</text><text x="174" y="161">правила</text></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="scenarios" role="link" tabindex="0"><rect x="236" y="124" width="104" height="50" rx="8"/><text x="288" y="143" class="mp-num">06</text><text x="288" y="161">сценарии</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="ar" role="link" tabindex="0"><rect x="370" y="124" width="120" height="50" rx="8"/><text x="430" y="143" class="mp-num">07</text><text x="430" y="161">Active Record</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="query" role="link" tabindex="0"><rect x="502" y="124" width="124" height="50" rx="8"/><text x="564" y="143" class="mp-num">08</text><text x="564" y="161">Query Builder</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="migrations" role="link" tabindex="0"><rect x="638" y="124" width="100" height="50" rx="8"/><text x="688" y="143" class="mp-num">09</text><text x="688" y="161">миграции</text></g><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="widgets" role="link" tabindex="0"><rect x="768" y="124" width="96" height="50" rx="8"/><text x="816" y="143" class="mp-num">10</text><text x="816" y="161">виджеты</text></g><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="state" role="link" tabindex="0"><rect x="876" y="124" width="168" height="50" rx="8"/><text x="960" y="143" class="mp-num">11</text><text x="960" y="161">кэш · сессии · куки</text></g><text class="mp-label" style="fill: var(--g-data)" x="178" y="198" text-anchor="middle">данные и правила</text><text class="mp-label" style="fill: var(--g-db)" x="554" y="198" text-anchor="middle">база данных</text><text class="mp-label" style="fill: var(--g-view)" x="906" y="198" text-anchor="middle">вывод и состояние</text><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="components" role="link" tabindex="0"><rect x="60" y="266" width="176" height="52" rx="8"/><text x="148" y="285" class="mp-num">12</text><text x="148" y="303">компоненты</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="di" role="link" tabindex="0"><rect x="254" y="266" width="176" height="52" rx="8"/><text x="342" y="285" class="mp-num">13</text><text x="342" y="303">DI-контейнер</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="behaviors" role="link" tabindex="0"><rect x="448" y="266" width="176" height="52" rx="8"/><text x="536" y="285" class="mp-num">14</text><text x="536" y="303">поведения</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="events" role="link" tabindex="0"><rect x="642" y="266" width="176" height="52" rx="8"/><text x="730" y="285" class="mp-num">15</text><text x="730" y="303">события</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="helpers" role="link" tabindex="0"><rect x="836" y="266" width="176" height="52" rx="8"/><text x="924" y="285" class="mp-num">16</text><text x="924" y="303">хелперы</text></g></svg></div>
+        <figcaption>Запрос идёт по верхней линии, посередине — механизмы, которые дёргает действие,
+          внизу — то, на чём держится всё остальное. Номера идут по ходу запроса, цвет обозначает
           семейство. Узлы кликабельны.</figcaption>
       </figure>
     </section>
