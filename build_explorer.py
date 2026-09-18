@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Сборка страницы «Карта Yii 2» из src/explorer/.
+"""Сборка страницы «Справочник Yii 2» из src/explorer/.
 
     python3 build_explorer.py
 
@@ -24,7 +24,7 @@ import content as data                    # noqa: E402
 OUT = os.path.join(ROOT, 'docs', 'explorer.html')
 FRAGMENT = os.path.join(SRC, '_fragment.html')
 
-TITLE = 'Карта Yii 2'
+TITLE = 'Справочник Yii 2'
 DESCRIPTION = ('Каталог механизмов Yii 2: карточки основных узлов фреймворка, '
                'полные списки встроенного и живые демонстрации.')
 
@@ -412,9 +412,9 @@ def build_page():
 
     body = '''<header class="top">
   <div class="top-in">
-    <span class="mark"><b>Yii</b><span class="mark-text">Карта Yii 2</span></span>
+    <span class="mark"><b>Yii</b><span class="mark-text">Справочник Yii 2</span></span>
     <span class="top-spacer"></span>
-    <a class="back-link" href="index.html">к курсу</a>
+    <a class="back-link" href="course.html">к курсу</a>
     <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему">
       <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
       <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>

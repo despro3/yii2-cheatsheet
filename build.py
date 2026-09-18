@@ -908,7 +908,8 @@ ICON_CHECK = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7
 
 def build_nav(parts, pages_by_part, current_id):
     out = ['<nav class="nav" aria-label="Разделы">']
-    out.append('<a class="nav-home%s" href="index.html">Главная</a>' % (' active' if current_id == 'index' else ''))
+    out.append('<a class="nav-home%s" href="course.html">Обзор курса</a>'
+               % (' active' if current_id == 'index' else ''))
     for part in parts:
         pages = pages_by_part.get(part['id'], [])
         if not pages:
@@ -1131,9 +1132,19 @@ def main():
         'hours': ('%d ч' % round(total_minutes / 60.0)) if total_minutes >= 90 else ('%d мин' % total_minutes),
         'lifecycle': read(os.path.join(DIAGRAMS, 'request-lifecycle.svg')) if os.path.exists(os.path.join(DIAGRAMS, 'request-lifecycle.svg')) else '',
     })
-    write(os.path.join(OUT, 'index.html'), shell(SITE_NAME,
-                                                 'Все главы руководства Yii 2.0 в компактных разделах с примерами кода.',
-                                                 'home', build_nav(parts, pages_by_part, 'index'), index_main, '', 'index'))
+    write(os.path.join(OUT, 'course.html'), shell(SITE_NAME,
+                                                  'Все главы руководства Yii 2.0 в компактных разделах с примерами кода.',
+                                                  'home', build_nav(parts, pages_by_part, 'index'), index_main, '', 'index'))
+
+    # хаб: одна страница на весь проект, откуда расходятся курс, справочник и выжимка
+    write(os.path.join(OUT, 'index.html'), fill(template('hub.html'), {
+        'pages_count': str(len(ordered)),
+        'chapters_count': str(len(chapters)),
+        'hours': ('%d ч' % round(total_minutes / 60.0)) if total_minutes >= 90 else ('%d мин' % total_minutes),
+        'explorer_topics': str(catalogue['topics']),
+        'explorer_refs': str(catalogue['refs']),
+        'explorer_demos': str(catalogue['demos']),
+    }))
 
     # всё одной страницей
     all_body = []
