@@ -273,7 +273,7 @@ def build_map():
         return {'title': t['title'], 'cls': t['cls'], 'badge': t['badge'], 'lead': t['lead']}
 
     p = []
-    p.append('<svg viewBox="0 0 1060 574" role="img" class="mp" '
+    p.append('<svg viewBox="0 0 1060 592" role="img" class="mp" '
              'aria-label="Устройство Yii 2: сверху путь запроса от браузера через приложение, маршрут, '
              'контроллер и фильтры к действию и ответу; ниже три семейства механизмов, которые действие '
              'дёргает; внизу фундамент, на котором стоит всё остальное">')
@@ -281,33 +281,34 @@ def build_map():
              'orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs>')
 
     # фундамент
-    p.append('<rect class="mp-slab" x="40" y="418" width="980" height="140" rx="12" stroke-dasharray="5 4"/>')
-    p.append('<text class="mp-label" style="fill: %s" x="530" y="444" text-anchor="middle">'
+    p.append('<rect class="mp-slab" x="40" y="436" width="980" height="140" rx="12" stroke-dasharray="5 4"/>')
+    p.append('<text class="mp-label" style="fill: %s" x="530" y="462" text-anchor="middle">'
              'фундамент · на этом стоит всё остальное</text>' % C['object'])
 
     # путь запроса: порядок ровно такой, в каком его проходит запрос
     path = [
-        (16, 78, 'браузер', None, None, 'mp-io'),
-        (126, 80, 'запрос', 'http', C['http'], ''),
-        (238, 104, 'приложение', 'app', C['http'], ''),
-        (374, 84, 'маршрут', 'routing', C['http'], ''),
-        (490, 104, 'контроллер', 'controllers', C['http'], ''),
-        (626, 84, 'фильтры', 'filters', C['http'], ''),
-        (742, 90, 'действие', None, None, ''),
-        (864, 70, 'ответ', 'http', C['http'], ''),
-        (966, 78, 'браузер', None, None, 'mp-io'),
+        (19, 86, 'браузер', None, None, 'mp-io'),
+        (139, 88, 'запрос', 'http', C['http'], ''),
+        (261, 116, 'приложение', 'app', C['http'], ''),
+        (411, 96, 'маршрут', 'routing', C['http'], ''),
+        (541, 116, 'контроллер', 'controllers', C['http'], ''),
+        (691, 96, 'фильтры', 'filters', C['http'], ''),
+        (821, 100, 'действие', None, None, ''),
+        (955, 86, 'ответ', 'http', C['http'], ''),
     ]
     for x, w, label, tid, color, cls in path:
-        p.append(node(x, 16, w, 52, label, None, tid, color, cls, tip(tid) if tid else None))
+        p.append(node(x, 34, w, 52, label, None, tid, color, cls, tip(tid) if tid else None))
 
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for a, b in zip(path, path[1:]):
         gap_from = a[0] + a[1] + 5
-        p.append('<path d="M%d 42h%d"/>' % (gap_from, b[0] - 7 - gap_from))
+        p.append('<path d="M%d 60h%d"/>' % (gap_from, b[0] - 7 - gap_from))
+    # ответ возвращается туда же, откуда пришёл запрос — петля вместо второго «браузера»
+    p.append('<path d="M998 34V12H62v18"/>')
     # доступ не отдельная стадия: его спрашивают фильтры
-    p.append('<path d="M668 68v14"/>')
+    p.append('<path d="M739 86v14"/>')
     p.append('</g>')
-    p.append(node(612, 86, 112, 46, 'доступ', None, 'user', C['http'], '', tip('user')))
+    p.append(node(683, 104, 112, 46, 'доступ', None, 'user', C['http'], '', tip('user')))
 
     # механизмы: колонка на семейство
     columns = [
@@ -323,26 +324,26 @@ def build_map():
 
     # шина: действие тянется к каждому семейству
     p.append('<g class="mp-flow">')
-    p.append('<path d="M787 68v78"/>')
-    p.append('<path d="M%g 146h%g"/>' % (centers[0], centers[-1] - centers[0]))
+    p.append('<path d="M871 86v78"/>')
+    p.append('<path d="M%g 164h%g"/>' % (centers[0], centers[-1] - centers[0]))
     p.append('</g>')
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for c in centers:
-        p.append('<path d="M%g 146v12"/>' % c)
+        p.append('<path d="M%g 164v12"/>' % c)
     p.append('</g>')
 
     for i, (label, color, ids, labels) in enumerate(columns):
-        p.append('<text class="mp-label" style="fill: %s" x="%g" y="176" text-anchor="middle">%s</text>'
+        p.append('<text class="mp-label" style="fill: %s" x="%g" y="194" text-anchor="middle">%s</text>'
                  % (color, centers[i], label))
         for row, (tid, name) in enumerate(zip(ids, labels)):
-            p.append(node(cx0 + i * cstep, 188 + row * 72, cw, 60,
+            p.append(node(cx0 + i * cstep, 206 + row * 72, cw, 60,
                           name, by_id[tid]['badge'], tid, color, '', tip(tid)))
 
     # фундамент: узлы
     base = [('components', 'компоненты'), ('di', 'DI-контейнер'), ('behaviors', 'поведения'),
             ('events', 'события'), ('helpers', 'хелперы')]
     for i, (tid, name) in enumerate(base):
-        p.append(node(66 + i * 188, 464, 176, 60, name, by_id[tid]['badge'], tid, C['object'], '', tip(tid)))
+        p.append(node(66 + i * 188, 482, 176, 60, name, by_id[tid]['badge'], tid, C['object'], '', tip(tid)))
 
     p.append('</svg>')
     return ''.join(p)
