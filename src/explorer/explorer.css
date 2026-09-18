@@ -30,10 +30,11 @@
   --bad:       #a8323f;
   --bad-bg:    #fbe6e8;
 
-  --g-data:    #06788c;
-  --g-object:  #5a45b8;
-  --g-db:      #1d7a55;
   --g-http:    #97540c;
+  --g-data:    #06788c;
+  --g-db:      #1d7a55;
+  --g-view:    #9c3468;
+  --g-object:  #5a45b8;
 
   --code-bg:   #0b1826;
   --code-ink:  #d6e4f2;
@@ -78,10 +79,11 @@
     --bad:       #f0838f;
     --bad-bg:    #2f1519;
 
-    --g-data:    #3ac6dd;
-    --g-object:  #a795ff;
-    --g-db:      #4fcf9b;
     --g-http:    #eda94f;
+    --g-data:    #3ac6dd;
+    --g-db:      #4fcf9b;
+    --g-view:    #f58cb8;
+    --g-object:  #a795ff;
 
     --code-bg:   #060f19;
     --code-line: #16273a;
@@ -114,10 +116,11 @@
   --bad:       #f0838f;
   --bad-bg:    #2f1519;
 
-  --g-data:    #3ac6dd;
-  --g-object:  #a795ff;
-  --g-db:      #4fcf9b;
   --g-http:    #eda94f;
+  --g-data:    #3ac6dd;
+  --g-db:      #4fcf9b;
+  --g-view:    #f58cb8;
+  --g-object:  #a795ff;
 
   --code-bg:   #060f19;
   --code-line: #16273a;
