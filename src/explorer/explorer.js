@@ -36,7 +36,6 @@
   var panel = $('#panel');
   var scrim = $('#scrim');
   var panelBody = $('#panel-body-in');
-  var panelNum = $('#pb-num');
   var panelTitle = $('#pb-title');
   var store_ = $('#topic-store');
   var current = null;
@@ -54,7 +53,6 @@
     panelBody.appendChild(node);
     node.hidden = false;
     panel.style.setProperty('--pc', node.getAttribute('data-color') || '');
-    panelNum.textContent = 'узел ' + node.getAttribute('data-num');
     panelTitle.textContent = node.getAttribute('data-title');
 
     body.classList.add('panel-open');
@@ -124,6 +122,76 @@
     openTopic(parts[0], parts[1], push);
   }
   window.addEventListener('popstate', function () { fromHash(false); });
+
+  /* --------------------------------------------------------------------------- подсказка на карте */
+
+  var tip = $('#tip');
+  var tipFor = null;
+
+  function showTip(el) {
+    if (!tip || tipFor === el) return;
+    var title = el.getAttribute('data-tip-title');
+    if (!title) return;
+    tipFor = el;
+    tip.innerHTML = '';
+
+    var b = document.createElement('b');
+    b.textContent = title;
+    tip.appendChild(b);
+
+    var cls = document.createElement('span');
+    cls.className = 'tip-cls';
+    cls.textContent = el.getAttribute('data-tip-cls') || '';
+    tip.appendChild(cls);
+
+    var lead = document.createElement('p');
+    lead.textContent = el.getAttribute('data-tip-lead') || '';
+    tip.appendChild(lead);
+
+    var badge = el.getAttribute('data-tip-badge');
+    if (badge) {
+      var chip = document.createElement('span');
+      chip.className = 'tip-badge';
+      chip.textContent = badge;
+      tip.appendChild(chip);
+    }
+
+    tip.style.setProperty('--tc', getComputedStyle(el).getPropertyValue('--gc') || '');
+    tip.hidden = false;
+
+    // сначала показываем за кадром, чтобы измерить, потом ставим на место
+    var box = el.getBoundingClientRect();
+    var size = tip.getBoundingClientRect();
+    var left = box.left + box.width / 2 - size.width / 2;
+    left = Math.max(12, Math.min(left, window.innerWidth - size.width - 12));
+    var top = box.bottom + 10;
+    if (top + size.height > window.innerHeight - 12) top = box.top - size.height - 10;
+    tip.style.left = Math.round(left) + 'px';
+    tip.style.top = Math.round(Math.max(12, top)) + 'px';
+    tip.classList.add('show');
+  }
+
+  function hideTip() {
+    if (!tip || tipFor === null) return;
+    tipFor = null;
+    tip.classList.remove('show');
+    tip.hidden = true;
+  }
+
+  if (tip && matchMedia('(hover: hover)').matches) {
+    $$('.mp-hit').forEach(function (el) {
+      el.addEventListener('mouseenter', function () { showTip(el); });
+      el.addEventListener('mouseleave', hideTip);
+    });
+  }
+  if (tip) {
+    $$('.mp-hit').forEach(function (el) {
+      el.addEventListener('focus', function () { showTip(el); });
+      el.addEventListener('blur', hideTip);
+    });
+    window.addEventListener('scroll', hideTip, { passive: true });
+    window.addEventListener('resize', hideTip);
+  }
 
   /* --------------------------------------------------------------------------- копирование кода */
 

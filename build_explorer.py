@@ -28,13 +28,6 @@ TITLE = 'Справочник Yii 2'
 DESCRIPTION = ('Каталог механизмов Yii 2: карточки основных узлов фреймворка, '
                'полные списки встроенного и живые демонстрации.')
 
-# числительное для лида: счёт узлов берётся из данных, а строка должна читаться словами
-NUMERALS = {
-    10: 'Десять', 11: 'Одиннадцать', 12: 'Двенадцать', 13: 'Тринадцать',
-    14: 'Четырнадцать', 15: 'Пятнадцать', 16: 'Шестнадцать', 17: 'Семнадцать',
-    18: 'Восемнадцать', 19: 'Девятнадцать', 20: 'Двадцать',
-}
-
 GROUP_COLOR = {
     'http': 'var(--g-http)',
     'data': 'var(--g-data)',
@@ -45,8 +38,6 @@ GROUP_COLOR = {
 
 ICON_CHEVRON = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" '
                 'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
-ICON_ARROW = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h9M8 4l4 4-4 4" fill="none" '
-              'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
 ICON_SEARCH = ('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" '
                'stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" '
                'stroke-width="2" stroke-linecap="round"/></svg>')
@@ -252,125 +243,122 @@ def render_block(b):
 
 # --------------------------------------------------------------------------- схема-карта
 
-def node(x, y, w, h, num, name, topic=None, color=None, cls=''):
-    """Узел карты: номер и подпись; цвет семейства подмешан в рамку и номер."""
+def node(x, y, w, h, label, sub, topic=None, color=None, cls='', tip=None):
+    """Блок карты: подпись, при наличии — вторая строка, и данные для подсказки."""
     klass = 'mp-node' + (' mp-hit' if topic else '') + (' ' + cls if cls else '')
     attrs = ' style="--gc: %s"' % color if color else ''
     if topic:
         attrs += ' data-open="%s" role="link" tabindex="0"' % topic
+    if tip:
+        attrs += (' data-tip-title="%s" data-tip-cls="%s" data-tip-badge="%s" data-tip-lead="%s"'
+                  % (attr(tip['title']), attr(tip['cls']), attr(tip['badge']), attr(tip['lead'])))
     cx = x + w / 2.0
     out = '<g class="%s"%s>' % (klass, attrs)
     out += '<rect x="%g" y="%g" width="%g" height="%g" rx="8"/>' % (x, y, w, h)
-    if num:
-        out += '<text x="%g" y="%g" class="mp-num">%s</text>' % (cx, y + h * 0.38, num)
-        out += '<text x="%g" y="%g">%s</text>' % (cx, y + h * 0.74, esc(name))
+    if sub:
+        out += '<text x="%g" y="%g">%s</text>' % (cx, y + h * 0.40, esc(label))
+        out += '<text x="%g" y="%g" class="mp-sub">%s</text>' % (cx, y + h * 0.72, esc(sub))
     else:
-        out += '<text x="%g" y="%g">%s</text>' % (cx, y + h / 2.0 + 4, esc(name))
+        out += '<text x="%g" y="%g">%s</text>' % (cx, y + h / 2.0 + 4, esc(label))
     out += '</g>'
     return out
 
 
 def build_map():
     C = GROUP_COLOR
-    n = data.NUM
+    by_id = {t['id']: t for t in data.TOPICS}
+
+    def tip(tid):
+        t = by_id[tid]
+        return {'title': t['title'], 'cls': t['cls'], 'badge': t['badge'], 'lead': t['lead']}
+
     p = []
-    p.append('<svg viewBox="0 0 1060 448" role="img" class="mp" '
-             'aria-label="Устройство Yii 2: сверху путь запроса от браузера через маршруты, фильтры и проверку '
-             'доступа к действию; ниже три семейства механизмов, которые действие дёргает; внизу фундамент '
-             'из компонентов, контейнера, поведений, событий и хелперов">')
+    p.append('<svg viewBox="0 0 1060 574" role="img" class="mp" '
+             'aria-label="Устройство Yii 2: сверху путь запроса от браузера через приложение, маршрут, '
+             'контроллер и фильтры к действию и ответу; ниже три семейства механизмов, которые действие '
+             'дёргает; внизу фундамент, на котором стоит всё остальное">')
     p.append('<defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
              'orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs>')
 
     # фундамент
-    p.append('<rect class="mp-slab" x="40" y="306" width="980" height="126" rx="12" stroke-dasharray="5 4"/>')
-    p.append('<text class="mp-label" style="fill: %s" x="530" y="330" text-anchor="middle">'
+    p.append('<rect class="mp-slab" x="40" y="418" width="980" height="140" rx="12" stroke-dasharray="5 4"/>')
+    p.append('<text class="mp-label" style="fill: %s" x="530" y="444" text-anchor="middle">'
              'фундамент · на этом стоит всё остальное</text>' % C['object'])
 
-    # путь запроса: x, ширина, номер, подпись, тема, цвет семейства, класс
+    # путь запроса: порядок ровно такой, в каком его проходит запрос
     path = [
-        (18, 88, '', 'браузер', None, None, 'mp-io'),
-        (134, 108, n['http'], 'запрос', 'http', C['http'], ''),
-        (270, 118, n['routing'], 'маршруты', 'routing', C['http'], ''),
-        (416, 106, n['filters'], 'фильтры', 'filters', C['http'], ''),
-        (550, 106, n['user'], 'доступ', 'user', C['http'], ''),
-        (684, 118, '', 'действие', None, None, ''),
-        (830, 96, n['http'], 'ответ', 'http', C['http'], ''),
-        (954, 88, '', 'браузер', None, None, 'mp-io'),
+        (16, 78, 'браузер', None, None, 'mp-io'),
+        (126, 80, 'запрос', 'http', C['http'], ''),
+        (238, 104, 'приложение', 'app', C['http'], ''),
+        (374, 84, 'маршрут', 'routing', C['http'], ''),
+        (490, 104, 'контроллер', 'controllers', C['http'], ''),
+        (626, 84, 'фильтры', 'filters', C['http'], ''),
+        (742, 90, 'действие', None, None, ''),
+        (864, 70, 'ответ', 'http', C['http'], ''),
+        (966, 78, 'браузер', None, None, 'mp-io'),
     ]
-    for x, w, num, name, tid, color, cls in path:
-        p.append(node(x, 18, w, 50, num, name, tid, color, cls))
+    for x, w, label, tid, color, cls in path:
+        p.append(node(x, 16, w, 52, label, None, tid, color, cls, tip(tid) if tid else None))
 
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for a, b in zip(path, path[1:]):
-        # стрелка не упирается в рамку: остаётся зазор с обеих сторон
-        gap_from = a[0] + a[1] + 4
-        p.append('<path d="M%d 43h%d"/>' % (gap_from, b[0] - 6 - gap_from))
+        gap_from = a[0] + a[1] + 5
+        p.append('<path d="M%d 42h%d"/>' % (gap_from, b[0] - 7 - gap_from))
+    # доступ не отдельная стадия: его спрашивают фильтры
+    p.append('<path d="M668 68v14"/>')
     p.append('</g>')
+    p.append(node(612, 86, 112, 46, 'доступ', None, 'user', C['http'], '', tip('user')))
 
-    # механизмы: колонка на семейство, чтобы ряд не приходилось растягивать под каждый новый узел
+    # механизмы: колонка на семейство
     columns = [
-        ('данные и правила', C['data'], [('model', 'модель'), ('rules', 'правила'), ('scenarios', 'сценарии')]),
-        ('база данных', C['db'], [('ar', 'Active Record'), ('query', 'Query Builder'), ('migrations', 'миграции')]),
-        ('вывод и состояние', C['view'], [('views', 'представления'), ('widgets', 'виджеты'),
-                                          ('state', 'кэш · сессии · куки')]),
+        ('данные и правила', C['data'], ['model', 'rules', 'scenarios'],
+         ['модель', 'правила', 'сценарии']),
+        ('база данных', C['db'], ['ar', 'query', 'migrations'],
+         ['Active Record', 'Query Builder', 'миграции']),
+        ('вывод и состояние', C['view'], ['views', 'widgets', 'state'],
+         ['представления', 'виджеты', 'кэш · сессии · куки']),
     ]
     cx0, cw, cstep = 66, 210, 359
     centers = [cx0 + i * cstep + cw / 2.0 for i in range(len(columns))]
 
     # шина: действие тянется к каждому семейству
     p.append('<g class="mp-flow">')
-    p.append('<path d="M743 68v16"/>')
-    p.append('<path d="M%g 84h%g"/>' % (centers[0], centers[-1] - centers[0]))
+    p.append('<path d="M787 68v78"/>')
+    p.append('<path d="M%g 146h%g"/>' % (centers[0], centers[-1] - centers[0]))
     p.append('</g>')
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for c in centers:
-        p.append('<path d="M%g 84v12"/>' % c)
+        p.append('<path d="M%g 146v12"/>' % c)
     p.append('</g>')
 
-    for i, (label, color, items) in enumerate(columns):
-        p.append('<text class="mp-label" style="fill: %s" x="%g" y="116" text-anchor="middle">%s</text>'
+    for i, (label, color, ids, labels) in enumerate(columns):
+        p.append('<text class="mp-label" style="fill: %s" x="%g" y="176" text-anchor="middle">%s</text>'
                  % (color, centers[i], label))
-        for row, (tid, name) in enumerate(items):
-            p.append(node(cx0 + i * cstep, 128 + row * 54, cw, 46, n[tid], name, tid, color))
+        for row, (tid, name) in enumerate(zip(ids, labels)):
+            p.append(node(cx0 + i * cstep, 188 + row * 72, cw, 60,
+                          name, by_id[tid]['badge'], tid, color, '', tip(tid)))
 
-    # фундамент: узлы, разложенные по плите равными долями
+    # фундамент: узлы
     base = [('components', 'компоненты'), ('di', 'DI-контейнер'), ('behaviors', 'поведения'),
             ('events', 'события'), ('helpers', 'хелперы')]
     for i, (tid, name) in enumerate(base):
-        p.append(node(66 + i * 188, 350, 176, 50, n[tid], name, tid, C['object']))
+        p.append(node(66 + i * 188, 464, 176, 60, name, by_id[tid]['badge'], tid, C['object'], '', tip(tid)))
 
     p.append('</svg>')
     return ''.join(p)
 
 
-# --------------------------------------------------------------------------- страница
-
-def build_cards():
+def build_index():
+    """Указатель для узкого экрана: карта там уезжает в прокрутку."""
     out = []
-    for gid, gtitle, gblurb in data.GROUPS:
-        topics = [t for t in data.TOPICS if t['group'] == gid]
-        if not topics:
-            continue
-        cards = []
-        for t in topics:
-            cards.append(
-                '<button type="button" class="card" style="--gc: %s" data-open="%s">'
-                '<span class="card-top"><span class="card-num">%s</span>'
-                '<span class="card-badge">%s</span></span>'
-                '<h3>%s</h3>'
-                '<span class="card-cls">%s</span>'
-                '<p>%s</p>'
-                '<span class="card-open">разобрать %s</span>'
-                '</button>' % (
-                    GROUP_COLOR[gid], attr(t['id']), esc(t['num']), esc(t['badge']),
-                    esc(t['title']), esc(t['cls']), esc(t['lead']), ICON_ARROW))
-        out.append(
-            '<section class="group" style="--gc: %s">'
-            '<div class="group-head"><span class="group-rule"></span>'
-            '<h2>%s</h2><p>%s</p></div>'
-            '<div class="cards">%s</div>'
-            '</section>' % (GROUP_COLOR[gid], esc(gtitle), esc(gblurb), ''.join(cards)))
-    return ''.join(out)
+    for gid, gtitle, _ in data.GROUPS:
+        items = ''.join(
+            '<li><button type="button" data-open="%s"><b>%s</b><span>%s</span></button></li>'
+            % (attr(t['id']), esc(t['title']), esc(t['badge']))
+            for t in data.TOPICS if t['group'] == gid)
+        out.append('<section class="ix-group" style="--gc: %s"><h2>%s</h2><ul>%s</ul></section>'
+                   % (GROUP_COLOR[gid], esc(gtitle), items))
+    return '<nav class="index" aria-label="Все узлы списком">%s</nav>' % ''.join(out)
 
 
 def build_topics():
@@ -384,13 +372,13 @@ def build_topics():
             panels.append('<div class="tab-panel" role="tabpanel" data-tab="%s"%s>%s</div>'
                           % (attr(tid), '' if i == 0 else ' hidden', body))
         out.append(
-            '<article class="topic" id="topic-%s" data-num="%s" data-title="%s" data-color="%s" hidden>'
-            '<header class="panel-hero"><div class="pe">узел %s · %s</div>'
+            '<article class="topic" id="topic-%s" data-title="%s" data-color="%s" hidden>'
+            '<header class="panel-hero"><div class="pe">%s</div>'
             '<h2>%s</h2><p class="panel-lead">%s</p></header>'
             '<div class="tabs" role="tablist">%s</div>%s'
             '</article>' % (
-                attr(t['id']), attr(t['num']), attr(t['title']), GROUP_COLOR[t['group']],
-                esc(t['num']), esc(t['cls']), esc(t['title']), esc(t['lead']),
+                attr(t['id']), attr(t['title']), GROUP_COLOR[t['group']],
+                esc(t['cls']), esc(t['title']), esc(t['lead']),
                 ''.join(tabs), ''.join(panels)))
     return ''.join(out)
 
@@ -400,7 +388,6 @@ def build_page():
     js = open(os.path.join(SRC, 'explorer.js'), encoding='utf-8').read()
 
     refs = sum(len(b[1]) for t in data.TOPICS for _, _, bl in t['tabs'] for b in bl if b[0] == 'ref')
-    demos = sum(1 for t in data.TOPICS for _, _, bl in t['tabs'] for b in bl if b[0] == 'demo')
 
     head = '''<title>%s</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -413,6 +400,7 @@ def build_page():
     body = '''<header class="top">
   <div class="top-in">
     <span class="mark"><b>Yii</b><span class="mark-text">Справочник Yii 2</span></span>
+    <span class="top-count">%d узлов · %d возможностей</span>
     <span class="top-spacer"></span>
     <a class="back-link" href="index.html">на главную</a>
     <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему">
@@ -424,44 +412,22 @@ def build_page():
 
 <main>
   <div class="wrap">
-    <section class="hero">
-      <div class="hero-text">
-        <h1>Фреймворк, <span>разобранный на узлы</span></h1>
-        <p class="hero-lead">%s механизмов, из которых состоит почти любое приложение на Yii.
-          Нажмите на узел — внутри схема работы, полный список встроенного, заготовка своего
-          варианта и грабли.</p>
-      </div>
-      <ul class="hero-stats">
-        <li><b>%d</b><span>узлов</span></li>
-        <li><b>%d</b><span>встроенных возможностей</span></li>
-        <li><b>%d</b><span>живые демонстрации</span></li>
-      </ul>
-    </section>
-
     <section class="map">
       <figure>
         <div class="map-frame">%s</div>
-        <figcaption>Запрос идёт по верхней линии, ниже — три семейства механизмов, которые дёргает
-          действие, внизу — то, на чём держится всё остальное. Номера идут по ходу запроса, цвет
-          обозначает семейство. Узлы кликабельны.</figcaption>
+        <figcaption>Запрос идёт по верхней линии; ниже — механизмы, которые дёргает действие,
+          а внизу то, на чём держится всё остальное. Нажмите на блок, чтобы открыть разбор;
+          при наведении мышью — короткая справка.</figcaption>
       </figure>
     </section>
 
-    <div class="groups">%s</div>
-
-    <footer class="foot">
-      <p>Авторский конспект официального руководства Yii 2.0. Примеры переписаны и сокращены,
-        полный текст руководства — на <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">yiiframework.com</a>,
-        описание всех классов — в <a href="https://www.yiiframework.com/doc/api/2.0" target="_blank" rel="noopener">справочнике API</a>.</p>
-      <p>Esc закрывает панель. Адрес в строке браузера меняется, поэтому на любой узел можно дать ссылку.</p>
-    </footer>
+    %s
   </div>
 </main>
 
 <div class="scrim" id="scrim" hidden></div>
 <div class="panel" id="panel" role="dialog" aria-modal="true" aria-label="Разбор узла" hidden>
   <div class="panel-bar">
-    <span class="pb-num" id="pb-num"></span>
     <span class="pb-title" id="pb-title"></span>
     <span class="sp"></span>
     <kbd>Esc</kbd>
@@ -474,10 +440,11 @@ def build_page():
 
 <div id="topic-store" hidden>%s</div>
 
+<div class="tip" id="tip" role="tooltip" hidden></div>
+
 <script>
 %s
-</script>''' % (NUMERALS.get(len(data.TOPICS), str(len(data.TOPICS))), len(data.TOPICS),
-                refs, demos, build_map(), build_cards(), build_topics(), js)
+</script>''' % (len(data.TOPICS), refs, build_map(), build_index(), build_topics(), js)
 
     return head, body
 

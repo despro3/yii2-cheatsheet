@@ -16,7 +16,7 @@
 # Порядок групп — это порядок, в котором узлы встречаются на пути запроса,
 # поэтому сквозная нумерация идёт слева направо и сверху вниз по схеме-карте.
 GROUPS = [
-    ('http',   'Запрос и доступ',   'Что пришло от браузера, какому действию это отдать и кого туда пускать'),
+    ('http',   'Путь запроса',      'От входного скрипта до ответа: что происходит с запросом и кто решает, пускать ли его'),
     ('data',   'Данные и правила',  'Что приходит от пользователя и что с этим делает модель'),
     ('db',     'База данных',       'Запросы, записи, связи'),
     ('view',   'Вывод и состояние', 'Чем рисуется страница и что живёт дольше одного запроса'),
@@ -1316,6 +1316,186 @@ $result = Yii::$app->db->cache(function ($db) {
 )
 
 
+
+# --------------------------------------------------------------------------- Приложение и конфигурация
+
+topic(
+    id='app', group='http',
+    title='Приложение и конфигурация',
+    cls='yii\\web\\Application',
+    lead='Откуда всё начинается: входной скрипт, массив конфигурации, псевдонимы путей и предзагрузка.',
+    badge='29 свойств и псевдонимов',
+    tabs=[
+        ('how', 'Как устроено', [
+            ('p', 'Приложение — это объект `Yii::$app`, созданный входным скриптом по массиву-конфигурации. '
+                  'Он держит компоненты, знает, где лежат контроллеры и представления, и проводит каждый запрос '
+                  'через свой жизненный цикл. Наружу торчит ровно один PHP-файл — входной скрипт, всё остальное лежит вне веб-корня.'),
+            ('svg', '''<svg viewBox="0 0 700 300" role="img" aria-label="Входной скрипт объявляет константы, подключает автозагрузчики, читает конфигурацию и создаёт приложение; конструктор применяет свойства и выполняет предзагрузку, после чего run обрабатывает запрос" class="dg">
+<defs><marker id="m-ap" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#m-ap)" opacity=".55">
+<path d="M350 70v22"/><path d="M350 176v22"/><path d="M350 260v20"/>
+<path d="M258 122h-8"/>
+</g>
+<g class="dg-box"><rect x="150" y="14" width="400" height="56" rx="8"/><text x="350" y="38">web/index.php</text><text x="350" y="56" class="dg-sub">константы · автозагрузчики · чтение конфигурации</text></g>
+<g class="dg-box dg-muted"><rect x="14" y="98" width="236" height="48" rx="8"/><text x="132" y="120">config/web.php</text><text x="132" y="137" class="dg-sub">обычный PHP-массив</text></g>
+<g class="dg-box dg-live"><rect x="258" y="92" width="292" height="84" rx="8"/><text x="404" y="116">new Application($config)</text><text x="404" y="134" class="dg-sub">preInit · обработчик ошибок</text><text x="404" y="150" class="dg-sub">применение конфигурации</text><text x="404" y="166" class="dg-sub">init → bootstrap</text></g>
+<g class="dg-box"><rect x="150" y="198" width="400" height="62" rx="8"/><text x="350" y="222">run()</text><text x="350" y="240" class="dg-sub">beforeRequest → маршрут → контроллер</text><text x="350" y="256" class="dg-sub">действие → afterRequest → ответ</text></g>
+<g class="dg-box dg-muted"><rect x="250" y="280" width="200" height="20" rx="6"/><text x="350" y="295">код выхода</text></g>
+</svg>''', 'Конфигурация — это просто массив, который скрипт читает и отдаёт конструктору. Ничего магического до этого момента не происходит.'),
+            ('h', 'Входной скрипт целиком'),
+            ('code', 'php', 'web/index.php', r'''<?php
+defined('YII_DEBUG') or define('YII_DEBUG', true);
+defined('YII_ENV') or define('YII_ENV', 'dev');
+
+require __DIR__ . '/../vendor/autoload.php';           // автозагрузчик Composer
+require __DIR__ . '/../vendor/yiisoft/yii2/Yii.php';   // класс Yii, автозагрузчик, DI-контейнер
+
+$config = require __DIR__ . '/../config/web.php';
+
+(new yii\web\Application($config))->run();'''),
+            ('p', 'Идиома `defined(...) or define(...)` означает «объявить, если ещё не объявлено»: так константу можно '
+                  'переопределить снаружи — например, в тестовом входном скрипте.'),
+            ('h', 'Что происходит по шагам'),
+            ('steps', [
+                'Входной скрипт объявляет константы и подключает автозагрузчики.',
+                'Читается конфигурация — обычный PHP-массив из `config/web.php`.',
+                '`preInit()` применяет критичные свойства: `basePath`, `vendorPath`, `runtimePath`, псевдонимы.',
+                'Регистрируется обработчик ошибок — до применения остальной конфигурации, чтобы ошибки в ней самой уже перехватывались.',
+                'Применяется вся остальная конфигурация, затем `init()` вызывает `bootstrap()`.',
+                '`bootstrap()` подключает расширения из `extensions.php` и создаёт компоненты и модули из свойства `bootstrap`.',
+                '`run()` обрабатывает запрос и возвращает код выхода.',
+            ]),
+            ('note', 'warn', 'Предзагрузка выполняется в каждом запросе',
+             'Всё, что попало в свойство `bootstrap`, создаётся всегда — даже если в этом запросе не понадобится. '
+             'Держите список коротким: журнал, модуль с правилами маршрутов, `ContentNegotiator`. Остальное создастся лениво.'),
+        ]),
+        ('all', 'Свойства и псевдонимы', [
+            ('h', 'Свойства приложения'),
+            ('ref', [
+                {'n': 'id', 'd': 'Уникальный идентификатор приложения. Обязателен.', 'o': 'используется в кэше и логах', 'c': "'id' => 'basic',"},
+                {'n': 'basePath', 'd': 'Корень с кодом приложения. Обязателен, и именно он задаёт псевдоним @app.', 'o': 'обычно dirname(__DIR__)', 'c': "'basePath' => dirname(__DIR__),"},
+                {'n': 'components', 'd': 'Главное свойство: регистрация компонентов приложения. Каждый создаётся лениво, при первом обращении.', 'o': 'имя класса, массив конфигурации или замыкание', 'c': "'components' => [\n    'db' => [\n        'class' => yii\\db\\Connection::class,\n        'dsn' => 'mysql:host=localhost;dbname=demo',\n    ],\n    'cache' => yii\\caching\\FileCache::class,\n],"},
+                {'n': 'bootstrap', 'd': 'Что создать при старте каждого запроса. Компонент с BootstrapInterface получит вызов bootstrap($app).', 'o': 'ID компонентов и модулей, классы, замыкания', 'c': "'bootstrap' => ['log', 'forum'],"},
+                {'n': 'modules', 'd': 'Подключённые модули — мини-приложения со своими контроллерами и представлениями.', 'o': 'маршрут становится модуль/контроллер/действие', 'c': "'modules' => [\n    'forum' => [\n        'class' => app\\modules\\forum\\Module::class,\n    ],\n],"},
+                {'n': 'params', 'd': 'Глобальные параметры приложения. Обычно выносятся в отдельный файл.', 'o': 'читаются как Yii::$app->params[...]', 'c': "'params' => require __DIR__ . '/params.php',\n\n// Yii::$app->params['adminEmail']"},
+                {'n': 'aliases', 'd': 'Псевдонимы путей прямо в конфигурации — удобнее, чем Yii::setAlias() где-то в коде.', 'o': 'значением может быть другой псевдоним', 'c': "'aliases' => [\n    '@uploads' => '@webroot/uploads',\n    '@bower' => '@vendor/bower-asset',\n],"},
+                {'n': 'controllerNamespace', 'd': 'Пространство имён контроллеров. Маршрут admin/post ищется в подпапке admin.', 'o': 'по умолчанию app\\\\controllers', 'c': "'controllerNamespace' => 'app\\\\controllers',"},
+                {'n': 'controllerMap', 'd': 'Явное соответствие ID контроллера классу — когда соглашение об именах не подходит.', 'o': 'значением может быть массив с конфигурацией', 'c': "'controllerMap' => [\n    'account' => app\\controllers\\UserController::class,\n    'article' => [\n        'class' => app\\controllers\\PostController::class,\n        'enableCsrfValidation' => false,\n    ],\n],"},
+                {'n': 'defaultRoute', 'd': 'Маршрут для запроса без маршрута.', 'o': "site для веба, help для консоли", 'c': "'defaultRoute' => 'landing',"},
+                {'n': 'layout · layoutPath · viewPath', 'd': 'Шаблон по умолчанию и папки, где искать шаблоны и представления.', 'o': 'layout => false отключает шаблон целиком', 'c': "'layout' => 'main',\n'viewPath' => '@app/views',"},
+                {'n': 'runtimePath · vendorPath', 'd': 'Временные файлы и пакеты Composer. Задают псевдонимы @runtime и @vendor.', 'o': 'runtime должна быть на запись и закрыта от веба', 'c': "'runtimePath' => '@app/runtime',"},
+                {'n': 'language · sourceLanguage · timeZone', 'd': 'Язык интерфейса, язык исходных строк в коде и часовой пояс приложения.', 'o': 'timeZone по сути date_default_timezone_set()', 'c': "'language' => 'ru-RU',\n'sourceLanguage' => 'en-US',\n'timeZone' => 'Europe/Moscow',"},
+                {'n': 'catchAll', 'd': 'Только веб: маршрут, которым обрабатываются все запросы. Готовый режим обслуживания.', 'o': 'остальные элементы массива уйдут в параметры запроса', 'c': "'catchAll' => YII_ENV_PROD && $maintenance\n    ? ['site/offline']\n    : null,"},
+                {'n': 'name · version · charset', 'd': 'Название для показа людям, версия и кодировка.', 'o': "charset по умолчанию UTF-8", 'c': "'name' => 'Мой проект',\n'version' => '1.0',"},
+            ]),
+            ('h', 'Псевдонимы путей'),
+            ('p', 'Пути и адреса в конфигурации пишут псевдонимами. Корневой псевдоним может содержать слэш — '
+                  'берётся самое длинное совпадение, поэтому `@foo/bar` приоритетнее `@foo`.'),
+            ('ref', [
+                {'n': '@yii', 'd': 'Папка самого фреймворка.', 'o': 'задаётся при подключении Yii.php', 'c': "Yii::getAlias('@yii');   // .../vendor/yiisoft/yii2"},
+                {'n': '@app', 'd': 'Корень приложения. Равен basePath из конфигурации.', 'o': 'от него считается почти всё остальное', 'c': "'cachePath' => '@app/runtime/cache',"},
+                {'n': '@runtime · @vendor', 'd': 'Временные файлы и пакеты Composer.', 'o': '@app/runtime и @app/vendor', 'c': "'targets' => [[\n    'class' => yii\\log\\FileTarget::class,\n    'logFile' => '@runtime/logs/app.log',\n]],"},
+                {'n': '@webroot · @web', 'd': 'Только веб: папка с index.php и базовый адрес приложения. Первый — путь на диске, второй — URL.', 'o': 'путать их — классическая ошибка', 'c': "public $basePath = '@webroot';\npublic $baseUrl = '@web';"},
+                {'n': '@bower · @npm', 'd': 'Пакеты из Bower и NPM, установленные через Composer. В шаблонах basic и advanced уже объявлены.', 'o': '@vendor/bower-asset и @vendor/npm-asset', 'c': "public $sourcePath = '@npm/chart.js/dist';"},
+                {'n': 'Yii::setAlias() · getAlias()', 'd': 'Объявить и развернуть псевдоним из кода. getAlias не проверяет, что путь существует.', 'o': 'значением может быть и URL', 'c': "Yii::setAlias('@uploads', '@webroot/uploads');\n$path = Yii::getAlias('@uploads/2025');"},
+                {'n': 'Псевдоним как автозагрузка', 'd': 'Автозагрузчик ищет класс по псевдониму его пространства имён. Объявив корневой псевдоним, можно подключить библиотеку без своего автозагрузчика.', 'o': 'Yii::$classMap — самый быстрый путь, без поиска', 'c': "Yii::setAlias('@foo', '@app/lib/foo');\n// foo\\bar\\MyClass → @app/lib/foo/bar/MyClass.php\n\nYii::$classMap['foo\\bar\\MyClass'] = '@app/lib/MyClass.php';"},
+            ]),
+            ('h', 'Константы и события'),
+            ('ref', [
+                {'n': 'YII_DEBUG', 'd': 'Отладочный режим: подробные ошибки со стеком и больше записей в журнале. На бою всегда false.', 'o': 'по умолчанию false', 'c': "defined('YII_DEBUG') or define('YII_DEBUG', true);"},
+                {'n': 'YII_ENV', 'd': 'Окружение. Порождает константы YII_ENV_PROD, YII_ENV_DEV и YII_ENV_TEST, по которым удобно ветвить конфигурацию.', 'o': 'prod по умолчанию; dev, test', 'c': "defined('YII_ENV') or define('YII_ENV', 'dev');\n\nif (YII_ENV_DEV) {\n    $config['bootstrap'][] = 'debug';\n}"},
+                {'n': 'YII_ENABLE_ERROR_HANDLER', 'd': 'Включать ли обработчик ошибок Yii. Выключают редко — разве что при отладке самого обработчика.', 'o': 'по умолчанию true', 'c': "defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);"},
+                {'n': 'beforeRequest', 'd': 'Приложение создано, запрос ещё не обрабатывался. Удобное место выбрать язык по домену или увести на страницу обслуживания.', 'o': "вешается прямо в конфигурации через 'on имяСобытия'", 'c': "'on beforeRequest' => function ($event) {\n    Yii::$app->language = detectLanguage();\n},"},
+                {'n': 'afterRequest', 'd': 'Запрос обработан, ответ ещё не отправлен.', 'o': 'постобработка, статистика', 'c': "'on afterRequest' => function ($event) {\n    Yii::info('готово за ' . (microtime(true) - YII_BEGIN_TIME));\n},"},
+                {'n': 'beforeAction', 'd': 'Перед действием, сверху вниз: приложение, затем модуль, затем контроллер. Выставили isValid = false — остальные обработчики пропускаются и действие не выполняется.', 'o': 'yii\\base\\ActionEvent', 'c': "'on beforeAction' => function (yii\\base\\ActionEvent $e) {\n    if ($locked) {\n        $e->isValid = false;\n    }\n},"},
+                {'n': 'afterAction', 'd': 'После действия, в обратном порядке: контроллер, модуль, приложение. Результат можно подменить.', 'o': '$event->result', 'c': "'on afterAction' => function (yii\\base\\ActionEvent $e) {\n    $e->result = addBanner($e->result);\n},"},
+            ]),
+        ]),
+        ('own', 'Приёмы', [
+            ('h', 'Три конфигурации вместо одной'),
+            ('p', 'Веб и консоль делят общую часть, а различия держат у себя. Так `authManager` или `db` описываются один раз.'),
+            ('code', 'php', 'config/common.php', r'''return [
+    'basePath' => dirname(__DIR__),
+    'aliases' => ['@uploads' => '@webroot/uploads'],
+    'components' => [
+        'db' => require __DIR__ . '/db.php',
+        'authManager' => ['class' => yii\rbac\DbManager::class],
+    ],
+    'params' => require __DIR__ . '/params.php',
+];'''),
+            ('code', 'php', 'config/web.php', r'''$config = yii\helpers\ArrayHelper::merge(
+    require __DIR__ . '/common.php',
+    [
+        'id' => 'app-web',
+        'components' => [
+            'request' => ['cookieValidationKey' => getenv('COOKIE_KEY')],
+            'user' => ['identityClass' => app\models\User::class],
+        ],
+    ]
+);
+
+if (YII_ENV_DEV) {
+    $config['bootstrap'][] = 'debug';
+    $config['modules']['debug'] = ['class' => yii\debug\Module::class];
+}
+
+return $config;'''),
+            ('h', 'Свой bootstrap-класс'),
+            ('p', 'Нужен, когда что-то должно быть зарегистрировано до обработки запроса: правила маршрутов модуля, '
+                  'зависимости контейнера, обработчики событий.'),
+            ('code', 'php', 'components/Bootstrap.php', r'''namespace app\components;
+
+use Yii;
+use yii\base\BootstrapInterface;
+
+class Bootstrap implements BootstrapInterface
+{
+    public function bootstrap($app)
+    {
+        Yii::$container->set(
+            app\components\BookingInterface::class,
+            app\components\BookingService::class
+        );
+
+        $app->getUrlManager()->addRules([
+            'blog/<slug:[\w-]+>' => 'post/view',
+        ], false);
+    }
+}'''),
+            ('code', 'php', 'config/web.php', r''''bootstrap' => [app\components\Bootstrap::class],'''),
+            ('h', 'Режим обслуживания одной строкой'),
+            ('code', 'php', 'config/web.php', r'''$maintenance = file_exists(__DIR__ . '/../.maintenance');
+
+return [
+    // ...
+    'catchAll' => $maintenance ? ['site/offline'] : null,
+];'''),
+            ('note', 'tip', 'Секреты не в репозитории',
+             'Пароли и ключи читайте из окружения (`getenv`) или из файла, закрытого `.gitignore`. '
+             'Конфигурация — обычный PHP, так что подойдёт любой способ; важно лишь, чтобы значения не уехали в git.'),
+        ]),
+        ('traps', 'Грабли', [
+            ('note', 'trap', 'YII_DEBUG на боевом сервере',
+             'Отладочный режим показывает стек вызовов, пути на диске и куски конфигурации всем, кто увидит ошибку. '
+             'Это готовая карта вашего проекта для чужого. Константа объявляется во входном скрипте — проверьте оба, '
+             'и веб, и консольный.'),
+            ('note', 'trap', 'Длинный список bootstrap',
+             'Всё оттуда создаётся при каждом запросе, даже если не понадобится. Пара тяжёлых компонентов — '
+             'и вы платите за них на каждой странице.'),
+            ('note', 'trap', 'Путаница @webroot и @web',
+             '`@webroot` — путь на диске, `@web` — базовый URL. Подставленный не туда, он даст либо ненайденный файл, '
+             'либо битую ссылку, причём на локальной машине это часто не воспроизводится.'),
+            ('note', 'warn', 'authManager только в одной конфигурации',
+             'Компоненты, нужные и вебу, и консоли — `db`, `authManager`, `cache`, — должны быть в общей части. '
+             'Иначе консольная команда, строящая RBAC или применяющая миграции, упадёт на пустом месте.'),
+            ('note', 'warn', 'Конфигурация под контролем версий вместе с ключами',
+             '`cookieValidationKey` из шаблона проекта — не секрет: он есть у всех, кто читал репозиторий. '
+             'Замените его при первом же развёртывании.'),
+        ]),
+    ],
+)
+
+
 # --------------------------------------------------------------------------- Запрос и ответ
 
 topic(
@@ -1700,6 +1880,208 @@ Html::removeCssStyle($options, 'width');'''),
              'И помните: при неверном JSON метод бросает исключение, а не возвращает null.'),
             ('note', 'warn', 'HtmlPurifier дорогой',
              'Каждый вызов разбирает и собирает HTML заново. Чистите при сохранении или кэшируйте результат, а не зовите в цикле вывода.'),
+        ]),
+    ],
+)
+
+
+
+# --------------------------------------------------------------------------- Контроллеры и действия
+
+topic(
+    id='controllers', group='http',
+    title='Контроллеры и действия',
+    cls='yii\\web\\Controller',
+    lead='Как маршрут превращается в вызов метода: имена, действия, параметры из запроса и что можно вернуть.',
+    badge='25 методов и правил',
+    tabs=[
+        ('how', 'Как устроено', [
+            ('p', 'Маршрут `post/view` — это `PostController::actionView()`. Контроллер принимает запрос, дёргает модели '
+                  'и отдаёт результат в представление. Состоит он из **действий**: публичных методов `actionXxx()` '
+                  'или отдельных классов. Между созданием действия и его выполнением стоят фильтры.'),
+            ('svg', '''<svg viewBox="0 0 700 316" role="img" aria-label="Маршрут разбирается на контроллер и действие, затем beforeAction у приложения, модуля и контроллера, выполнение действия и afterAction в обратном порядке" class="dg">
+<defs><marker id="m-ct" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#m-ct)" opacity=".55">
+<path d="M350 62v22"/><path d="M350 144v22"/><path d="M350 222v22"/><path d="M350 288v14"/>
+</g>
+<g class="dg-box"><rect x="150" y="14" width="400" height="48" rx="8"/><text x="350" y="36">post/view</text><text x="350" y="53" class="dg-sub">маршрут: модуль / контроллер / действие</text></g>
+<g class="dg-box"><rect x="150" y="84" width="400" height="60" rx="8"/><text x="350" y="106">PostController</text><text x="350" y="124" class="dg-sub">actions() → actionView() → InvalidRouteException</text><text x="350" y="140" class="dg-sub">init(), затем создание действия</text></g>
+<g class="dg-box dg-live"><rect x="150" y="166" width="400" height="56" rx="8"/><text x="350" y="188">beforeAction</text><text x="350" y="206" class="dg-sub">приложение → модуль → контроллер · здесь фильтры</text></g>
+<g class="dg-box"><rect x="150" y="244" width="400" height="44" rx="8"/><text x="350" y="272">действие с параметрами из запроса</text></g>
+<g class="dg-box dg-muted"><rect x="150" y="302" width="400" height="14" rx="6"/></g>
+<text class="dg-note" x="350" y="313" text-anchor="middle">afterAction в обратном порядке → response</text>
+</svg>''', 'Вернул false хоть один beforeAction — остальные пропускаются и действие не выполняется.'),
+            ('h', 'Минимальный контроллер'),
+            ('code', 'php', 'controllers/PostController.php', r'''namespace app\controllers;
+
+use Yii;
+use app\models\Post;
+use yii\web\Controller;
+use yii\web\NotFoundHttpException;
+
+class PostController extends Controller
+{
+    public function actionView($id)
+    {
+        $model = Post::findOne($id);
+        if ($model === null) {
+            throw new NotFoundHttpException();   // → страница 404
+        }
+        return $this->render('view', ['model' => $model]);
+    }
+
+    public function actionCreate()
+    {
+        $model = new Post();
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+        return $this->render('create', ['model' => $model]);
+    }
+}'''),
+            ('h', 'Имена по соглашению'),
+            ('kv', [
+                ('article', '`app\\controllers\\ArticleController`'),
+                ('post-comment', '`app\\controllers\\PostCommentController` — слова через дефис'),
+                ('admin/post-comment', '`app\\controllers\\admin\\PostCommentController` — подпапка, а не модуль'),
+                ('hello-world', 'действие `actionHelloWorld()` — имя метода собирается из ID'),
+            ]),
+            ('note', 'trap', 'Регистр и видимость',
+             'Действием считается только публичный метод с точным префиксом `action`. `ActionIndex()` не подойдёт, '
+             '`protected function actionIndex()` — тоже.'),
+        ]),
+        ('all', 'Методы и правила', [
+            ('h', 'Что умеет контроллер'),
+            ('ref', [
+                {'n': 'render()', 'd': 'Представление вместе с шаблоном. Обычный случай для страницы.', 'o': 'второй аргумент — данные для представления', 'c': "return $this->render('view', ['model' => $model]);"},
+                {'n': 'renderPartial()', 'd': 'Без шаблона — для фрагментов, которые встраиваются в другую страницу.', 'o': 'зарегистрированные скрипты не выводит', 'c': "return $this->renderPartial('_row', ['item' => $item]);"},
+                {'n': 'renderAjax()', 'd': 'Без шаблона, но со скриптами и стилями. Нужен, когда фрагмент содержит виджеты и подгружается по AJAX.', 'o': 'единственное отличие от renderPartial', 'c': "return $this->renderAjax('_form', ['model' => $model]);"},
+                {'n': 'renderContent()', 'd': 'Обернуть готовую строку в шаблон, минуя файл представления.', 'o': 'удобно для служебных страниц', 'c': "return $this->renderContent('<h1>Готово</h1>');"},
+                {'n': 'redirect()', 'd': 'Перенаправление. Возвращает объект Response, поэтому результат нужно вернуть из действия.', 'o': 'адрес можно задать маршрутом-массивом', 'c': "return $this->redirect(['view', 'id' => $model->id]);\nreturn $this->redirect('https://example.com', 301);"},
+                {'n': 'goHome() · goBack() · refresh()', 'd': 'На главную, на запомненный адрес и перезагрузка текущей страницы.', 'o': 'goBack() читает Url::remember() и returnUrl', 'c': "return $this->goBack();"},
+                {'n': 'asJson() · asXml()', 'd': 'Ответ в нужном формате, не трогая response->format.', 'o': 'удобно в одном действии из многих', 'c': "return $this->asJson(['ok' => true]);"},
+                {'n': 'behaviors()', 'd': 'Фильтры контроллера: доступ, HTTP-методы, кэш, формат. Именно здесь живёт AccessControl.', 'o': 'см. узел «Фильтры»', 'c': "public function behaviors()\n{\n    return [\n        'verbs' => [\n            'class' => yii\\filters\\VerbFilter::class,\n            'actions' => ['delete' => ['POST']],\n        ],\n    ];\n}"},
+                {'n': 'actions()', 'd': 'Карта отдельных действий: ID → класс. Так подключают готовые действия из ядра и расширений.', 'o': 'ID здесь любые, соглашение об именах не действует', 'c': "public function actions()\n{\n    return [\n        'error' => yii\\web\\ErrorAction::class,\n        'captcha' => ['class' => yii\\captcha\\CaptchaAction::class],\n    ];\n}"},
+                {'n': '$layout', 'd': 'Свой шаблон для всего контроллера. false — вовсе без шаблона.', 'o': 'можно менять и внутри действия', 'c': "class PostController extends Controller\n{\n    public $layout = 'post';\n}"},
+                {'n': '$defaultAction', 'd': 'Действие для маршрута без действия.', 'o': "по умолчанию index", 'c': "public $defaultAction = 'home';"},
+                {'n': '$enableCsrfValidation', 'd': 'Проверка CSRF-токена для POST. Включена по умолчанию; выключают только для точек, куда стучится чужая система.', 'o': 'выключение — осознанный риск', 'c': "public $enableCsrfValidation = false;"},
+            ]),
+            ('h', 'Действия'),
+            ('ref', [
+                {'n': 'Встроенное действие', 'd': 'Публичный метод actionXxx(). Самый частый вид: живёт прямо в контроллере.', 'o': 'ID собирается из имени метода', 'c': "public function actionHelloWorld()   // hello-world\n{\n    return 'Привет';\n}"},
+                {'n': 'Отдельное действие', 'd': 'Класс с методом run(). Так действие переиспользуется между контроллерами и приезжает в расширениях.', 'o': 'наследует yii\\base\\Action', 'c': "namespace app\\components;\n\nuse yii\\base\\Action;\n\nclass HelloWorldAction extends Action\n{\n    public $greeting = 'Привет';\n\n    public function run($name = 'мир')\n    {\n        return \"{$this->greeting}, {$name}\";\n    }\n}"},
+                {'n': 'Готовые действия ядра', 'd': 'ErrorAction рисует страницу ошибки, CaptchaAction выдаёт картинку, ViewAction отдаёт статические страницы.', 'o': 'подключаются через actions()', 'c': "return [\n    'error' => yii\\web\\ErrorAction::class,\n    'page' => [\n        'class' => yii\\web\\ViewAction::class,\n        'viewPrefix' => 'pages',\n    ],\n];"},
+                {'n': 'Параметры из запроса', 'd': 'Параметры метода заполняются из строки запроса по имени. В консоли — из аргументов команды.', 'o': 'необязательные получают значение по умолчанию', 'c': "public function actionView($id, $version = null)\n{\n    // ?r=post/view&id=123  →  $id = '123'\n}"},
+                {'n': 'Параметр-массив', 'd': 'По умолчанию ожидается скаляр: массив вместо него даёт BadRequestHttpException. Чтобы принять массив, объявите тип.', 'o': 'скаляр тогда обернётся в массив автоматически', 'c': "public function actionView(array $id)\n{\n    // ?r=post/view&id[]=1&id[]=2\n}"},
+                {'n': 'Результат действия', 'd': 'Строка станет телом ответа, объект Response уйдёт как есть, массив отформатируется по response->format, число в консоли станет кодом выхода.', 'o': 'render() возвращает строку, redirect() — Response', 'c': "public function actionInfo()\n{\n    Yii::$app->response->format = yii\\web\\Response::FORMAT_JSON;\n    return ['message' => 'привет', 'code' => 100];\n}"},
+                {'n': 'beforeAction() · afterAction()', 'd': 'Точки вокруг действия у самого контроллера. Не забудьте вызвать родителя — иначе фильтры не отработают.', 'o': 'вызываются после приложения и модуля', 'c': "public function beforeAction($action)\n{\n    if (!parent::beforeAction($action)) {\n        return false;\n    }\n    $this->enableCsrfValidation = $action->id !== 'hook';\n    return true;\n}"},
+            ]),
+            ('h', 'Маршруты и поиск класса'),
+            ('ref', [
+                {'n': 'Формат маршрута', 'd': 'контроллер/действие или модуль/контроллер/действие. Идентификаторы в нижнем регистре, слова через дефис.', 'o': 'вложенные модули добавляют сегменты', 'c': "post/view\nforum/post/view          // модуль forum\nadmin/post-comment/index // подпапка admin"},
+                {'n': 'controllerNamespace', 'd': 'Пространство имён, в котором ищутся контроллеры приложения.', 'o': 'по умолчанию app\\\\controllers', 'c': "'controllerNamespace' => 'app\\\\controllers',"},
+                {'n': 'controllerMap', 'd': 'Явное соответствие ID классу — когда соглашение не подходит: чужая библиотека, другое имя, особые свойства.', 'o': 'значением может быть массив с конфигурацией', 'c': "'controllerMap' => [\n    'account' => app\\controllers\\UserController::class,\n],"},
+                {'n': 'defaultRoute', 'd': 'Куда идёт запрос без маршрута вообще.', 'o': "site для веба, help для консоли", 'c': "'defaultRoute' => 'landing',"},
+                {'n': 'Контроллер модуля', 'd': 'У модуля свой controllerNamespace и свои представления. Маршрут получает лишний сегмент впереди.', 'o': 'см. свойство modules приложения', 'c': "'modules' => [\n    'forum' => ['class' => app\\modules\\forum\\Module::class],\n],\n\n// forum/post/view"},
+                {'n': 'Консольный контроллер', 'd': 'Наследует yii\\console\\Controller. Параметры действия приходят из аргументов, options() объявляет ключи.', 'o': './yii контроллер/действие', 'c': "class RbacController extends yii\\console\\Controller\n{\n    public function actionInit()\n    {\n        // ./yii rbac/init\n    }\n}"},
+            ]),
+        ]),
+        ('own', 'Приёмы', [
+            ('h', 'Тонкий контроллер'),
+            ('p', 'Образец, который генерирует Gii: проверки в фильтрах, поиск модели в одном месте, действие в три строки.'),
+            ('code', 'php', 'controllers/PostController.php', r'''class PostController extends Controller
+{
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::class,
+                'actions' => ['delete' => ['POST']],
+            ],
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [['allow' => true, 'roles' => ['@']]],
+            ],
+        ];
+    }
+
+    public function actionUpdate($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('update', ['model' => $model]);
+    }
+
+    protected function findModel($id)
+    {
+        if (($model = Post::findOne($id)) !== null) {
+            return $model;
+        }
+        throw new NotFoundHttpException('Запись не найдена.');
+    }
+}'''),
+            ('h', 'Своё отдельное действие'),
+            ('code', 'php', 'components/ExportAction.php', r'''namespace app\components;
+
+use Yii;
+use yii\base\Action;
+
+class ExportAction extends Action
+{
+    public $modelClass;
+    public $filename = 'export.csv';
+
+    public function run()
+    {
+        $rows = call_user_func([$this->modelClass, 'find'])->asArray()->all();
+
+        return Yii::$app->response->sendContentAsFile(
+            $this->toCsv($rows),
+            $this->filename,
+            ['mimeType' => 'text/csv']
+        );
+    }
+
+    private function toCsv(array $rows)
+    {
+        // ...
+    }
+}'''),
+            ('code', 'php', 'controllers/PostController.php', r'''public function actions()
+{
+    return [
+        'export' => [
+            'class' => app\components\ExportAction::class,
+            'modelClass' => app\models\Post::class,
+            'filename' => 'posts.csv',
+        ],
+    ];
+}'''),
+            ('note', 'tip', 'Почему findOne($id) из параметра действия безопасен',
+             'Yii гарантирует, что параметр действия — скаляр: массив в запросе даст `BadRequestHttpException` ещё до вызова метода. '
+             'А вот `findOne(Yii::$app->request->get(\'id\'))` такой гарантии не даёт — там пользователь может подсунуть массив '
+             'и подменить условие поиска.'),
+        ]),
+        ('traps', 'Грабли', [
+            ('note', 'trap', 'beforeAction без вызова родителя',
+             'Переопределили `beforeAction()` и вернули `true`, не вызвав `parent::beforeAction($action)` — '
+             'все фильтры контроллера молча перестали работать, включая проверку доступа.'),
+            ('note', 'trap', 'Логика в контроллере',
+             'Контроллер должен решать, что показать, а не как считать. Запросы, расчёты и правила — в модель, '
+             'вывод — в представление. Иначе то же самое придётся дублировать в консольной команде и в API.'),
+            ('note', 'trap', 'Данные из request вместо параметра действия',
+             '`Yii::$app->request->get(\'id\')` возвращает что угодно, включая массив. Параметр действия проверен фреймворком. '
+             'Разница проявляется ровно тогда, когда кто-то целенаправленно ломает ваш поиск.'),
+            ('note', 'warn', 'Выключенный CSRF «чтобы заработало»',
+             'Форма не отправляется — и `enableCsrfValidation = false` выключается на весь контроллер. '
+             'Выключать нужно точечно, для одного действия-приёмника, и понимать, что оно теперь открыто для запросов со стороны.'),
+            ('note', 'warn', 'Забытое действие error',
+             'Без `\'error\' => ErrorAction::class` в `actions()` контроллера, указанного в `errorHandler.errorAction`, '
+             'пользователь вместо страницы ошибки увидит исключение — со стеком, если включён YII_DEBUG.'),
         ]),
     ],
 )
@@ -2742,7 +3124,7 @@ public function safeDown()
 
 # порядок узлов задаётся явно — по ходу запроса; номера считаются из него
 ORDER = [
-    'http', 'routing', 'filters', 'user',
+    'http', 'app', 'routing', 'controllers', 'filters', 'user',
     'model', 'rules', 'scenarios',
     'ar', 'query', 'migrations',
     'views', 'widgets', 'state',
@@ -2758,9 +3140,3 @@ TOPICS.sort(key=lambda t: ORDER.index(t['id']))
 _gseq = [t['group'] for t in TOPICS]
 _gidx = [g for g, _, _ in GROUPS].index
 assert _gseq == sorted(_gseq, key=_gidx), 'группы в ORDER идут вразнобой: %s' % _gseq
-
-# номера считаются здесь, а не проставляются руками у каждой темы
-for _i, _t in enumerate(TOPICS):
-    _t['num'] = '%02d' % (_i + 1)
-
-NUM = {t['id']: t['num'] for t in TOPICS}
