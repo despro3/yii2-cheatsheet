@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Сборка сайта «Yii 2 — шпаргалка»: src/ → docs/
+Сборка сайта «Курс по Yii 2»: src/ → docs/
 
     python3 build.py           # собрать сайт
     python3 build.py --check   # только проверить покрытие глав и ссылки
@@ -36,7 +36,7 @@ OUT = os.path.join(ROOT, 'docs')
 
 GUIDE_URL = 'https://www.yiiframework.com/doc/guide/2.0/ru/%s'
 API_URL = 'https://www.yiiframework.com/doc/api/2.0/%s'
-SITE_NAME = 'Yii 2 — шпаргалка'
+SITE_NAME = 'Курс по Yii 2'
 
 
 # --------------------------------------------------------------------------- utils
@@ -1155,7 +1155,7 @@ def main():
             all_toc.append('<li class="toc-l3"><a href="#%s">%s</a></li>' % (p['id'], esc(p['meta']['title'])))
     all_main = fill(all_tpl, {'body': '\n'.join(all_body), 'pages_count': str(len(ordered))})
     write(os.path.join(OUT, 'all.html'), shell('Всё одной страницей · ' + SITE_NAME,
-                                               'Все разделы шпаргалки на одной странице: для поиска по Ctrl+F и печати.',
+                                               'Все разделы курса на одной странице: для поиска по Ctrl+F и печати.',
                                                'all', build_nav(parts, pages_by_part, 'all'), all_main,
                                                '<div class="toc-title">Разделы</div><ul class="toc-list">%s</ul>' % ''.join(all_toc), 'all'))
 

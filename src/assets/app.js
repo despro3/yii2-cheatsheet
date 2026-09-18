@@ -1,4 +1,4 @@
-/* Yii 2 — шпаргалка: клиентская логика (без зависимостей). */
+/* Курс по Yii 2: клиентская логика (без зависимостей). */
 (function () {
   'use strict';
 
@@ -64,7 +64,7 @@
       var next = null;
       for (var i = 0; i < PAGES.length; i++) if (done.indexOf(PAGES[i].id) < 0) { next = PAGES[i]; break; }
       if (next) { cont.href = next.id + '.html'; cont.textContent = (done.length ? 'Продолжить: ' : 'Начать: ') + next.t + ' →'; }
-      else { cont.href = 'cheatsheet.html'; cont.textContent = 'Всё изучено! Открыть шпаргалку →'; }
+      else { cont.href = 'cheatsheet.html'; cont.textContent = 'Всё изучено! Открыть памятку →'; }
     }
   }
   $$('.learned-box').forEach(function (box) {
