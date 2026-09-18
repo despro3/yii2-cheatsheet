@@ -262,8 +262,8 @@ def node(x, y, w, h, num, name, topic=None, color=None, cls=''):
     out = '<g class="%s"%s>' % (klass, attrs)
     out += '<rect x="%g" y="%g" width="%g" height="%g" rx="8"/>' % (x, y, w, h)
     if num:
-        out += '<text x="%g" y="%g" class="mp-num">%s</text>' % (cx, y + 19, num)
-        out += '<text x="%g" y="%g">%s</text>' % (cx, y + 37, esc(name))
+        out += '<text x="%g" y="%g" class="mp-num">%s</text>' % (cx, y + h * 0.38, num)
+        out += '<text x="%g" y="%g">%s</text>' % (cx, y + h * 0.74, esc(name))
     else:
         out += '<text x="%g" y="%g">%s</text>' % (cx, y + h / 2.0 + 4, esc(name))
     out += '</g>'
@@ -274,76 +274,70 @@ def build_map():
     C = GROUP_COLOR
     n = data.NUM
     p = []
-    p.append('<svg viewBox="0 0 1060 366" role="img" class="mp" '
-             'aria-label="Устройство Yii 2: сверху путь запроса — браузер, маршруты, фильтры, действие, '
-             'ответ; посередине механизмы, которые действие дёргает; снизу фундамент из компонентов, '
-             'поведений, событий и хелперов">')
+    p.append('<svg viewBox="0 0 1060 448" role="img" class="mp" '
+             'aria-label="Устройство Yii 2: сверху путь запроса от браузера через маршруты, фильтры и проверку '
+             'доступа к действию; ниже три семейства механизмов, которые действие дёргает; внизу фундамент '
+             'из компонентов, контейнера, поведений, событий и хелперов">')
     p.append('<defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
              'orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs>')
 
     # фундамент
-    p.append('<rect class="mp-slab" x="16" y="222" width="1028" height="128" rx="12" stroke-dasharray="5 4"/>')
-    p.append('<text class="mp-label" style="fill: %s" x="530" y="246" text-anchor="middle">'
+    p.append('<rect class="mp-slab" x="40" y="306" width="980" height="126" rx="12" stroke-dasharray="5 4"/>')
+    p.append('<text class="mp-label" style="fill: %s" x="530" y="330" text-anchor="middle">'
              'фундамент · на этом стоит всё остальное</text>' % C['object'])
 
-    # путь запроса: x, ширина, подпись, тема, цвет семейства, класс
+    # путь запроса: x, ширина, номер, подпись, тема, цвет семейства, класс
     path = [
-        (16, 100, '', 'браузер', None, None, 'mp-io'),
-        (150, 124, n['http'], 'запрос', 'http', C['http'], ''),
-        (308, 132, n['routing'], 'маршруты', 'routing', C['http'], ''),
-        (474, 124, n['filters'], 'фильтры', 'filters', C['http'], ''),
-        (632, 132, '', 'действие', None, None, ''),
-        (798, 112, n['http'], 'ответ', 'http', C['http'], ''),
-        (944, 100, '', 'браузер', None, None, 'mp-io'),
+        (18, 88, '', 'браузер', None, None, 'mp-io'),
+        (134, 108, n['http'], 'запрос', 'http', C['http'], ''),
+        (270, 118, n['routing'], 'маршруты', 'routing', C['http'], ''),
+        (416, 106, n['filters'], 'фильтры', 'filters', C['http'], ''),
+        (550, 106, n['user'], 'доступ', 'user', C['http'], ''),
+        (684, 118, '', 'действие', None, None, ''),
+        (830, 96, n['http'], 'ответ', 'http', C['http'], ''),
+        (954, 88, '', 'браузер', None, None, 'mp-io'),
     ]
     for x, w, num, name, tid, color, cls in path:
         p.append(node(x, 18, w, 50, num, name, tid, color, cls))
 
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for a, b in zip(path, path[1:]):
-        # стрелка не упирается в рамку: остаётся зазор, чтобы не наезжать на метку семейства
+        # стрелка не упирается в рамку: остаётся зазор с обеих сторон
         gap_from = a[0] + a[1] + 4
         p.append('<path d="M%d 43h%d"/>' % (gap_from, b[0] - 6 - gap_from))
     p.append('</g>')
 
-    # механизмы, которые дёргает действие
-    mech = [
-        (16, 96, 'model', 'модель'),
-        (124, 100, 'rules', 'правила'),
-        (236, 104, 'scenarios', 'сценарии'),
-        (370, 120, 'ar', 'Active Record'),
-        (502, 124, 'query', 'Query Builder'),
-        (638, 100, 'migrations', 'миграции'),
-        (768, 96, 'widgets', 'виджеты'),
-        (876, 168, 'state', 'кэш · сессии · куки'),
+    # механизмы: колонка на семейство, чтобы ряд не приходилось растягивать под каждый новый узел
+    columns = [
+        ('данные и правила', C['data'], [('model', 'модель'), ('rules', 'правила'), ('scenarios', 'сценарии')]),
+        ('база данных', C['db'], [('ar', 'Active Record'), ('query', 'Query Builder'), ('migrations', 'миграции')]),
+        ('вывод и состояние', C['view'], [('views', 'представления'), ('widgets', 'виджеты'),
+                                          ('state', 'кэш · сессии · куки')]),
     ]
-    group_of = {t['id']: t['group'] for t in data.TOPICS}
-    centers = [x + w / 2.0 for x, w, _, _ in mech]
+    cx0, cw, cstep = 66, 210, 359
+    centers = [cx0 + i * cstep + cw / 2.0 for i in range(len(columns))]
 
-    # шина от действия вниз и разводка по механизмам
+    # шина: действие тянется к каждому семейству
     p.append('<g class="mp-flow">')
-    p.append('<path d="M698 68v26"/>')
-    p.append('<path d="M%g 94h%g"/>' % (centers[0], centers[-1] - centers[0]))
-    for cx in centers:
-        p.append('<path d="M%g 94v30"/>' % cx)
+    p.append('<path d="M743 68v16"/>')
+    p.append('<path d="M%g 84h%g"/>' % (centers[0], centers[-1] - centers[0]))
+    p.append('</g>')
+    p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
+    for c in centers:
+        p.append('<path d="M%g 84v12"/>' % c)
     p.append('</g>')
 
-    for x, w, tid, name in mech:
-        p.append(node(x, 124, w, 50, n[tid], name, tid, C[group_of[tid]]))
-
-    for cx, label, color in [(178, 'данные и правила', C['data']),
-                             (554, 'база данных', C['db']),
-                             (906, 'вывод и состояние', C['view'])]:
-        p.append('<text class="mp-label" style="fill: %s" x="%d" y="198" text-anchor="middle">%s</text>'
-                 % (color, cx, label))
+    for i, (label, color, items) in enumerate(columns):
+        p.append('<text class="mp-label" style="fill: %s" x="%g" y="116" text-anchor="middle">%s</text>'
+                 % (color, centers[i], label))
+        for row, (tid, name) in enumerate(items):
+            p.append(node(cx0 + i * cstep, 128 + row * 54, cw, 46, n[tid], name, tid, color))
 
     # фундамент: узлы, разложенные по плите равными долями
     base = [('components', 'компоненты'), ('di', 'DI-контейнер'), ('behaviors', 'поведения'),
             ('events', 'события'), ('helpers', 'хелперы')]
-    bw, step, bx = 176, 194, 60
-
     for i, (tid, name) in enumerate(base):
-        p.append(node(bx + i * step, 266, bw, 52, n[tid], name, tid, C['object']))
+        p.append(node(66 + i * 188, 350, 176, 50, n[tid], name, tid, C['object']))
 
     p.append('</svg>')
     return ''.join(p)
@@ -447,9 +441,9 @@ def build_page():
     <section class="map">
       <figure>
         <div class="map-frame">%s</div>
-        <figcaption>Запрос идёт по верхней линии, посередине — механизмы, которые дёргает действие,
-          внизу — то, на чём держится всё остальное. Номера идут по ходу запроса, цвет обозначает
-          семейство. Узлы кликабельны.</figcaption>
+        <figcaption>Запрос идёт по верхней линии, ниже — три семейства механизмов, которые дёргает
+          действие, внизу — то, на чём держится всё остальное. Номера идут по ходу запроса, цвет
+          обозначает семейство. Узлы кликабельны.</figcaption>
       </figure>
     </section>
 

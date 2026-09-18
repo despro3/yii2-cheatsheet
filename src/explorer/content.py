@@ -16,11 +16,11 @@
 # Порядок групп — это порядок, в котором узлы встречаются на пути запроса,
 # поэтому сквозная нумерация идёт слева направо и сверху вниз по схеме-карте.
 GROUPS = [
-    ('http',   'Запрос и маршрутизация', 'Что пришло от браузера и кто решает, какому действию это отдать'),
-    ('data',   'Данные и правила',       'Что приходит от пользователя и что с этим делает модель'),
-    ('db',     'База данных',            'Запросы, записи, связи'),
-    ('view',   'Вывод и состояние',      'Чем рисуется страница и что живёт дольше одного запроса'),
-    ('object', 'Объектная модель',       'Из чего собран фреймворк и как в него встроиться'),
+    ('http',   'Запрос и доступ',   'Что пришло от браузера, какому действию это отдать и кого туда пускать'),
+    ('data',   'Данные и правила',  'Что приходит от пользователя и что с этим делает модель'),
+    ('db',     'База данных',       'Запросы, записи, связи'),
+    ('view',   'Вывод и состояние', 'Чем рисуется страница и что живёт дольше одного запроса'),
+    ('object', 'Объектная модель',  'Из чего собран фреймворк и как в него встроиться'),
 ]
 
 TOPICS = []
@@ -1841,6 +1841,220 @@ class Module extends \yii\base\Module
 )
 
 
+
+# --------------------------------------------------------------------------- Пользователь и доступ
+
+topic(
+    id='user', group='http',
+    title='Пользователь и доступ',
+    cls='yii\\web\\User',
+    lead='Кто пришёл и что ему можно: компонент user, identity-класс, правила ACF и роли RBAC.',
+    badge='31 настройка и правило',
+    tabs=[
+        ('how', 'Как устроено', [
+            ('p', 'Два разных вопроса и два разных механизма. **Аутентификация** отвечает «кто это» — '
+                  'этим занят компонент `Yii::$app->user` и ваш identity-класс. **Авторизация** отвечает '
+                  '«что ему можно» — это фильтр `AccessControl` для простых случаев и RBAC, когда прав много. '
+                  'Проверка пароля остаётся вашим кодом, всё остальное — сессии, куки, тайм-ауты — берёт на себя фреймворк.'),
+            ('svg', '''<svg viewBox="0 0 700 300" role="img" aria-label="Запрос опознаётся по сессии, куке автологина или токену, компонент user поднимает identity-класс, затем правила доступа решают, пускать ли к действию" class="dg">
+<defs><marker id="m-us" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#m-us)" opacity=".55">
+<path d="M118 76v26"/><path d="M350 76v26"/><path d="M582 76v26"/>
+<path d="M350 162v24"/><path d="M350 246v22"/>
+</g>
+<g class="dg-box dg-muted"><rect x="14" y="14" width="208" height="62" rx="8"/><text x="118" y="38">сессия</text><text x="118" y="56" class="dg-sub">обычный вход, ID в сессии</text></g>
+<g class="dg-box dg-muted"><rect x="246" y="14" width="208" height="62" rx="8"/><text x="350" y="38">кука автологина</text><text x="350" y="56" class="dg-sub">ID и authKey, «запомнить меня»</text></g>
+<g class="dg-box dg-muted"><rect x="478" y="14" width="208" height="62" rx="8"/><text x="582" y="38">токен</text><text x="582" y="56" class="dg-sub">REST, сессии нет</text></g>
+<g class="dg-box"><rect x="14" y="102" width="672" height="60" rx="8"/><text x="350" y="124">Yii::$app-&gt;user</text><text x="350" y="142" class="dg-sub">findIdentity · validateAuthKey · findIdentityByAccessToken</text></g>
+<g class="dg-box dg-live"><rect x="150" y="186" width="400" height="60" rx="8"/><text x="350" y="208">правила доступа</text><text x="350" y="226" class="dg-sub">AccessControl · can() · RBAC</text></g>
+<g class="dg-box dg-muted"><rect x="250" y="268" width="200" height="32" rx="8"/><text x="350" y="289">действие</text></g>
+</svg>''', 'Три входа, одна точка опознания и одна точка решения. Пароль проверяется до всего этого — в вашем коде.'),
+            ('h', 'Настройка компонента'),
+            ('code', 'php', 'config/web.php', r''''user' => [
+    'identityClass' => app\models\User::class,
+    'enableAutoLogin' => true,        // «запомнить меня» через куку
+    'loginUrl' => ['site/login'],     // куда отправлять гостей
+    'authTimeout' => 3600,            // выход после часа бездействия
+    'absoluteAuthTimeout' => 86400,   // выход через сутки в любом случае
+    // 'enableSession' => false,      // для REST: только токен, без сессии
+],'''),
+            ('h', 'Пять методов identity-класса'),
+            ('kv', [
+                ('findIdentity($id)', 'Найти пользователя по ID. Вызывается при каждом запросе с сессией.'),
+                ('findIdentityByAccessToken($token, $type)', 'Найти по токену — для REST. `$type` это класс аутентификатора.'),
+                ('getId()', 'Уникальный ID, который кладётся в сессию.'),
+                ('getAuthKey()', 'Секрет для куки автологина. Хранится в базе, генерируется при регистрации.'),
+                ('validateAuthKey($key)', 'Сверка ключа из куки с тем, что в базе.'),
+            ]),
+            ('p', 'Identity не обязан быть Active Record: подойдёт любой класс — LDAP, внешний API, массив в конфигурации.'),
+            ('note', 'tip', 'Порядок при входе',
+             'Сначала ваш код проверяет пароль через `Yii::$app->security->validatePassword()`, и только потом '
+             'вызывается `Yii::$app->user->login($identity, $duration)`. Фреймворк пароли не проверяет.'),
+        ]),
+        ('all', 'Настройки и правила', [
+            ('h', 'Компонент user'),
+            ('ref', [
+                {'n': 'identityClass', 'd': 'Класс, реализующий IdentityInterface. Без него компонент не работает.', 'o': 'обычно модель User', 'c': "'user' => [\n    'identityClass' => app\\models\\User::class,\n],"},
+                {'n': 'enableAutoLogin', 'd': 'Разрешает вход по куке. Без него параметр $duration у login() не сработает.', 'o': 'по умолчанию false', 'c': "'enableAutoLogin' => true,\n\n// и при входе:\nYii::$app->user->login($identity, 3600 * 24 * 30);"},
+                {'n': 'loginUrl', 'd': 'Куда отправлять гостя, которому нужен вход. null — сразу 403 вместо редиректа.', 'o': 'маршрут массивом', 'c': "'loginUrl' => ['site/login'],"},
+                {'n': 'authTimeout', 'd': 'Выход после N секунд бездействия. Отсчёт продлевается каждым запросом.', 'o': 'null — пока жива сессия', 'c': "'authTimeout' => 3600,"},
+                {'n': 'absoluteAuthTimeout', 'd': 'Выход через N секунд после входа, сколько бы человек ни работал.', 'o': 'считается от момента входа', 'c': "'absoluteAuthTimeout' => 86400,"},
+                {'n': 'enableSession', 'd': 'Выключается для REST: пользователь опознаётся по токену на каждом запросе, состояние не хранится.', 'o': 'при false куки и сессия не используются', 'c': "'user' => [\n    'identityClass' => app\\models\\User::class,\n    'enableSession' => false,\n],"},
+                {'n': 'login($identity, $duration)', 'd': 'Вход. При $duration больше нуля и включённом enableAutoLogin ставится кука с ID и authKey.', 'o': 'вызывается после вашей проверки пароля', 'c': "if ($this->validate()) {\n    return Yii::$app->user->login(\n        $this->getUser(),\n        $this->rememberMe ? 3600 * 24 * 30 : 0\n    );\n}"},
+                {'n': 'logout($destroySession)', 'd': 'Выход. По умолчанию уничтожает сессию целиком; logout(false) оставляет её.', 'o': 'куку автологина удаляет в обоих случаях', 'c': "Yii::$app->user->logout();\nreturn $this->goHome();"},
+                {'n': 'isGuest · id · identity', 'd': 'Текущий пользователь. identity поднимается лениво: findIdentity() вызовется только при обращении.', 'o': 'id и identity равны null у гостя', 'c': "if (Yii::$app->user->isGuest) { /* гость */ }\n\n$id = Yii::$app->user->id;\n$name = Yii::$app->user->identity->username;"},
+                {'n': 'loginRequired()', 'd': 'Отправить гостя на loginUrl, запомнив, куда он шёл. Для AJAX-запроса вместо редиректа бросает 403.', 'o': 'то же делает AccessControl', 'c': "if (Yii::$app->user->isGuest) {\n    return Yii::$app->user->loginRequired();\n}"},
+                {'n': 'getReturnUrl() · setReturnUrl()', 'd': 'Адрес, куда вернуть после входа. goBack() в контроллере уводит именно туда.', 'o': 'хранится в сессии', 'c': "Yii::$app->user->setReturnUrl(['post/view', 'id' => 7]);\n\n// после успешного входа\nreturn $this->goBack();"},
+                {'n': 'switchIdentity()', 'd': 'Сменить пользователя на лету, не проходя вход заново. Основа режима «войти как».', 'o': 'второй аргумент — срок куки', 'c': "Yii::$app->user->switchIdentity($other, 0);"},
+                {'n': 'События входа и выхода', 'd': 'beforeLogin можно отменить, выставив $event->isValid = false. В событии есть identity, cookieBased и duration.', 'o': 'beforeLogin, afterLogin, beforeLogout, afterLogout', 'c': "'user' => [\n    'on afterLogin' => function (yii\\web\\UserEvent $e) {\n        $e->identity->updateAttributes(['last_login_at' => time()]);\n    },\n],"},
+            ]),
+            ('h', 'Правила AccessControl'),
+            ('p', 'Правила проверяются сверху вниз до первого совпадения. Совпало `allow` — пропустить, `deny` — запретить. '
+                  'Не совпало ни одно — **запретить**: гостя отправят на вход, вошедшего встретит 403.'),
+            ('ref', [
+                {'n': 'allow', 'd': 'true — разрешающее правило, false — запрещающее.', 'o': 'обязательный ключ', 'c': "['allow' => true, 'roles' => ['@']],"},
+                {'n': 'actions', 'd': 'ID действий, к которым правило относится. Пусто — ко всем.', 'o': 'имена без префикса action', 'c': "['allow' => true, 'actions' => ['login', 'signup'], 'roles' => ['?']],"},
+                {'n': 'controllers', 'd': 'ID контроллеров. Контроллер из модуля пишется вместе с ним.', 'o': "например 'admin/user'", 'c': "['allow' => false, 'controllers' => ['admin/user'], 'roles' => ['?']],"},
+                {'n': 'roles', 'd': 'Знак ? — гость, @ — любой вошедший. Всё остальное считается ролью или разрешением RBAC и проверяется через can().', 'o': 'можно перечислить несколько', 'c': "['allow' => true, 'actions' => ['update'], 'roles' => ['moderator', 'admin']],"},
+                {'n': 'roleParams', 'd': 'Параметры для can(). Замыкание удобно тем, что модель грузится только когда правило действительно проверяется.', 'o': 'массив или замыкание', 'c': "[\n    'allow' => true,\n    'actions' => ['update'],\n    'roles' => ['updatePost'],\n    'roleParams' => function ($rule) {\n        return ['post' => Post::findOne(Yii::$app->request->get('id'))];\n    },\n],"},
+                {'n': 'ips', 'd': 'IP клиента. В конце допускается звёздочка.', 'o': "например '192.168.*'", 'c': "['allow' => true, 'ips' => ['192.168.*'], 'actions' => ['debug']],"},
+                {'n': 'verbs', 'd': 'HTTP-методы, на которые распространяется правило.', 'o': 'GET, POST, PUT, DELETE', 'c': "['allow' => false, 'verbs' => ['DELETE'], 'roles' => ['@']],"},
+                {'n': 'matchCallback', 'd': 'Произвольное условие: возвращает true, если правило подходит.', 'o': 'function ($rule, $action)', 'c': "[\n    'allow' => true,\n    'actions' => ['promo'],\n    'matchCallback' => function ($rule, $action) {\n        return date('d-m') === '31-10';\n    },\n],"},
+                {'n': 'denyCallback', 'd': 'Что делать при запрете. Задаётся у правила или у всего фильтра.', 'o': 'по умолчанию редирект или 403', 'c': "'denyCallback' => function ($rule, $action) {\n    throw new yii\\web\\ForbiddenHttpException('Вам сюда нельзя');\n},"},
+            ]),
+            ('h', 'RBAC'),
+            ('p', 'Три сущности: **разрешение** — конкретное действие, **роль** — набор разрешений и других ролей, '
+                  '**правило** — дополнительная проверка с параметрами. Пользователю назначаются роли, проверка одна: `can()`.'),
+            ('ref', [
+                {'n': 'authManager', 'd': 'DbManager хранит иерархию в четырёх таблицах, PhpManager — в файлах. Компонент нужен в обеих конфигурациях, и веб, и консольной.', 'o': 'таблицы: auth_item, auth_item_child, auth_assignment, auth_rule', 'c': "'authManager' => [\n    'class' => yii\\rbac\\DbManager::class,\n    'cache' => 'cache',\n],\n\n// ./yii migrate --migrationPath=@yii/rbac/migrations"},
+                {'n': 'createPermission() и add()', 'd': 'Создать разрешение — самую мелкую единицу доступа — и положить его в хранилище.', 'o': 'description виден в интерфейсах управления', 'c': "$auth = Yii::$app->authManager;\n\n$createPost = $auth->createPermission('createPost');\n$createPost->description = 'Создание постов';\n$auth->add($createPost);"},
+                {'n': 'createRole() и add()', 'd': 'Создать роль. Сама по себе она ничего не даёт, пока к ней не привязаны разрешения.', 'o': 'имя роли уникально в пределах хранилища', 'c': "$author = $auth->createRole('author');\n$auth->add($author);"},
+                {'n': 'addChild()', 'd': 'Собрать иерархию: роли — разрешения, ролям — другие роли. Проверка идёт по всей цепочке вниз.', 'o': 'циклы не допускаются', 'c': "$auth->addChild($author, $createPost);\n$auth->addChild($admin, $updatePost);\n$auth->addChild($admin, $author);   // admin получает всё от author"},
+                {'n': 'Rule и ruleName', 'd': 'Правило решает по данным: например, автор ли пользователь этого поста. Привязывается к разрешению по имени.', 'o': 'execute($user, $item, $params)', 'c': "class AuthorRule extends yii\\rbac\\Rule\n{\n    public $name = 'isAuthor';\n\n    public function execute($user, $item, $params)\n    {\n        return isset($params['post'])\n            ? $params['post']->createdBy == $user\n            : false;\n    }\n}"},
+                {'n': 'assign() · revoke() · revokeAll()', 'd': 'Назначение и снятие ролей. Обычно назначают при регистрации.', 'o': 'второй аргумент — ID пользователя', 'c': "$auth->assign($auth->getRole('author'), $user->id);\n$auth->revoke($role, $userId);\n$auth->revokeAll($userId);"},
+                {'n': 'getRolesByUser() и соседи', 'd': 'Чтение назначений: роли пользователя, все его разрешения, все пользователи роли.', 'o': 'getRolesByUser, getPermissionsByUser, getUserIdsByRole', 'c': "$roles = $auth->getRolesByUser($userId);\n$perms = $auth->getPermissionsByUser($userId);\n$ids = $auth->getUserIdsByRole('admin');"},
+                {'n': 'can() и checkAccess()', 'd': 'Проверка. can() — для текущего пользователя, checkAccess() — для любого ID.', 'o': 'второй аргумент уходит в правило', 'c': "if (Yii::$app->user->can('updatePost', ['post' => $post])) { }\n\nif ($auth->checkAccess($userId, 'updatePost', ['post' => $post])) { }"},
+                {'n': 'defaultRoles', 'd': 'Роли, которые есть у всех без записи в таблице назначений. Обычно сочетаются с правилом, определяющим роль по полю пользователя.', 'o': 'для гостя can() проверяет только их', 'c': "'authManager' => [\n    'class' => yii\\rbac\\DbManager::class,\n    'defaultRoles' => ['guest'],\n],"},
+            ]),
+        ]),
+        ('own', 'Приёмы', [
+            ('h', 'Свой identity-класс'),
+            ('code', 'php', 'models/User.php', r'''namespace app\models;
+
+use Yii;
+use yii\db\ActiveRecord;
+use yii\web\IdentityInterface;
+
+class User extends ActiveRecord implements IdentityInterface
+{
+    public static function findIdentity($id)
+    {
+        return static::findOne($id);
+    }
+
+    public static function findIdentityByAccessToken($token, $type = null)
+    {
+        return static::findOne(['access_token' => $token]);
+    }
+
+    public function getId() { return $this->id; }
+
+    public function getAuthKey() { return $this->auth_key; }
+
+    public function validateAuthKey($authKey)
+    {
+        return $this->getAuthKey() === $authKey;
+    }
+
+    // проверка пароля — ваш код, не фреймворка
+    public function validatePassword($password)
+    {
+        return Yii::$app->security->validatePassword($password, $this->password_hash);
+    }
+
+    public function beforeSave($insert)
+    {
+        if (!parent::beforeSave($insert)) {
+            return false;
+        }
+        if ($this->isNewRecord) {
+            $this->auth_key = Yii::$app->security->generateRandomString();
+        }
+        return true;
+    }
+}'''),
+            ('h', 'Вход и выход'),
+            ('code', 'php', 'controllers/SiteController.php', r'''public function actionLogin()
+{
+    if (!Yii::$app->user->isGuest) {
+        return $this->goHome();
+    }
+
+    $model = new LoginForm();
+    if ($model->load(Yii::$app->request->post()) && $model->login()) {
+        return $this->goBack();   // на returnUrl или домой
+    }
+
+    return $this->render('login', ['model' => $model]);
+}
+
+public function actionLogout()
+{
+    Yii::$app->user->logout();
+    return $this->goHome();
+}'''),
+            ('h', 'Доступ только для вошедших'),
+            ('code', 'php', 'controllers/PostController.php', r'''public function behaviors()
+{
+    return [
+        'access' => [
+            'class' => yii\filters\AccessControl::class,
+            'only' => ['create', 'update', 'delete'],
+            'rules' => [
+                ['allow' => true, 'roles' => ['@']],
+            ],
+        ],
+    ];
+}'''),
+            ('h', 'Своё правило RBAC: автор правит свой пост'),
+            ('code', 'php', 'commands/RbacController.php', r'''$rule = new app\rbac\AuthorRule();
+$auth->add($rule);
+
+$updateOwnPost = $auth->createPermission('updateOwnPost');
+$updateOwnPost->description = 'Редактирование своего поста';
+$updateOwnPost->ruleName = $rule->name;
+$auth->add($updateOwnPost);
+
+$auth->addChild($updateOwnPost, $updatePost);
+$auth->addChild($author, $updateOwnPost);'''),
+            ('p', 'Для автора цепочка `author → updateOwnPost (правило) → updatePost`, и правило сверит `createdBy`. '
+                  'Для администратора путь короче — `admin → updatePost`, без правила, то есть можно всегда.'),
+            ('note', 'tip', 'Проверка в представлении',
+             'Тот же `can()` уместен в шаблоне, чтобы не рисовать кнопку, которая всё равно упрётся в 403: '
+             '`<?php if (Yii::$app->user->can(\'updatePost\', [\'post\' => $model])): ?>`'),
+        ]),
+        ('traps', 'Грабли', [
+            ('note', 'trap', 'Постоянный authKey',
+             '`getAuthKey()` — фактически второй пароль, лежащий в куке. Возвращать оттуда константу или что-то '
+             'производное от ID нельзя: подделав куку, войдут кем угодно. Генерируйте `generateRandomString()` '
+             'и меняйте ключ при смене пароля и выходе со всех устройств.'),
+            ('note', 'trap', 'Ни одно правило ACF не совпало',
+             'Это запрет, а не разрешение. Частая ошибка — описать только запрещающие правила и ждать, '
+             'что остальное откроется: закроется всё.'),
+            ('note', 'trap', 'authManager только в веб-конфигурации',
+             'Консольная команда, которая строит иерархию RBAC, запускается с `config/console.php`. '
+             'Если компонент описан только в `web.php`, `./yii rbac/init` упадёт.'),
+            ('note', 'warn', 'roleParams массивом вместо замыкания',
+             'Массив вычисляется всегда, даже когда до этого правила дело не доходит. Замыкание грузит модель '
+             'только при реальной проверке — на списках с десятками кнопок разница заметна.'),
+            ('note', 'warn', 'can() для гостя',
+             'У гостя `user->id` равен null, поэтому `can()` проверит только `defaultRoles` и обычно вернёт false. '
+             'Отличать «не вошёл» от «вошёл, но нельзя» нужно через `isGuest`.'),
+        ]),
+    ],
+)
+
+
 # --------------------------------------------------------------------------- Маршруты
 
 topic(
@@ -1986,6 +2200,197 @@ $this->redirect(['post/view', 'id' => 7]);'''),
             ('note', 'warn', 'enableStrictParsing выключен по умолчанию',
              'Поэтому адрес `/post/view?id=7` работает даже при описанном правиле `post/<id:\\d+>`, и одна страница доступна по двум адресам. '
              'Для API и для SEO это стоит включить.'),
+        ]),
+    ],
+)
+
+
+
+# --------------------------------------------------------------------------- Представления и ресурсы
+
+topic(
+    id='views', group='view',
+    title='Представления и ресурсы',
+    cls='yii\\web\\View',
+    lead='Как собирается страница: шаблон, представление, блоки — и как в неё попадают стили и скрипты.',
+    badge='33 метода и настройки',
+    tabs=[
+        ('how', 'Как устроено', [
+            ('p', 'Представление — обычный PHP-файл с разметкой, в котором `$this` это компонент `View`. '
+                  'Контроллер зовёт `render()`, результат подставляется в шаблон вместо `$content` и уходит в ответ. '
+                  'Стили и скрипты страница не пишет тегами руками: она **регистрирует** их у того же `View`, '
+                  'а шаблон расставляет их в пяти служебных точках.'),
+            ('svg', '''<svg viewBox="0 0 700 332" role="img" aria-label="Контроллер рендерит представление, оно подставляется в шаблон вместо content, а зарегистрированные представлением ресурсы и пакеты попадают в шаблон и оттуда на страницу" class="dg">
+<defs><marker id="m-vw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#m-vw)" opacity=".55">
+<path d="M164 64v20"/><path d="M164 152v20"/><path d="M164 240v20"/>
+<path d="M318 121h62"/><path d="M536 176v33H320"/>
+</g>
+<g class="dg-box"><rect x="14" y="14" width="300" height="50" rx="8"/><text x="164" y="36">контроллер</text><text x="164" y="53" class="dg-sub">render('view', $params)</text></g>
+<g class="dg-box dg-live"><rect x="14" y="90" width="300" height="62" rx="8"/><text x="164" y="112">представление</text><text x="164" y="130" class="dg-sub">разметка, блоки</text><text x="164" y="146" class="dg-sub">registerJs · registerCss</text></g>
+<g class="dg-box"><rect x="14" y="178" width="300" height="62" rx="8"/><text x="164" y="200">шаблон</text><text x="164" y="218" class="dg-sub">$content вместо страницы</text><text x="164" y="234" class="dg-sub">head() · beginBody() · endBody()</text></g>
+<g class="dg-box dg-muted"><rect x="14" y="266" width="300" height="50" rx="8"/><text x="164" y="288">готовая страница</text><text x="164" y="305" class="dg-sub">теги link и script на своих местах</text></g>
+<g class="dg-box"><rect x="386" y="90" width="300" height="86" rx="8"/><text x="536" y="118">зарегистрированные ресурсы</text><text x="536" y="139" class="dg-sub">registerJs · registerCss · registerMetaTag</text><text x="536" y="157" class="dg-sub">AssetBundle: js, css, depends</text></g>
+</svg>''', 'Регистрация и вывод разнесены: страница говорит, что ей нужно, шаблон — куда это поставить.'),
+            ('h', 'Как рендерить'),
+            ('kv', [
+                ('$this->render(...)', 'В контроллере: представление плюс шаблон. Обычный случай.'),
+                ('$this->renderPartial(...)', 'Без шаблона — фрагменты и вставки.'),
+                ('$this->renderAjax(...)', 'Без шаблона, но с зарегистрированными скриптами и стилями — для подгрузки модалок.'),
+                ('$this->renderFile(...)', 'По пути или псевдониму. Работает и из письма, и из консоли.'),
+            ]),
+            ('h', 'Как разрешается имя'),
+            ('kv', [
+                ('about', 'В папке контекста: `@app/views/site/about.php` для `SiteController`.'),
+                ('_item', 'Рядом с текущим файлом — если вызвано из представления.'),
+                ('/site/about', 'От папки представлений текущего модуля или приложения.'),
+                ('//site/about', 'Всегда `@app/views/site/about.php`, минуя модуль.'),
+                ('@app/views/site/about', 'Псевдоним как есть. Расширение `.php` можно не писать.'),
+            ]),
+            ('h', 'Минимальный шаблон'),
+            ('code', 'php', 'views/layouts/main.php', r'''<?php
+use yii\helpers\Html;
+use app\assets\AppAsset;
+
+AppAsset::register($this);
+?>
+<?php $this->beginPage() ?>
+<!DOCTYPE html>
+<html lang="<?= Yii::$app->language ?>">
+<head>
+    <meta charset="<?= Yii::$app->charset ?>">
+    <?= Html::csrfMetaTags() ?>
+    <title><?= Html::encode($this->title) ?></title>
+    <?php $this->head() ?>
+</head>
+<body>
+<?php $this->beginBody() ?>
+    <?= $content ?>
+<?php $this->endBody() ?>
+</body>
+</html>
+<?php $this->endPage() ?>'''),
+            ('note', 'trap', 'Пять вызовов обязательны',
+             '`beginPage` и `endPage` оборачивают страницу, `head()` — место для мета-тегов и стилей, '
+             '`beginBody` и `endBody` — для скриптов в начале и конце тела. Уберёте любой — '
+             'зарегистрированные ресурсы просто не появятся, и никакой ошибки при этом не будет.'),
+        ]),
+        ('all', 'Методы и пакеты', [
+            ('h', 'Сборка страницы'),
+            ('ref', [
+                {'n': 'render()', 'd': 'Представление плюс шаблон. Массив во втором аргументе превращается в переменные.', 'o': 'внутри представления ищет файл рядом', 'c': "return $this->render('report', [\n    'model' => $model,\n    'rows' => $rows,\n]);"},
+                {'n': 'renderPartial()', 'd': 'Без шаблона. Для фрагментов, которые встраиваются в другую страницу.', 'o': 'зарегистрированные скрипты не выводит', 'c': "return $this->renderPartial('_row', ['item' => $item]);"},
+                {'n': 'renderAjax()', 'd': 'Без шаблона, но со скриптами и стилями. Нужен, когда фрагмент содержит виджеты и подгружается по AJAX.', 'o': 'разница с renderPartial только в этом', 'c': "return $this->renderAjax('_form', ['model' => $model]);"},
+                {'n': 'renderFile()', 'd': 'Рендер по пути или псевдониму, без правил поиска. Отсюда рендерят письма и консольный вывод.', 'o': 'доступен и как Yii::$app->view->renderFile()', 'c': "$body = Yii::$app->view->renderFile(\n    '@app/mail/welcome.php',\n    ['user' => $user]\n);"},
+                {'n': 'layout', 'd': 'Шаблон контроллера. false отключает его совсем. Если null — берётся первый заданный по цепочке модулей вверх.', 'o': 'псевдоним, /абсолютный или относительный путь', 'c': "class PostController extends Controller\n{\n    public $layout = 'post';\n}\n\n// для одного действия\n$this->layout = false;"},
+                {'n': 'beginBlock() и endBlock()', 'd': 'Блок записывается в представлении, а выводится в шаблоне — так страница управляет частями общей разметки.', 'o': 'читается как $this->blocks[имя]', 'c': "// в представлении\n<?php $this->beginBlock('sidebar'); ?>\n    <h3>Похожие статьи</h3>\n<?php $this->endBlock(); ?>\n\n// в шаблоне\n<?= $this->blocks['sidebar'] ?? '' ?>"},
+                {'n': 'beginContent() и endContent()', 'd': 'Вложенные шаблоны: один шаблон оборачивается другим.', 'o': 'аргумент — путь к внешнему шаблону', 'c': "<?php $this->beginContent('@app/views/layouts/main.php'); ?>\n<div class=\"row\">\n    <div class=\"col-8\"><?= $content ?></div>\n</div>\n<?php $this->endContent(); ?>"},
+                {'n': 'title', 'd': 'Заголовок страницы. Ставится в представлении, выводится в шаблоне.', 'o': 'не экранируется сам — только через Html::encode', 'c': "$this->title = 'Вход';\n\n// в шаблоне\n<title><?= Html::encode($this->title) ?></title>"},
+                {'n': 'params', 'd': 'Общие данные между представлением и шаблоном. Классический пример — хлебные крошки.', 'o': 'обычный массив', 'c': "// в представлении\n$this->params['breadcrumbs'][] = 'О нас';\n\n// в шаблоне\nBreadcrumbs::widget([\n    'links' => $this->params['breadcrumbs'] ?? [],\n]);"},
+                {'n': 'context', 'd': 'Объект, который запустил рендер: контроллер или виджет. В Yii 1 им был сам $this.', 'o': 'может быть null при renderFile', 'c': "ID контроллера: <?= $this->context->id ?>"},
+                {'n': 'Служебные точки шаблона', 'd': 'Пять вызовов, без которых ресурсы не попадут на страницу.', 'o': 'beginPage, head, beginBody, endBody, endPage', 'c': "<?php $this->beginPage() ?>\n<head><?php $this->head() ?></head>\n<body>\n<?php $this->beginBody() ?>\n    <?= $content ?>\n<?php $this->endBody() ?>\n</body>\n<?php $this->endPage() ?>"},
+                {'n': 'События View', 'd': 'Точки вокруг рендера. В afterRender вывод можно подменить через $event->output.', 'o': 'beforeRender, afterRender, beginPage, endPage, beginBody, endBody', 'c': "Yii::$app->view->on(View::EVENT_END_BODY, function () {\n    echo '<!-- rendered ' . date('c') . ' -->';\n});"},
+                {'n': 'theme и pathMap', 'd': 'Тема подменяет файлы представлений по префиксу пути, не трогая код. Несколько значений дают наследование тем: берётся первый существующий файл.', 'o': 'basePath, baseUrl, pathMap', 'c': "'view' => [\n    'theme' => [\n        'basePath' => '@app/themes/basic',\n        'baseUrl' => '@web/themes/basic',\n        'pathMap' => [\n            '@app/views' => [\n                '@app/themes/christmas',\n                '@app/themes/basic',\n            ],\n        ],\n    ],\n],"},
+                {'n': 'renderers', 'd': 'Twig и Smarty подключаются по расширению файла. Файлы .php при этом продолжают работать.', 'o': 'расширения yii2-twig и yii2-smarty', 'c': "'view' => [\n    'renderers' => [\n        'twig' => [\n            'class' => yii\\twig\\ViewRenderer::class,\n            'cachePath' => '@runtime/Twig/cache',\n        ],\n    ],\n],"},
+            ]),
+            ('h', 'Регистрация ресурсов'),
+            ('ref', [
+                {'n': 'registerCss()', 'd': 'Кусок стилей прямо в страницу. Третий аргумент — ключ, он защищает от дублей.', 'o': 'попадает в head', 'c': "$this->registerCss('.badge { display: none }', [], 'hide-badge');"},
+                {'n': 'registerCssFile()', 'd': 'Отдельный файл стилей. Через depends можно задать порядок относительно пакетов.', 'o': "options: media, condition", 'c': "$this->registerCssFile('@web/css/print.css', ['media' => 'print']);"},
+                {'n': 'registerJs()', 'd': 'Код на странице. Позиция решает, куда он попадёт и когда выполнится.', 'o': 'POS_HEAD, POS_BEGIN, POS_END, POS_READY, POS_LOAD', 'c': "$this->registerJs(\n    \"$('#btn').on('click', function () { });\",\n    yii\\web\\View::POS_READY,\n    'btn-handler'\n);"},
+                {'n': 'registerJsFile()', 'd': 'Отдельный файл скрипта. depends важен: без него порядок относительно jQuery не гарантирован.', 'o': "options: position, depends, async, defer", 'c': "$this->registerJsFile('@web/js/main.js', [\n    'depends' => [yii\\web\\JqueryAsset::class],\n]);"},
+                {'n': 'registerMetaTag()', 'd': 'Мета-тег. Ключ вторым аргументом позволяет представлению перебить значение из шаблона.', 'o': 'без ключа теги накапливаются', 'c': "$this->registerMetaTag([\n    'name' => 'description',\n    'content' => 'Каталог механизмов Yii 2',\n], 'description');"},
+                {'n': 'registerLinkTag()', 'd': 'Тег link: RSS, канонический адрес, иконки.', 'o': 'аргументы — атрибуты тега', 'c': "$this->registerLinkTag([\n    'rel' => 'alternate',\n    'type' => 'application/rss+xml',\n    'href' => '/rss',\n]);"},
+                {'n': 'Html::csrfMetaTags()', 'd': 'Мета-теги с CSRF-токеном. Без них yii.js не сможет отправлять POST-запросы.', 'o': 'ставится в head шаблона', 'c': "<?= Html::csrfMetaTags() ?>"},
+            ]),
+            ('h', 'Пакеты ресурсов'),
+            ('ref', [
+                {'n': 'AssetBundle::register()', 'd': 'Основной способ подключать стили и скрипты. Пакет знает свои файлы и зависимости и сам расставляет теги в нужном порядке.', 'o': 'в шаблоне — $this, в виджете — $this->view', 'c': "use app\\assets\\AppAsset;\n\nAppAsset::register($this);"},
+                {'n': 'basePath и baseUrl', 'd': 'Файлы уже лежат в веб-корне, публиковать нечего. Так описывают ресурсы самого приложения.', 'o': 'обычно @webroot и @web', 'c': "public $basePath = '@webroot';\npublic $baseUrl = '@web';\npublic $css = ['css/site.css'];\npublic $js = ['js/app.js'];"},
+                {'n': 'sourcePath', 'd': 'Папка с исходниками вне веб-корня: расширения, пакеты из Bower и NPM. При регистрации содержимое публикуется в @webroot/assets.', 'o': 'вместо basePath и baseUrl', 'c': "public $sourcePath = '@npm/chart.js/dist';\npublic $js = ['chart.umd.js'];"},
+                {'n': 'js и css', 'd': 'Списки файлов. Порядок сохраняется. Полный URL означает внешний ресурс с CDN.', 'o': 'пути относительно basePath или sourcePath', 'c': "public $css = ['css/site.css'];\npublic $js = [\n    'js/app.js',\n    '//cdn.example.com/lib.min.js',\n];"},
+                {'n': 'depends', 'd': 'Пакеты, которые должны подключиться раньше. Зависимости транзитивны — перечислять всю цепочку не нужно.', 'o': 'главный способ управлять порядком', 'c': "public $depends = [\n    yii\\web\\YiiAsset::class,          // jQuery и yii.js\n    yii\\bootstrap5\\BootstrapAsset::class,\n];"},
+                {'n': 'jsOptions и cssOptions', 'd': 'Параметры для всех файлов пакета: позиция, медиа-запрос, условный комментарий.', 'o': 'уходят в registerJsFile и registerCssFile', 'c': "public $jsOptions = ['position' => yii\\web\\View::POS_HEAD];\npublic $cssOptions = ['media' => 'print'];"},
+                {'n': 'publishOptions', 'd': 'Что именно публиковать из sourcePath. Полезно, когда в пакете лежит лишнее.', 'o': 'only, except, forceCopy, beforeCopy', 'c': "public $publishOptions = [\n    'only' => ['css/*', 'fonts/*'],\n];"},
+                {'n': 'assetManager.bundles', 'd': 'Перенастроить чужой пакет, не трогая его класс: подменить файлы, увести на CDN или отключить целиком через false.', 'o': 'ключ — имя класса пакета', 'c': "'assetManager' => [\n    'bundles' => [\n        yii\\web\\JqueryAsset::class => [\n            'sourcePath' => null,\n            'js' => ['//code.jquery.com/jquery-3.7.1.min.js'],\n        ],\n        yii\\bootstrap5\\BootstrapPluginAsset::class => false,\n    ],\n],"},
+                {'n': 'assetMap', 'd': 'Заменить один файл сразу во всех пакетах, где он встречается.', 'o': 'ключ — имя файла', 'c': "'assetMap' => [\n    'jquery.js' => '//code.jquery.com/jquery-3.7.1.min.js',\n],"},
+                {'n': 'linkAssets и appendTimestamp', 'd': 'Публиковать симлинками вместо копирования и добавлять к адресам метку времени, чтобы браузер не держал старый файл.', 'o': 'linkAssets не годится там, где симлинки запрещены', 'c': "'assetManager' => [\n    'linkAssets' => true,\n    'appendTimestamp' => true,\n],"},
+                {'n': 'converter', 'd': 'В списках js и css можно перечислять .less, .scss, .ts — AssetConverter вызовет установленный компилятор.', 'o': 'команды настраиваются', 'c': "'assetManager' => [\n    'converter' => [\n        'commands' => [\n            'scss' => ['css', 'sass {from} {to}'],\n        ],\n    ],\n],"},
+                {'n': 'yii asset', 'd': 'Объединение и сжатие для боевого сервера: команда склеивает файлы и генерирует конфигурацию пакетов.', 'o': 'yii asset/template создаёт заготовку', 'c': "yii asset/template assets.php\nyii asset assets.php config/assets-prod.php"},
+            ]),
+        ]),
+        ('own', 'Приёмы', [
+            ('h', 'Свой пакет ресурсов'),
+            ('code', 'php', 'assets/AppAsset.php', r'''namespace app\assets;
+
+use yii\web\AssetBundle;
+
+class AppAsset extends AssetBundle
+{
+    public $basePath = '@webroot';
+    public $baseUrl = '@web';
+    public $css = ['css/site.css'];
+    public $js = ['js/app.js'];
+    public $depends = [
+        yii\web\YiiAsset::class,
+        yii\bootstrap5\BootstrapAsset::class,
+    ];
+}'''),
+            ('h', 'Свой шаблон для одного контроллера'),
+            ('code', 'php', None, r'''class PostController extends Controller
+{
+    public $layout = 'post';       // @app/views/layouts/post.php
+
+    public function actionPreview($id)
+    {
+        $this->layout = false;     // это действие — без шаблона вовсе
+        return $this->render('preview', ['model' => $this->findModel($id)]);
+    }
+}'''),
+            ('h', 'Боковая панель из страницы'),
+            ('code', 'php', 'views/post/view.php', r'''<?php $this->beginBlock('sidebar'); ?>
+    <h3>Похожие статьи</h3>
+    <?= ListView::widget(['dataProvider' => $related]) ?>
+<?php $this->endBlock(); ?>'''),
+            ('code', 'php', 'views/layouts/column2.php', r'''<?php $this->beginContent('@app/views/layouts/main.php'); ?>
+<div class="row">
+    <div class="col-8"><?= $content ?></div>
+    <div class="col-4">
+        <?= $this->blocks['sidebar'] ?? 'Боковая панель по умолчанию' ?>
+    </div>
+</div>
+<?php $this->endContent(); ?>'''),
+            ('h', 'Десяток статичных страниц одним действием'),
+            ('code', 'php', None, r'''public function actions()
+{
+    // site/page?view=about → views/site/pages/about.php
+    return ['page' => ['class' => yii\web\ViewAction::class]];
+}'''),
+            ('note', 'tip', 'Что делать в представлении, а что нет',
+             'Только разметка и простой вывод. Запросы к базе, обращения к `$_GET` и изменение моделей — не здесь. '
+             'Читать свойства модели можно, менять — нет. Крупные файлы дробите на `_item.php` и `_form.php`, '
+             'а форматирование выносите в хелперы и `formatter`.'),
+        ]),
+        ('traps', 'Грабли', [
+            ('note', 'trap', 'Вывод без Html::encode',
+             'Всё, что пришло от пользователя, экранируется: `<?= Html::encode($user->name) ?>`. '
+             'Для HTML, который человек прислал сам, — `HtmlPurifier::process()`, но он медленный, '
+             'результат стоит кэшировать.'),
+            ('note', 'trap', 'В Yii 1 $this был контроллером',
+             'В Yii 2 `$this` в представлении — это объект `View`. Контроллер доступен как `$this->context`. '
+             'Код, перенесённый из Yii 1 дословно, тихо обращается не к тому объекту.'),
+            ('note', 'trap', 'renderPartial там, где нужен renderAjax',
+             'Оба не применяют шаблон, но `renderPartial` не выводит зарегистрированные скрипты и стили. '
+             'Виджет, подгруженный им в модалку, окажется без своего JS и просто не заработает.'),
+            ('note', 'trap', '@webroot/assets как sourcePath',
+             'Эта папка принадлежит менеджеру ресурсов и может быть очищена целиком. '
+             'Исходники держите отдельно.'),
+            ('note', 'warn', 'Правка свойств пакета после register()',
+             'Изменения в `init()` или после регистрации перекроют настройки из `assetManager->bundles` '
+               'и сломают объединение ресурсов. Настраивайте пакет снаружи, через конфигурацию.'),
+            ('note', 'warn', 'Скрипт без depends',
+             '`registerJsFile()` без `depends` не гарантирует, что jQuery уже подключён — файл может уехать выше него. '
+             'Порядок задаётся зависимостями, а не порядком вызовов.'),
         ]),
     ],
 )
@@ -2337,10 +2742,10 @@ public function safeDown()
 
 # порядок узлов задаётся явно — по ходу запроса; номера считаются из него
 ORDER = [
-    'http', 'routing', 'filters',
+    'http', 'routing', 'filters', 'user',
     'model', 'rules', 'scenarios',
     'ar', 'query', 'migrations',
-    'widgets', 'state',
+    'views', 'widgets', 'state',
     'components', 'di', 'behaviors', 'events', 'helpers',
 ]
 
