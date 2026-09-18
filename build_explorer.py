@@ -275,7 +275,8 @@ def build_map():
     p = []
     p.append('<svg viewBox="0 0 1060 592" role="img" class="mp" '
              'aria-label="Устройство Yii 2: сверху путь запроса от браузера через приложение, маршрут, '
-             'контроллер и фильтры к действию и ответу; ниже три семейства механизмов, которые действие '
+             'контроллер и фильтры к действию, откуда ответ возвращается в браузер; ниже три семейства '
+             'механизмов, которые действие '
              'дёргает; внизу фундамент, на котором стоит всё остальное">')
     p.append('<defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" '
              'orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs>')
@@ -287,14 +288,13 @@ def build_map():
 
     # путь запроса: порядок ровно такой, в каком его проходит запрос
     path = [
-        (19, 86, 'браузер', None, None, 'mp-io'),
-        (139, 88, 'запрос', 'http', C['http'], ''),
-        (261, 116, 'приложение', 'app', C['http'], ''),
-        (411, 96, 'маршрут', 'routing', C['http'], ''),
-        (541, 116, 'контроллер', 'controllers', C['http'], ''),
-        (691, 96, 'фильтры', 'filters', C['http'], ''),
-        (821, 100, 'действие', None, None, ''),
-        (955, 86, 'ответ', 'http', C['http'], ''),
+        (28, 92, 'браузер', None, None, 'mp-io'),
+        (162, 96, 'запрос', 'http', C['http'], ''),
+        (300, 124, 'приложение', 'app', C['http'], ''),
+        (466, 104, 'маршрут', 'routing', C['http'], ''),
+        (612, 124, 'контроллер', 'controllers', C['http'], ''),
+        (778, 104, 'фильтры', 'filters', C['http'], ''),
+        (924, 108, 'действие', None, None, ''),
     ]
     for x, w, label, tid, color, cls in path:
         p.append(node(x, 34, w, 52, label, None, tid, color, cls, tip(tid) if tid else None))
@@ -303,12 +303,14 @@ def build_map():
     for a, b in zip(path, path[1:]):
         gap_from = a[0] + a[1] + 5
         p.append('<path d="M%d 60h%d"/>' % (gap_from, b[0] - 7 - gap_from))
-    # ответ возвращается туда же, откуда пришёл запрос — петля вместо второго «браузера»
-    p.append('<path d="M998 34V12H62v18"/>')
+    # ответ — это сама петля возврата: отдельным блоком он был бы вторым входом в ту же панель
+    p.append('<path d="M1032 60H1044V22H74v8"/>')
     # доступ не отдельная стадия: его спрашивают фильтры
-    p.append('<path d="M739 86v14"/>')
+    p.append('<path d="M830 86v14"/>')
     p.append('</g>')
-    p.append(node(683, 104, 112, 46, 'доступ', None, 'user', C['http'], '', tip('user')))
+    p.append('<text class="mp-label" style="fill: %s" x="553" y="15" text-anchor="middle">ответ</text>'
+             % C['http'])
+    p.append(node(774, 104, 112, 46, 'доступ', None, 'user', C['http'], '', tip('user')))
 
     # механизмы: колонка на семейство
     columns = [
@@ -324,8 +326,8 @@ def build_map():
 
     # шина: действие тянется к каждому семейству
     p.append('<g class="mp-flow">')
-    p.append('<path d="M871 86v78"/>')
-    p.append('<path d="M%g 164h%g"/>' % (centers[0], centers[-1] - centers[0]))
+    p.append('<path d="M978 86v78"/>')
+    p.append('<path d="M%g 164H978"/>' % centers[0])
     p.append('</g>')
     p.append('<g class="mp-flow" marker-end="url(#mp-a)">')
     for c in centers:
