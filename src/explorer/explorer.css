@@ -442,7 +442,10 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 .dg-wrap > svg { min-width: 560px; }
 .dg .dg-box rect { fill: var(--surface); stroke: var(--line-2); stroke-width: 1.2; }
 .dg .dg-box text { fill: var(--ink); font-family: var(--font-body); font-size: 13px; font-weight: 600; text-anchor: middle; }
-.dg .dg-sub { fill: var(--muted); font-size: 11px; font-weight: 400; }
+/* вес селектора должен перебивать .dg .dg-box text, иначе подпись рисуется заголовком */
+.dg .dg-sub, .dg .dg-box .dg-sub, .dg .dg-chip .dg-sub {
+  fill: var(--muted); font-size: 11px; font-weight: 400;
+}
 .dg .dg-note { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
 .dg .dg-live rect { stroke: var(--signal); stroke-width: 1.8; fill: var(--signal-bg); }
 .dg .dg-ok rect { stroke: var(--ok); fill: var(--ok-bg); }

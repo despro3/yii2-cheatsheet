@@ -336,16 +336,19 @@ def build_map():
                             (768, 'вывод и состояние', C['view'])]:
         p.append('<text class="mp-label" style="fill: %s" x="%d" y="218">%s</text>' % (color, x, label))
 
+    # фундамент: узлы, разложенные по плите равными долями
+    base = [('components', 'компоненты'), ('di', 'DI-контейнер'), ('behaviors', 'поведения'),
+            ('events', 'события'), ('helpers', 'хелперы')]
+    bw, step, bx = 176, 194, 60
+
     # связи фундамента с механизмами
     p.append('<g class="mp-tie">')
-    for x in (150, 360, 570, 780):
-        p.append('<path d="M%d 268v-36"/>' % x)
+    for i in range(len(base)):
+        p.append('<path d="M%d 268v-36"/>' % (bx + i * step + bw / 2))
     p.append('</g>')
 
-    # фундамент: узлы
-    for x, tid, name in [(60, 'components', 'компоненты'), (304, 'behaviors', 'поведения'),
-                         (548, 'events', 'события'), (792, 'helpers', 'хелперы')]:
-        p.append(node(x, 312, 220, 52, n[tid], name, tid, C['object']))
+    for i, (tid, name) in enumerate(base):
+        p.append(node(bx + i * step, 312, bw, 52, n[tid], name, tid, C['object']))
 
     p.append('</svg>')
     return ''.join(p)

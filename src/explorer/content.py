@@ -624,6 +624,168 @@ class Application extends \yii\web\Application
 )
 
 
+
+# --------------------------------------------------------------------------- DI-контейнер
+
+topic(
+    id='di', group='object',
+    title='DI-контейнер',
+    cls='yii\\di\\Container',
+    lead='Кто на самом деле собирает объекты фреймворка: читает типы конструктора, подставляет зависимости и применяет ваши умолчания.',
+    badge='16 приёмов',
+    tabs=[
+        ('how', 'Как устроено', [
+            ('p', 'В Yii два разных механизма, и их легко перепутать. **Service Locator** (`Yii::$app`, любой модуль) '
+                  'хранит именованные компоненты и отдаёт их по ID. **DI-контейнер** (`Yii::$container`) умеет создавать '
+                  'объекты, сам подставляя зависимости по типам параметров конструктора. Локатор построен поверх '
+                  'контейнера: когда `Yii::$app->db` создаётся впервые, объект собирает именно контейнер.'),
+            ('svg', '''<svg viewBox="0 0 700 334" role="img" aria-label="К контейнеру ведут два пути: обращение к компоненту по имени через Service Locator и вызов Yii::createObject из ядра; контейнер читает типы конструктора и создаёт объект со всеми зависимостями" class="dg">
+<defs><marker id="m-di" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
+<g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#m-di)" opacity=".55">
+<path d="M175 66v20"/><path d="M175 154v28"/><path d="M525 66v114"/><path d="M350 260v20"/>
+</g>
+<g class="dg-box"><rect x="14" y="14" width="322" height="52" rx="8"/><text x="175" y="36">Yii::$app-&gt;db</text><text x="175" y="53" class="dg-sub">обращение к компоненту по имени</text></g>
+<g class="dg-box"><rect x="364" y="14" width="322" height="52" rx="8"/><text x="525" y="36">Yii::createObject()</text><text x="525" y="53" class="dg-sub">ядро: виджеты, правила, поведения</text></g>
+<g class="dg-box"><rect x="14" y="90" width="322" height="64" rx="8"/><text x="175" y="112">Service Locator</text><text x="175" y="129" class="dg-sub">ключ components в конфигурации</text><text x="175" y="145" class="dg-sub">создан — отдаёт тот же экземпляр</text></g>
+<g class="dg-box dg-live"><rect x="140" y="186" width="420" height="74" rx="8"/><text x="350" y="208">Yii::$container</text><text x="350" y="226" class="dg-sub">читает типы параметров конструктора</text><text x="350" y="243" class="dg-sub">и применяет умолчания из container.definitions</text></g>
+<g class="dg-box dg-muted"><rect x="250" y="284" width="200" height="34" rx="8"/><text x="350" y="306">new Connection(…)</text></g>
+</svg>''', 'Почти всё ядро создаётся через Yii::createObject(), а он идёт в контейнер. Поэтому умолчание, заданное там один раз, действует на весь проект.'),
+            ('h', 'Зависимость по типу конструктора'),
+            ('code', 'php', None, r'''class UserFinder extends BaseObject
+{
+    public $db;
+
+    public function __construct(Connection $db, $config = [])
+    {
+        $this->db = $db;
+        parent::__construct($config);
+    }
+}
+
+$finder = Yii::$container->get(UserFinder::class);
+// контейнер увидел тип Connection и подставил его сам:
+// == new UserFinder(Yii::$container->get(Connection::class))'''),
+            ('p', 'Разрешение рекурсивное: если `Connection` тоже требует что-то в конструкторе, контейнер соберёт и это. '
+                  'Цепочка любой длины строится без единого `new`.'),
+            ('h', 'Интерфейс вместо класса'),
+            ('code', 'php', 'config/web.php', r''''container' => [
+    'definitions' => [
+        app\components\BookingInterface::class => app\components\BookingService::class,
+    ],
+],'''),
+            ('code', 'php', 'controllers/HotelController.php', r'''class HotelController extends Controller
+{
+    protected $booking;
+
+    public function __construct($id, $module, BookingInterface $booking, $config = [])
+    {
+        $this->booking = $booking;
+        parent::__construct($id, $module, $config);
+    }
+}'''),
+            ('p', 'Класс просит интерфейс и ничего не знает о реализации. В тестах на то же место подставляется заглушка — '
+                  'ради этого всё и затевалось.'),
+            ('note', 'tip', 'Регистрируйте как можно раньше',
+             'Приложение — в конфигурации, ключ `container`. Расширение — в своём bootstrap-классе. '
+             'Регистрация после того, как объект уже создан, ни на что не повлияет.'),
+        ]),
+        ('all', 'Регистрация и разрешение', [
+            ('h', 'Регистрация'),
+            ('ref', [
+                {'n': 'set($class)', 'd': 'Класс как есть. Регистрировать не обязательно: контейнер создаст любой класс и без этого.', 'o': 'нужно, только если хочется явности', 'c': "Yii::$container->set(yii\\db\\Connection::class);"},
+                {'n': 'set($interface, $class)', 'd': 'Интерфейс → реализация. Главный приём: классы просят интерфейс, подстановкой занимается контейнер.', 'o': 'вместо класса можно указать псевдоним', 'c': "Yii::$container->set(\n    yii\\mail\\MailerInterface::class,\n    yii\\symfonymailer\\Mailer::class\n);"},
+                {'n': 'set($alias, $class)', 'd': 'Псевдоним: короткое имя для класса.', 'o': 'get() принимает и то и другое', 'c': "Yii::$container->set('foo', yii\\db\\Connection::class);\n\n$db = Yii::$container->get('foo');"},
+                {'n': 'set($class, $config)', 'd': 'Умолчания для класса: значения свойств, которые применятся при каждом создании.', 'o': 'явный аргумент при вызове сильнее умолчания', 'c': "Yii::$container->set(yii\\widgets\\LinkPager::class, [\n    'maxButtonCount' => 5,\n]);\n\necho LinkPager::widget();                         // 5 кнопок\necho LinkPager::widget(['maxButtonCount' => 20]);  // 20"},
+                {'n': "set($name, ['class' => ...])", 'd': 'Псевдоним вместе с конфигурацией: имя, класс и свойства одной записью.', 'o': 'ключ class обязателен', 'c': "Yii::$container->set('db', [\n    'class' => yii\\db\\Connection::class,\n    'dsn' => 'mysql:host=localhost;dbname=app',\n]);"},
+                {'n': 'set($name, $object)', 'd': 'Готовый экземпляр. Контейнер будет отдавать именно его, ничего не создавая.', 'o': 'по сути ручной синглтон', 'c': "Yii::$container->set('pageCache', new FileCache());"},
+                {'n': 'set($name, $closure)', 'd': 'Фабрика: полный контроль над созданием. Замыкание получает контейнер, параметры и конфигурацию.', 'o': 'function ($container, $params, $config)', 'c': "Yii::$container->set('search', function ($container, $params, $config) {\n    $solr = new SolrService('127.0.0.1');\n    // ...сложная инициализация...\n    return $solr;\n});"},
+                {'n': 'setSingleton()', 'd': 'То же, что set(), но объект создаётся один раз на всё приложение. У set() каждый get() даёт новый объект.', 'o': 'принимает те же формы определения', 'c': "Yii::$container->setSingleton(yii\\db\\Connection::class, [\n    'dsn' => 'mysql:host=localhost;dbname=app',\n]);"},
+                {'n': 'setDefinitions() и setSingletons()', 'd': 'Массовая регистрация. Значение — определение либо пара «определение, параметры конструктора».', 'o': 'то же доступно в конфигурации: container.definitions и container.singletons', 'c': "Yii::$container->setDefinitions([\n    yii\\web\\Response::class => [\n        'class' => app\\components\\Response::class,\n        'format' => 'json',\n    ],\n    app\\storage\\DocumentsReader::class => [\n        ['class' => app\\storage\\DocumentsReader::class],\n        [Instance::of('tempFileStorage')],   // параметры конструктора\n    ],\n]);"},
+            ]),
+            ('h', 'Разрешение'),
+            ('ref', [
+                {'n': 'get($name, $params, $config)', 'd': 'Создать объект: $params — позиционные аргументы конструктора, $config — значения свойств.', 'o': 'вернёт тот же экземпляр, если имя зарегистрировано через setSingleton()', 'c': "$engine = Yii::$container->get(SearchEngine::class,\n    [$apiKey, $apiSecret],   // аргументы конструктора\n    ['type' => 1]            // свойства\n);\n// == new SearchEngine($apiKey, $apiSecret, ['type' => 1])"},
+                {'n': 'Внедрение через конструктор', 'd': 'Основной способ: контейнер смотрит типы параметров и создаёт их сам. Регистрировать ничего не нужно, пока это конкретные классы.', 'o': 'интерфейс без регистрации создать нельзя', 'c': "public function __construct(Connection $db, CacheInterface $cache)\n{\n    // оба аргумента придут из контейнера\n}"},
+                {'n': 'Внедрение через свойства', 'd': 'Когда трогать конструктор нельзя: зависимости передаются третьим аргументом get() как обычная конфигурация.', 'o': 'работает через сеттеры и публичные поля', 'c': "Yii::$container->get(Foo::class, [], [\n    'bar' => Yii::$container->get(Bar::class),\n]);"},
+                {'n': 'invoke($callable, $params)', 'd': 'Внедрение в отдельный метод: то, что не нашлось в $params, контейнер добирает по типам параметров.', 'o': 'так же вызываются действия контроллеров', 'c': "Yii::$container->invoke([$report, 'build'], ['period' => 'month']);\n// параметр Connection $db придёт из контейнера"},
+                {'n': 'Instance::of($id)', 'd': 'Ленивая ссылка на другую зависимость по имени. Нужна там, где объект передать нельзя — в описании параметров конструктора.', 'o': 'yii\\di\\Instance', 'c': "use yii\\di\\Instance;\n\nYii::$container->setSingletons([\n    'tempFileStorage' => [\n        ['class' => app\\storage\\FileStorage::class],\n        ['/var/tempfiles'],\n    ],\n    'reader' => [\n        ['class' => app\\storage\\DocumentsReader::class],\n        [Instance::of('tempFileStorage')],\n    ],\n]);"},
+                {'n': 'Instance::ensure($ref, $type)', 'd': 'Принять и ID компонента, и конфигурацию, и готовый объект — вернуть объект нужного класса. Так написаны почти все свойства-зависимости в ядре.', 'o': 'бросает исключение, если тип не совпал', 'c': "public $db = 'db';\n\npublic function init()\n{\n    parent::init();\n    // 'db' | ['class' => ...] | объект — на выходе Connection\n    $this->db = Instance::ensure($this->db, Connection::class);\n}"},
+                {'n': 'Yii::createObject()', 'd': 'Вход в контейнер из ядра. Через него создаются виджеты, валидаторы, поведения, компоненты — поэтому умолчания контейнера действуют на них всех.', 'o': 'принимает строку, массив с ключом class или замыкание', 'c': "$engine = Yii::createObject([\n    'class' => SearchEngine::class,\n    'apiKey' => 'xxxx',\n]);\n\n$db = Yii::createObject(Connection::class, [$dsn]);"},
+            ]),
+        ]),
+        ('own', 'Приёмы', [
+            ('h', 'Подменить класс ядра на свой'),
+            ('code', 'php', 'config/web.php', r''''container' => [
+    'definitions' => [
+        yii\web\Request::class => app\components\Request::class,
+        yii\web\Response::class => [
+            'class' => app\components\Response::class,
+            'format' => yii\web\Response::FORMAT_JSON,
+        ],
+    ],
+],'''),
+            ('h', 'Одно умолчание на весь проект'),
+            ('p', 'Полезно, когда одна и та же настройка повторяется в десятках представлений.'),
+            ('code', 'php', 'config/web.php', r''''container' => [
+    'definitions' => [
+        yii\widgets\LinkPager::class => ['maxButtonCount' => 5],
+        yii\grid\GridView::class => [
+            'tableOptions' => ['class' => 'table table-sm'],
+        ],
+    ],
+],'''),
+            ('h', 'Свой сервис за интерфейсом'),
+            ('code', 'php', 'components/BookingInterface.php', r'''namespace app\components;
+
+interface BookingInterface
+{
+    public function book($hotelId, $from, $to);
+}'''),
+            ('code', 'php', 'config/web.php', r''''container' => [
+    'singletons' => [
+        app\components\BookingInterface::class => app\components\BookingService::class,
+    ],
+],'''),
+            ('code', 'php', 'controllers/HotelController.php', r'''class HotelController extends Controller
+{
+    protected $booking;
+
+    public function __construct($id, $module, BookingInterface $booking, $config = [])
+    {
+        $this->booking = $booking;
+        parent::__construct($id, $module, $config);
+    }
+
+    public function actionBook($hotelId)
+    {
+        $this->booking->book($hotelId, '2025-06-01', '2025-06-07');
+    }
+}'''),
+            ('note', 'tip', 'Ради чего это всё',
+             'В тесте достаточно одной строки — и контроллер работает с заглушкой, не трогая внешний сервис: '
+             '`Yii::$container->set(BookingInterface::class, BookingStub::class)`.'),
+        ]),
+        ('traps', 'Грабли', [
+            ('note', 'trap', 'new в обход контейнера',
+             'Прямой `new SomeWidget()` не применит ни умолчания из `container.definitions`, ни разрешение зависимостей. '
+             'Если класс должен подчиняться настройкам проекта — создавайте его через `Yii::createObject()`.'),
+            ('note', 'trap', 'Интерфейс в конструкторе без регистрации',
+             'Контейнер не может угадать реализацию — будет ошибка создания объекта. '
+             'Нужен `set(Interface::class, Impl::class)`, и обязательно до первого обращения.'),
+            ('note', 'trap', 'setSingleton() для объекта с состоянием',
+             'Синглтон живёт весь запрос и достаётся всем. Если объект накапливает состояние, оно протечёт между не связанными местами кода. '
+             'Синглтон уместен для дорогих и неизменяемых вещей — соединений, обёрток над хранилищем.'),
+            ('note', 'warn', 'Зависимость от контейнера вместо зависимости от типа',
+             'Вызов `Yii::$container->get(...)` внутри класса возвращает нас к тому, от чего уходили: '
+             'класс снова сам знает, где брать зависимость, и его снова нельзя подменить в тесте. Просите тип в конструкторе.'),
+            ('note', 'warn', 'Yii::$app и Yii::$container — разные вещи',
+             '`Yii::$app->db` — компонент по имени из локатора. `Yii::$container->get(Connection::class)` — объект из контейнера, '
+             'и это не тот же самый экземпляр. Настройки в `components` не влияют на `container`, и наоборот.'),
+        ]),
+    ],
+)
+
+
 # --------------------------------------------------------------------------- Поведения
 
 topic(
@@ -2179,7 +2341,7 @@ ORDER = [
     'model', 'rules', 'scenarios',
     'ar', 'query', 'migrations',
     'widgets', 'state',
-    'components', 'behaviors', 'events', 'helpers',
+    'components', 'di', 'behaviors', 'events', 'helpers',
 ]
 
 _known = {t['id'] for t in TOPICS}
