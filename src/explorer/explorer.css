@@ -254,12 +254,11 @@ code, kbd, pre { font-family: var(--font-mono); }
 .mp-slab { fill: var(--surface-2); stroke: var(--line); }
 .mp-node rect { fill: var(--surface); stroke: var(--line-2); stroke-width: 1.2; }
 .mp-node text { fill: var(--ink); font-family: var(--font-body); font-size: 13px; font-weight: 600; text-anchor: middle; }
-.mp-node .mp-num { fill: var(--signal); font-family: var(--font-mono); font-size: 10.5px; font-weight: 500; }
-.mp-node .mp-sub { fill: var(--muted); font-size: 11px; font-weight: 400; }
+.mp-node .mp-tag { fill: var(--gc, var(--signal)); stroke: none; }
 .mp-hit { cursor: pointer; }
-.mp-hit:hover rect { stroke: var(--signal); stroke-width: 2; }
-.mp-hit:hover text { fill: var(--signal); }
-.mp-hit:hover .mp-sub { fill: var(--signal); }
+.mp-hit:hover rect { stroke: var(--gc, var(--signal)); stroke-width: 2; }
+.mp-hit:hover .mp-tag { stroke: none; }
+.mp-hit:hover text { fill: var(--gc, var(--signal)); }
 .mp-flow { stroke: var(--line-2); stroke-width: 1.6; fill: none; }
 .mp-head { fill: var(--line-2); }
 .mp-tie { stroke: var(--faint); stroke-width: 1.2; stroke-dasharray: 3 4; fill: none; }
