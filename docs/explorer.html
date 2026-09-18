@@ -701,6 +701,16 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 .check input { width: 16px; height: 16px; accent-color: var(--signal); cursor: pointer; margin: 0; flex: 0 0 auto; }
 .check:hover { color: var(--ink-2); }
 
+/* ссылка назад на основной сайт */
+.back-link {
+  font-size: 13.5px; color: var(--muted); text-decoration: none;
+  padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface); white-space: nowrap;
+  transition: color .15s, border-color .15s;
+}
+.back-link:hover { color: var(--signal); border-color: var(--signal); }
+@media (max-width: 480px) { .back-link { display: none; } }
+
 </style>
 </head>
 <body>
@@ -708,6 +718,7 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
   <div class="top-in">
     <span class="mark"><b>Yii</b>Разборный Yii 2</span>
     <span class="top-spacer"></span>
+    <a class="back-link" href="index.html">к шпаргалке</a>
     <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему">
       <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
       <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>

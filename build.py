@@ -22,6 +22,7 @@ import os
 import re
 import hashlib
 import shutil
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -1145,6 +1146,11 @@ def main():
           'window.PAGE_LIST=' + json.dumps([{'id': p['id'], 't': p['meta']['title'], 'g': p['part']['id']} for p in ordered],
                                              ensure_ascii=False, separators=(',', ':')) + ';\n')
     write(os.path.join(OUT, '404.html'), fill(template('404.html'), {'site': esc(SITE_NAME)}))
+    explorer = os.path.join(ROOT, 'build_explorer.py')
+    if os.path.exists(explorer):
+        # docs/ очищается выше, поэтому каталог механизмов пересобираем следом
+        subprocess.run([sys.executable, explorer], check=True)
+
     print('Готово: %s' % OUT)
     return 0
 
