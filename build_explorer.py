@@ -264,6 +264,10 @@ def node(x, y, w, h, label, sub, topic=None, color=None, cls='', tip=None):
     return out
 
 
+# петля ответа: подпись стоит на линии, поэтому линия разорвана вокруг неё
+RET_X, RET_GAP = 553, 28
+
+
 def build_map():
     C = GROUP_COLOR
     by_id = {t['id']: t for t in data.TOPICS}
@@ -303,13 +307,16 @@ def build_map():
     for a, b in zip(path, path[1:]):
         gap_from = a[0] + a[1] + 5
         p.append('<path d="M%d 60h%d"/>' % (gap_from, b[0] - 7 - gap_from))
-    # ответ — это сама петля возврата: отдельным блоком он был бы вторым входом в ту же панель
-    p.append('<path d="M1032 60H1044V22H74v8"/>')
+    # ответ — это сама петля возврата: отдельным блоком он был бы вторым входом в ту же панель.
+    # спуск к «браузеру» длиннее наконечника, иначе тот начинается раньше поворота и висит без хвоста
+    p.append('<path d="M%g 14H74v18"/>' % (RET_X - RET_GAP,))
     # доступ не отдельная стадия: его спрашивают фильтры
     p.append('<path d="M830 86v14"/>')
     p.append('</g>')
-    p.append('<text class="mp-label" style="fill: %s" x="553" y="15" text-anchor="middle">ответ</text>'
-             % C['http'])
+    # длинная часть петли идёт без наконечника и разорвана под подписью
+    p.append('<g class="mp-flow"><path d="M1032 60H1044V14H%g"/></g>' % (RET_X + RET_GAP,))
+    p.append('<text class="mp-label" style="fill: %s" x="%g" y="18" text-anchor="middle">ответ</text>'
+             % (C['http'], RET_X))
     p.append(node(774, 104, 112, 46, 'доступ', None, 'user', C['http'], '', tip('user')))
 
     # механизмы: колонка на семейство

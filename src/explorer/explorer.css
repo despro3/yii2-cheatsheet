@@ -159,7 +159,7 @@ code, kbd, pre { font-family: var(--font-mono); }
 }
 .top-in {
   max-width: 1240px; margin: 0 auto;
-  padding: 12px 20px;
+  padding: 9px 20px;
   display: flex; align-items: center; gap: 14px;
 }
 .mark {
@@ -199,16 +199,16 @@ code, kbd, pre { font-family: var(--font-mono); }
 
 /* --------------------------------------------------------------- схема */
 
-.map { margin-block: 18px 8px; }
+.map { margin-block: 10px 4px; }
 .map figure { margin: 0; }
 .map svg { display: block; width: 100%; height: auto; }
 .map figcaption {
-  margin-top: 10px; font-size: 13px; color: var(--muted); max-width: 96ch;
+  margin-top: 8px; font-size: 13px; color: var(--muted); max-width: 96ch;
 }
 .map-frame {
   border: 1px solid var(--line); border-radius: var(--r);
   background: var(--surface);
-  padding: 14px 16px 12px;
+  padding: 10px 16px 8px;
   overflow-x: auto;
   box-shadow: var(--shadow);
 }
