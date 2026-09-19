@@ -344,6 +344,12 @@ body.home .main { max-width: 1080px; padding-inline: 48px; }
 .doc-body blockquote p:last-child { margin-bottom: 0; }
 .doc-body img { border-radius: var(--radius-sm); }
 code, pre { font-family: var(--mono); }
+
+/* JetBrains Mono склеивает => -> === в один знак: `===` выглядит как ≡, а это другой оператор */
+code, pre, kbd, .kv-key, .code-title, .dg-sub, .nav-num, .doc-num {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
 :not(pre) > code {
   font-size: .86em; padding: .12em .4em; border-radius: 6px;
   background: var(--code-bg); color: var(--fg); border: 1px solid var(--code-line);

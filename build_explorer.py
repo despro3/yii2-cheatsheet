@@ -36,6 +36,9 @@ GROUP_COLOR = {
     'object': 'var(--g-object)',
 }
 
+ICON_TICK = ('<svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" '
+             'fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" '
+             'stroke-linejoin="round"/></svg>')
 ICON_SEARCH = ('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" '
                'stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" '
                'stroke-width="2" stroke-linecap="round"/></svg>')
@@ -281,6 +284,11 @@ def node(x, y, w, h, label, sub, topic=None, color=None, cls='', tip=None):
     cx = x + w / 2.0
     out = '<g class="%s"%s>' % (klass, attrs)
     out += '<rect x="%g" y="%g" width="%g" height="%g" rx="8"/>' % (x, y, w, h)
+    if topic:
+        # отметка «изучено»: показывается стилями, когда на группе есть класс is-done
+        tx, ty = x + w - 13, y + 12
+        out += ('<path class="mp-tick" d="M%g %gL%g %gL%g %g"/>'
+                % (tx - 3.4, ty, tx - 1, ty + 2.6, tx + 3.6, ty - 2.8))
     if sub:
         out += '<text x="%g" y="%g">%s</text>' % (cx, y + h * 0.40, esc(label))
         out += '<text x="%g" y="%g" class="mp-sub">%s</text>' % (cx, y + h * 0.72, esc(sub))
@@ -389,8 +397,8 @@ def build_index():
     out = []
     for gid, gtitle, _ in data.GROUPS:
         items = ''.join(
-            '<li><button type="button" data-open="%s"><b>%s</b><span>%s</span></button></li>'
-            % (attr(t['id']), esc(t['title']), esc(t['badge']))
+            '<li><button type="button" data-open="%s">%s<b>%s</b><span>%s</span></button></li>'
+            % (attr(t['id']), ICON_TICK, esc(t['title']), esc(t['badge']))
             for t in data.TOPICS if t['group'] == gid)
         out.append('<section class="ix-group" style="--gc: %s"><h2>%s</h2><ul>%s</ul></section>'
                    % (GROUP_COLOR[gid], esc(gtitle), items))
@@ -426,6 +434,13 @@ def build_page():
 
     refs = sum(len(b[1]) for t in data.TOPICS for _, _, bl in t['tabs'] for b in bl if b[0] == 'ref')
 
+    # быстрый режим открывает вкладку со списком встроенного; проверяем, что она у всех одна и та же
+    quick_tabs = {t['tabs'][1][0] for t in data.TOPICS if len(t['tabs']) > 1}
+    assert len(quick_tabs) == 1, 'вторая вкладка называется по-разному: %s' % sorted(quick_tabs)
+    quick_tab = quick_tabs.pop()
+    assert all(any(b[0] == 'ref' for b in t['tabs'][1][2]) for t in data.TOPICS), \
+        'на второй вкладке не у всех узлов есть список'
+
     head = '''<title>%s</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -439,6 +454,10 @@ def build_page():
     <span class="mark"><b>Yii</b><span class="mark-text">Справочник Yii 2</span></span>
     <span class="top-count">%d узлов · %d возможностей</span>
     <span class="top-spacer"></span>
+    <span class="learned" id="learned" hidden>изучено <b id="learned-n">0</b> из %d<button
+      type="button" id="learned-reset">сбросить</button></span>
+    <button type="button" class="pill-btn" id="quick-btn" aria-pressed="false" data-tab="%s"
+      title="Открывать узел сразу на списке встроенного">сразу к списку</button>
     <a class="back-link" href="index.html">на главную</a>
     <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему">
       <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -467,6 +486,7 @@ def build_page():
   <div class="panel-bar">
     <span class="pb-title" id="pb-title"></span>
     <span class="sp"></span>
+    <label class="learn-box"><input type="checkbox" id="learn-check"> изучено</label>
     <kbd>Esc</kbd>
     <button type="button" class="icon-btn" id="panel-close" aria-label="Закрыть">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -481,7 +501,8 @@ def build_page():
 
 <script>
 %s
-</script>''' % (len(data.TOPICS), refs, build_map(), build_index(), build_topics(), js)
+</script>''' % (len(data.TOPICS), refs, len(data.TOPICS), quick_tab,
+                build_map(), build_index(), build_topics(), js)
 
     return head, body
 

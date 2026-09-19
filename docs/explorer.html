@@ -162,6 +162,13 @@ a:hover { color: var(--signal-2); }
 
 code, kbd, pre { font-family: var(--font-mono); }
 
+/* JetBrains Mono склеивает => -> === в один знак: `===` выглядит как ≡, а это другой оператор */
+code, kbd, pre, .ref-n, .rp-name, .kv-k, .out, .tip .tip-cls,
+.lc-step .lc-n, .dg .dg-note, .chip, .field input[type="text"], .field select {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
 /* ---------------------------------------------------------------- шапка */
 
 .top {
@@ -251,6 +258,13 @@ code, kbd, pre { font-family: var(--font-mono); }
 .mp-head { fill: var(--line-2); }
 .mp-label { fill: var(--muted); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
 .mp-io rect { fill: var(--surface-2); stroke-dasharray: 4 3; }
+.mp-tick {
+  fill: none; stroke: var(--ok); stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+  opacity: 0; transition: opacity .15s;
+}
+.mp-node.is-done .mp-tick { opacity: 1; }
+.mp-node.is-done rect { fill: color-mix(in srgb, var(--ok) 8%, var(--surface)); }
 
 /* --------------------------------------------------------------- панель */
 
@@ -265,7 +279,7 @@ body.panel-open .scrim { opacity: 1; }
 .panel {
   position: fixed; z-index: 45;
   inset: max(24px, env(safe-area-inset-top, 0px)) 0 0;
-  max-width: 1080px; margin: 0 auto;
+  max-width: 1240px; margin: 0 auto;
   display: flex; flex-direction: column;
   background: var(--bg);
   border: 1px solid var(--line); border-bottom: 0;
@@ -334,7 +348,7 @@ body.panel-open .panel { transform: none; opacity: 1; }
 .tab:hover { color: var(--ink); }
 .tab[aria-selected="true"] { color: var(--pc, var(--signal)); border-bottom-color: var(--pc, var(--signal)); }
 
-.tab-panel { padding: 22px 22px 0; max-width: 980px; }
+.tab-panel { padding: 22px 22px 0; max-width: 1200px; }
 @media (max-width: 760px) {
   .panel-hero { padding: 20px 16px 14px; }
   .tabs { padding-inline: 16px; }
@@ -461,7 +475,7 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 
 .ref-work {
   display: grid; gap: 16px;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, min(620px, 54%));
   align-items: start;
 }
 .ref { display: grid; gap: 2px; align-content: start; min-width: 0; }
@@ -503,16 +517,22 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 .rp-desc { margin: 0; min-height: 2.9em; font-size: 14px; color: var(--ink-2); line-height: 1.45; overflow-wrap: anywhere; }
 .rp-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; }
 .rp-body > * { min-width: 0; }
+.rp-body .code { position: relative; }
+.rp-body .code::after {
+  content: ""; position: absolute; top: 1px; right: 1px; bottom: 1px; width: 34px;
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: linear-gradient(90deg, transparent, var(--code-bg));
+  opacity: 0; transition: opacity .15s; pointer-events: none;
+}
+.rp-body .code.has-more::after { opacity: 1; }
 .rp-body .ref-o { overflow-wrap: anywhere; }
-.rp-body .code pre { min-height: 118px; }
 .ref-o { font-size: 13.5px; color: var(--muted); }
 .ref-o b { color: var(--ink-2); font-weight: 500; }
 
 /* узкий экран: панель переезжает под выбранный пункт — до неё иначе не дотянуться */
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .ref-work { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .ref-pane { position: static; min-height: 0; margin: 2px 0 6px; }
-  .rp-body .code pre { min-height: 0; }
   /* панель стоит вплотную под пунктом — повторять его имя и описание незачем */
   .rp-name, .rp-desc { display: none; }
 }
@@ -673,6 +693,46 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 }
 @media (max-width: 720px) { .top-count { display: none; } }
 
+.learned {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); white-space: nowrap;
+}
+.learned b { color: var(--ok); font-weight: 500; }
+.learned button {
+  border: 0; background: none; padding: 0; cursor: pointer; font: inherit;
+  color: var(--faint); text-decoration: underline; text-underline-offset: 2px;
+}
+.learned button:hover { color: var(--bad); }
+.pill-btn {
+  flex: 0 0 auto; padding: 7px 12px;
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--muted);
+  font: inherit; font-size: 13.5px; white-space: nowrap; cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.pill-btn:hover { color: var(--signal); border-color: var(--signal); }
+.pill-btn[aria-pressed="true"] {
+  color: var(--signal); border-color: var(--signal); background: var(--signal-bg);
+}
+@media (max-width: 860px) { .learned button { display: none; } }
+@media (max-width: 620px) { .learned { display: none; } }
+
+/* отметка «изучено» в шапке панели */
+.learn-box {
+  display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
+  font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; white-space: nowrap;
+}
+.learn-box input { width: 15px; height: 15px; accent-color: var(--ok); cursor: pointer; margin: 0; }
+.learn-box:hover { color: var(--ink-2); }
+
+/* отметка в указателе для узкого экрана */
+.ix-group .tick {
+  width: 14px; height: 14px; flex: 0 0 auto; color: var(--ok);
+  opacity: 0; transition: opacity .15s;
+}
+.ix-group button.is-done .tick { opacity: 1; }
+.ix-group button.is-done { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
+
 /* ------------------------------------------------------- подсказка */
 
 .tip {
@@ -726,6 +786,10 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
     <span class="mark"><b>Yii</b><span class="mark-text">Справочник Yii 2</span></span>
     <span class="top-count">20 узлов · 334 возможностей</span>
     <span class="top-spacer"></span>
+    <span class="learned" id="learned" hidden>изучено <b id="learned-n">0</b> из 20<button
+      type="button" id="learned-reset">сбросить</button></span>
+    <button type="button" class="pill-btn" id="quick-btn" aria-pressed="false" data-tab="all"
+      title="Открывать узел сразу на списке встроенного">сразу к списку</button>
     <a class="back-link" href="index.html">на главную</a>
     <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему">
       <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
@@ -738,14 +802,14 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
   <div class="wrap">
     <section class="map">
       <figure>
-        <div class="map-frame"><svg viewBox="0 0 1060 592" role="img" class="mp" aria-label="Устройство Yii 2: сверху путь запроса от браузера через приложение, маршрут, контроллер и фильтры к действию, откуда ответ возвращается в браузер; ниже три семейства механизмов, которые действие дёргает; внизу фундамент, на котором стоит всё остальное"><defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs><rect class="mp-slab" x="40" y="436" width="980" height="140" rx="12" stroke-dasharray="5 4"/><text class="mp-label" style="fill: var(--g-object)" x="530" y="462" text-anchor="middle">фундамент · на этом стоит всё остальное</text><g class="mp-node mp-io"><rect x="28" y="34" width="92" height="52" rx="8"/><text x="74" y="64">браузер</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="http" role="link" tabindex="0" data-tip-title="Запрос и ответ" data-tip-cls="request / response" data-tip-badge="2 компонента" data-tip-lead="Что пришло от браузера и что уходит обратно: параметры, заголовки, формат, файлы, редиректы."><rect x="162" y="34" width="96" height="52" rx="8"/><text x="210" y="64">запрос</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="app" role="link" tabindex="0" data-tip-title="Приложение и конфигурация" data-tip-cls="yii\web\Application" data-tip-badge="29 свойств и псевдонимов" data-tip-lead="Откуда всё начинается: входной скрипт, массив конфигурации, псевдонимы путей и предзагрузка."><rect x="300" y="34" width="124" height="52" rx="8"/><text x="362" y="64">приложение</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="routing" role="link" tabindex="0" data-tip-title="Маршруты и URL" data-tip-cls="yii\web\UrlManager" data-tip-badge="9 видов правил" data-tip-lead="Как адрес превращается в контроллер с действием и как из маршрута собирается обратно красивый адрес."><rect x="466" y="34" width="104" height="52" rx="8"/><text x="518" y="64">маршрут</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="controllers" role="link" tabindex="0" data-tip-title="Контроллеры и действия" data-tip-cls="yii\web\Controller" data-tip-badge="25 методов и правил" data-tip-lead="Как маршрут превращается в вызов метода: имена, действия, параметры из запроса и что можно вернуть."><rect x="612" y="34" width="124" height="52" rx="8"/><text x="674" y="64">контроллер</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="filters" role="link" tabindex="0" data-tip-title="Фильтры" data-tip-cls="behaviors() контроллера" data-tip-badge="12 встроенных" data-tip-lead="Поведения контроллера, которые оборачивают действия: доступ, методы, кэш, формат, CORS."><rect x="778" y="34" width="104" height="52" rx="8"/><text x="830" y="64">фильтры</text></g><g class="mp-node"><rect x="924" y="34" width="108" height="52" rx="8"/><text x="978" y="64">действие</text></g><g class="mp-flow" marker-end="url(#mp-a)"><path d="M125 60h30"/><path d="M263 60h30"/><path d="M429 60h30"/><path d="M575 60h30"/><path d="M741 60h30"/><path d="M887 60h30"/><path d="M525 14H74v18"/><path d="M830 86v14"/></g><g class="mp-flow"><path d="M1032 60H1044V14H581"/></g><text class="mp-label" style="fill: var(--g-http)" x="553" y="18" text-anchor="middle">ответ</text><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="user" role="link" tabindex="0" data-tip-title="Пользователь и доступ" data-tip-cls="yii\web\User" data-tip-badge="31 настройка и правило" data-tip-lead="Кто пришёл и что ему можно: компонент user, identity-класс, правила ACF и роли RBAC."><rect x="774" y="104" width="112" height="46" rx="8"/><text x="830" y="131">доступ</text></g><g class="mp-flow"><path d="M978 86v78"/><path d="M171 164H978"/></g><g class="mp-flow" marker-end="url(#mp-a)"><path d="M171 164v12"/><path d="M530 164v12"/><path d="M889 164v12"/></g><text class="mp-label" style="fill: var(--g-data)" x="171" y="194" text-anchor="middle">данные и правила</text><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="model" role="link" tabindex="0" data-tip-title="Модель" data-tip-cls="yii\base\Model" data-tip-badge="11 методов" data-tip-lead="Набор атрибутов с правилами, подписями и ошибками. Основа форм и Active Record."><rect x="66" y="206" width="210" height="60" rx="8"/><text x="171" y="230">модель</text><text x="171" y="249.2" class="mp-sub">11 методов</text></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="rules" role="link" tabindex="0" data-tip-title="Правила и валидаторы" data-tip-cls="rules()" data-tip-badge="24 встроенных" data-tip-lead="Декларативная проверка входных данных. Те же правила автоматически работают в браузере."><rect x="66" y="278" width="210" height="60" rx="8"/><text x="171" y="302">правила</text><text x="171" y="321.2" class="mp-sub">24 встроенных</text></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="scenarios" role="link" tabindex="0" data-tip-title="Сценарии" data-tip-cls="scenarios()" data-tip-badge="2 способа" data-tip-lead="Один класс модели, разные наборы проверяемых и разрешённых полей."><rect x="66" y="350" width="210" height="60" rx="8"/><text x="171" y="374">сценарии</text><text x="171" y="393.2" class="mp-sub">2 способа</text></g><text class="mp-label" style="fill: var(--g-db)" x="530" y="194" text-anchor="middle">база данных</text><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="ar" role="link" tabindex="0" data-tip-title="Active Record" data-tip-cls="yii\db\ActiveRecord" data-tip-badge="9 событий" data-tip-lead="Таблица — класс, строка — объект, внешние ключи — связи. Плюс жизненный цикл, куда встраиваются поведения."><rect x="425" y="206" width="210" height="60" rx="8"/><text x="530" y="230">Active Record</text><text x="530" y="249.2" class="mp-sub">9 событий</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="query" role="link" tabindex="0" data-tip-title="Query Builder" data-tip-cls="yii\db\Query" data-tip-badge="16 операторов" data-tip-lead="Сборка SQL объектом: экранирование имён, привязка параметров и совместимость с любой СУБД бесплатно."><rect x="425" y="278" width="210" height="60" rx="8"/><text x="530" y="302">Query Builder</text><text x="530" y="321.2" class="mp-sub">16 операторов</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="migrations" role="link" tabindex="0" data-tip-title="Миграции" data-tip-cls="yii\db\Migration" data-tip-badge="24 метода схемы" data-tip-lead="Структура базы в коде и под контролем версий: применяется, откатывается, повторяется на любой машине."><rect x="425" y="350" width="210" height="60" rx="8"/><text x="530" y="374">миграции</text><text x="530" y="393.2" class="mp-sub">24 метода схемы</text></g><text class="mp-label" style="fill: var(--g-view)" x="889" y="194" text-anchor="middle">вывод и состояние</text><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="views" role="link" tabindex="0" data-tip-title="Представления и ресурсы" data-tip-cls="yii\web\View" data-tip-badge="33 метода и настройки" data-tip-lead="Как собирается страница: шаблон, представление, блоки — и как в неё попадают стили и скрипты."><rect x="784" y="206" width="210" height="60" rx="8"/><text x="889" y="230">представления</text><text x="889" y="249.2" class="mp-sub">33 метода и настройки</text></g><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="widgets" role="link" tabindex="0" data-tip-title="Виджеты" data-tip-cls="yii\base\Widget" data-tip-badge="14 встроенных" data-tip-lead="Переиспользуемые куски представления со своей логикой: формы, таблицы, меню, навигация."><rect x="784" y="278" width="210" height="60" rx="8"/><text x="889" y="302">виджеты</text><text x="889" y="321.2" class="mp-sub">14 встроенных</text></g><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="state" role="link" tabindex="0" data-tip-title="Сессии, куки и кэш" data-tip-cls="session / cookies / cache" data-tip-badge="10 хранилищ кэша" data-tip-lead="Всё, что живёт дольше одного запроса: данные пользователя, метки в браузере и сохранённые результаты."><rect x="784" y="350" width="210" height="60" rx="8"/><text x="889" y="374">кэш · сессии · куки</text><text x="889" y="393.2" class="mp-sub">10 хранилищ кэша</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="components" role="link" tabindex="0" data-tip-title="Компоненты и свойства" data-tip-cls="yii\base\Component" data-tip-badge="18 компонентов приложения" data-tip-lead="Кирпич, из которого собран весь фреймворк: настройка массивом, свойства через методы, события и поведения."><rect x="66" y="482" width="176" height="60" rx="8"/><text x="154" y="506">компоненты</text><text x="154" y="525.2" class="mp-sub">18 компонентов приложения</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="di" role="link" tabindex="0" data-tip-title="DI-контейнер" data-tip-cls="yii\di\Container" data-tip-badge="16 приёмов" data-tip-lead="Кто на самом деле собирает объекты фреймворка: читает типы конструктора, подставляет зависимости и применяет ваши умолчания."><rect x="254" y="482" width="176" height="60" rx="8"/><text x="342" y="506">DI-контейнер</text><text x="342" y="525.2" class="mp-sub">16 приёмов</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="behaviors" role="link" tabindex="0" data-tip-title="Поведения" data-tip-cls="yii\base\Behavior" data-tip-badge="7 встроенных" data-tip-lead="Подмешивают компоненту методы, свойства и реакции на его события — без наследования."><rect x="442" y="482" width="176" height="60" rx="8"/><text x="530" y="506">поведения</text><text x="530" y="525.2" class="mp-sub">7 встроенных</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="events" role="link" tabindex="0" data-tip-title="События" data-tip-cls="on() / trigger()" data-tip-badge="40+ точек в ядре" data-tip-lead="Точки, где чужой код может вклиниться в работу компонента, ничего не наследуя."><rect x="630" y="482" width="176" height="60" rx="8"/><text x="718" y="506">события</text><text x="718" y="525.2" class="mp-sub">40+ точек в ядре</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="helpers" role="link" tabindex="0" data-tip-title="Хелперы" data-tip-cls="yii\helpers" data-tip-badge="13 классов" data-tip-lead="Статические утилиты на каждый день: массивы, HTML, адреса, JSON, строки."><rect x="818" y="482" width="176" height="60" rx="8"/><text x="906" y="506">хелперы</text><text x="906" y="525.2" class="mp-sub">13 классов</text></g></svg></div>
+        <div class="map-frame"><svg viewBox="0 0 1060 592" role="img" class="mp" aria-label="Устройство Yii 2: сверху путь запроса от браузера через приложение, маршрут, контроллер и фильтры к действию, откуда ответ возвращается в браузер; ниже три семейства механизмов, которые действие дёргает; внизу фундамент, на котором стоит всё остальное"><defs><marker id="mp-a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" class="mp-head"/></marker></defs><rect class="mp-slab" x="40" y="436" width="980" height="140" rx="12" stroke-dasharray="5 4"/><text class="mp-label" style="fill: var(--g-object)" x="530" y="462" text-anchor="middle">фундамент · на этом стоит всё остальное</text><g class="mp-node mp-io"><rect x="28" y="34" width="92" height="52" rx="8"/><text x="74" y="64">браузер</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="http" role="link" tabindex="0" data-tip-title="Запрос и ответ" data-tip-cls="request / response" data-tip-badge="2 компонента" data-tip-lead="Что пришло от браузера и что уходит обратно: параметры, заголовки, формат, файлы, редиректы."><rect x="162" y="34" width="96" height="52" rx="8"/><path class="mp-tick" d="M241.6 46L244 48.6L248.6 43.2"/><text x="210" y="64">запрос</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="app" role="link" tabindex="0" data-tip-title="Приложение и конфигурация" data-tip-cls="yii\web\Application" data-tip-badge="29 свойств и псевдонимов" data-tip-lead="Откуда всё начинается: входной скрипт, массив конфигурации, псевдонимы путей и предзагрузка."><rect x="300" y="34" width="124" height="52" rx="8"/><path class="mp-tick" d="M407.6 46L410 48.6L414.6 43.2"/><text x="362" y="64">приложение</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="routing" role="link" tabindex="0" data-tip-title="Маршруты и URL" data-tip-cls="yii\web\UrlManager" data-tip-badge="9 видов правил" data-tip-lead="Как адрес превращается в контроллер с действием и как из маршрута собирается обратно красивый адрес."><rect x="466" y="34" width="104" height="52" rx="8"/><path class="mp-tick" d="M553.6 46L556 48.6L560.6 43.2"/><text x="518" y="64">маршрут</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="controllers" role="link" tabindex="0" data-tip-title="Контроллеры и действия" data-tip-cls="yii\web\Controller" data-tip-badge="25 методов и правил" data-tip-lead="Как маршрут превращается в вызов метода: имена, действия, параметры из запроса и что можно вернуть."><rect x="612" y="34" width="124" height="52" rx="8"/><path class="mp-tick" d="M719.6 46L722 48.6L726.6 43.2"/><text x="674" y="64">контроллер</text></g><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="filters" role="link" tabindex="0" data-tip-title="Фильтры" data-tip-cls="behaviors() контроллера" data-tip-badge="12 встроенных" data-tip-lead="Поведения контроллера, которые оборачивают действия: доступ, методы, кэш, формат, CORS."><rect x="778" y="34" width="104" height="52" rx="8"/><path class="mp-tick" d="M865.6 46L868 48.6L872.6 43.2"/><text x="830" y="64">фильтры</text></g><g class="mp-node"><rect x="924" y="34" width="108" height="52" rx="8"/><text x="978" y="64">действие</text></g><g class="mp-flow" marker-end="url(#mp-a)"><path d="M125 60h30"/><path d="M263 60h30"/><path d="M429 60h30"/><path d="M575 60h30"/><path d="M741 60h30"/><path d="M887 60h30"/><path d="M525 14H74v18"/><path d="M830 86v14"/></g><g class="mp-flow"><path d="M1032 60H1044V14H581"/></g><text class="mp-label" style="fill: var(--g-http)" x="553" y="18" text-anchor="middle">ответ</text><g class="mp-node mp-hit" style="--gc: var(--g-http)" data-open="user" role="link" tabindex="0" data-tip-title="Пользователь и доступ" data-tip-cls="yii\web\User" data-tip-badge="31 настройка и правило" data-tip-lead="Кто пришёл и что ему можно: компонент user, identity-класс, правила ACF и роли RBAC."><rect x="774" y="104" width="112" height="46" rx="8"/><path class="mp-tick" d="M869.6 116L872 118.6L876.6 113.2"/><text x="830" y="131">доступ</text></g><g class="mp-flow"><path d="M978 86v78"/><path d="M171 164H978"/></g><g class="mp-flow" marker-end="url(#mp-a)"><path d="M171 164v12"/><path d="M530 164v12"/><path d="M889 164v12"/></g><text class="mp-label" style="fill: var(--g-data)" x="171" y="194" text-anchor="middle">данные и правила</text><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="model" role="link" tabindex="0" data-tip-title="Модель" data-tip-cls="yii\base\Model" data-tip-badge="11 методов" data-tip-lead="Набор атрибутов с правилами, подписями и ошибками. Основа форм и Active Record."><rect x="66" y="206" width="210" height="60" rx="8"/><path class="mp-tick" d="M259.6 218L262 220.6L266.6 215.2"/><text x="171" y="230">модель</text><text x="171" y="249.2" class="mp-sub">11 методов</text></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="rules" role="link" tabindex="0" data-tip-title="Правила и валидаторы" data-tip-cls="rules()" data-tip-badge="24 встроенных" data-tip-lead="Декларативная проверка входных данных. Те же правила автоматически работают в браузере."><rect x="66" y="278" width="210" height="60" rx="8"/><path class="mp-tick" d="M259.6 290L262 292.6L266.6 287.2"/><text x="171" y="302">правила</text><text x="171" y="321.2" class="mp-sub">24 встроенных</text></g><g class="mp-node mp-hit" style="--gc: var(--g-data)" data-open="scenarios" role="link" tabindex="0" data-tip-title="Сценарии" data-tip-cls="scenarios()" data-tip-badge="2 способа" data-tip-lead="Один класс модели, разные наборы проверяемых и разрешённых полей."><rect x="66" y="350" width="210" height="60" rx="8"/><path class="mp-tick" d="M259.6 362L262 364.6L266.6 359.2"/><text x="171" y="374">сценарии</text><text x="171" y="393.2" class="mp-sub">2 способа</text></g><text class="mp-label" style="fill: var(--g-db)" x="530" y="194" text-anchor="middle">база данных</text><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="ar" role="link" tabindex="0" data-tip-title="Active Record" data-tip-cls="yii\db\ActiveRecord" data-tip-badge="9 событий" data-tip-lead="Таблица — класс, строка — объект, внешние ключи — связи. Плюс жизненный цикл, куда встраиваются поведения."><rect x="425" y="206" width="210" height="60" rx="8"/><path class="mp-tick" d="M618.6 218L621 220.6L625.6 215.2"/><text x="530" y="230">Active Record</text><text x="530" y="249.2" class="mp-sub">9 событий</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="query" role="link" tabindex="0" data-tip-title="Query Builder" data-tip-cls="yii\db\Query" data-tip-badge="16 операторов" data-tip-lead="Сборка SQL объектом: экранирование имён, привязка параметров и совместимость с любой СУБД бесплатно."><rect x="425" y="278" width="210" height="60" rx="8"/><path class="mp-tick" d="M618.6 290L621 292.6L625.6 287.2"/><text x="530" y="302">Query Builder</text><text x="530" y="321.2" class="mp-sub">16 операторов</text></g><g class="mp-node mp-hit" style="--gc: var(--g-db)" data-open="migrations" role="link" tabindex="0" data-tip-title="Миграции" data-tip-cls="yii\db\Migration" data-tip-badge="24 метода схемы" data-tip-lead="Структура базы в коде и под контролем версий: применяется, откатывается, повторяется на любой машине."><rect x="425" y="350" width="210" height="60" rx="8"/><path class="mp-tick" d="M618.6 362L621 364.6L625.6 359.2"/><text x="530" y="374">миграции</text><text x="530" y="393.2" class="mp-sub">24 метода схемы</text></g><text class="mp-label" style="fill: var(--g-view)" x="889" y="194" text-anchor="middle">вывод и состояние</text><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="views" role="link" tabindex="0" data-tip-title="Представления и ресурсы" data-tip-cls="yii\web\View" data-tip-badge="33 метода и настройки" data-tip-lead="Как собирается страница: шаблон, представление, блоки — и как в неё попадают стили и скрипты."><rect x="784" y="206" width="210" height="60" rx="8"/><path class="mp-tick" d="M977.6 218L980 220.6L984.6 215.2"/><text x="889" y="230">представления</text><text x="889" y="249.2" class="mp-sub">33 метода и настройки</text></g><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="widgets" role="link" tabindex="0" data-tip-title="Виджеты" data-tip-cls="yii\base\Widget" data-tip-badge="14 встроенных" data-tip-lead="Переиспользуемые куски представления со своей логикой: формы, таблицы, меню, навигация."><rect x="784" y="278" width="210" height="60" rx="8"/><path class="mp-tick" d="M977.6 290L980 292.6L984.6 287.2"/><text x="889" y="302">виджеты</text><text x="889" y="321.2" class="mp-sub">14 встроенных</text></g><g class="mp-node mp-hit" style="--gc: var(--g-view)" data-open="state" role="link" tabindex="0" data-tip-title="Сессии, куки и кэш" data-tip-cls="session / cookies / cache" data-tip-badge="10 хранилищ кэша" data-tip-lead="Всё, что живёт дольше одного запроса: данные пользователя, метки в браузере и сохранённые результаты."><rect x="784" y="350" width="210" height="60" rx="8"/><path class="mp-tick" d="M977.6 362L980 364.6L984.6 359.2"/><text x="889" y="374">кэш · сессии · куки</text><text x="889" y="393.2" class="mp-sub">10 хранилищ кэша</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="components" role="link" tabindex="0" data-tip-title="Компоненты и свойства" data-tip-cls="yii\base\Component" data-tip-badge="18 компонентов приложения" data-tip-lead="Кирпич, из которого собран весь фреймворк: настройка массивом, свойства через методы, события и поведения."><rect x="66" y="482" width="176" height="60" rx="8"/><path class="mp-tick" d="M225.6 494L228 496.6L232.6 491.2"/><text x="154" y="506">компоненты</text><text x="154" y="525.2" class="mp-sub">18 компонентов приложения</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="di" role="link" tabindex="0" data-tip-title="DI-контейнер" data-tip-cls="yii\di\Container" data-tip-badge="16 приёмов" data-tip-lead="Кто на самом деле собирает объекты фреймворка: читает типы конструктора, подставляет зависимости и применяет ваши умолчания."><rect x="254" y="482" width="176" height="60" rx="8"/><path class="mp-tick" d="M413.6 494L416 496.6L420.6 491.2"/><text x="342" y="506">DI-контейнер</text><text x="342" y="525.2" class="mp-sub">16 приёмов</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="behaviors" role="link" tabindex="0" data-tip-title="Поведения" data-tip-cls="yii\base\Behavior" data-tip-badge="7 встроенных" data-tip-lead="Подмешивают компоненту методы, свойства и реакции на его события — без наследования."><rect x="442" y="482" width="176" height="60" rx="8"/><path class="mp-tick" d="M601.6 494L604 496.6L608.6 491.2"/><text x="530" y="506">поведения</text><text x="530" y="525.2" class="mp-sub">7 встроенных</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="events" role="link" tabindex="0" data-tip-title="События" data-tip-cls="on() / trigger()" data-tip-badge="40+ точек в ядре" data-tip-lead="Точки, где чужой код может вклиниться в работу компонента, ничего не наследуя."><rect x="630" y="482" width="176" height="60" rx="8"/><path class="mp-tick" d="M789.6 494L792 496.6L796.6 491.2"/><text x="718" y="506">события</text><text x="718" y="525.2" class="mp-sub">40+ точек в ядре</text></g><g class="mp-node mp-hit" style="--gc: var(--g-object)" data-open="helpers" role="link" tabindex="0" data-tip-title="Хелперы" data-tip-cls="yii\helpers" data-tip-badge="13 классов" data-tip-lead="Статические утилиты на каждый день: массивы, HTML, адреса, JSON, строки."><rect x="818" y="482" width="176" height="60" rx="8"/><path class="mp-tick" d="M977.6 494L980 496.6L984.6 491.2"/><text x="906" y="506">хелперы</text><text x="906" y="525.2" class="mp-sub">13 классов</text></g></svg></div>
         <figcaption>Запрос идёт по верхней линии; ниже — механизмы, которые дёргает действие,
           а внизу то, на чём держится всё остальное. Нажмите на блок, чтобы открыть разбор;
           при наведении мышью — короткая справка.</figcaption>
       </figure>
     </section>
 
-    <nav class="index" aria-label="Все узлы списком"><section class="ix-group" style="--gc: var(--g-http)"><h2>Путь запроса</h2><ul><li><button type="button" data-open="http"><b>Запрос и ответ</b><span>2 компонента</span></button></li><li><button type="button" data-open="app"><b>Приложение и конфигурация</b><span>29 свойств и псевдонимов</span></button></li><li><button type="button" data-open="routing"><b>Маршруты и URL</b><span>9 видов правил</span></button></li><li><button type="button" data-open="controllers"><b>Контроллеры и действия</b><span>25 методов и правил</span></button></li><li><button type="button" data-open="filters"><b>Фильтры</b><span>12 встроенных</span></button></li><li><button type="button" data-open="user"><b>Пользователь и доступ</b><span>31 настройка и правило</span></button></li></ul></section><section class="ix-group" style="--gc: var(--g-data)"><h2>Данные и правила</h2><ul><li><button type="button" data-open="model"><b>Модель</b><span>11 методов</span></button></li><li><button type="button" data-open="rules"><b>Правила и валидаторы</b><span>24 встроенных</span></button></li><li><button type="button" data-open="scenarios"><b>Сценарии</b><span>2 способа</span></button></li></ul></section><section class="ix-group" style="--gc: var(--g-db)"><h2>База данных</h2><ul><li><button type="button" data-open="ar"><b>Active Record</b><span>9 событий</span></button></li><li><button type="button" data-open="query"><b>Query Builder</b><span>16 операторов</span></button></li><li><button type="button" data-open="migrations"><b>Миграции</b><span>24 метода схемы</span></button></li></ul></section><section class="ix-group" style="--gc: var(--g-view)"><h2>Вывод и состояние</h2><ul><li><button type="button" data-open="views"><b>Представления и ресурсы</b><span>33 метода и настройки</span></button></li><li><button type="button" data-open="widgets"><b>Виджеты</b><span>14 встроенных</span></button></li><li><button type="button" data-open="state"><b>Сессии, куки и кэш</b><span>10 хранилищ кэша</span></button></li></ul></section><section class="ix-group" style="--gc: var(--g-object)"><h2>Объектная модель</h2><ul><li><button type="button" data-open="components"><b>Компоненты и свойства</b><span>18 компонентов приложения</span></button></li><li><button type="button" data-open="di"><b>DI-контейнер</b><span>16 приёмов</span></button></li><li><button type="button" data-open="behaviors"><b>Поведения</b><span>7 встроенных</span></button></li><li><button type="button" data-open="events"><b>События</b><span>40+ точек в ядре</span></button></li><li><button type="button" data-open="helpers"><b>Хелперы</b><span>13 классов</span></button></li></ul></section></nav>
+    <nav class="index" aria-label="Все узлы списком"><section class="ix-group" style="--gc: var(--g-http)"><h2>Путь запроса</h2><ul><li><button type="button" data-open="http"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Запрос и ответ</b><span>2 компонента</span></button></li><li><button type="button" data-open="app"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Приложение и конфигурация</b><span>29 свойств и псевдонимов</span></button></li><li><button type="button" data-open="routing"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Маршруты и URL</b><span>9 видов правил</span></button></li><li><button type="button" data-open="controllers"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Контроллеры и действия</b><span>25 методов и правил</span></button></li><li><button type="button" data-open="filters"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Фильтры</b><span>12 встроенных</span></button></li><li><button type="button" data-open="user"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Пользователь и доступ</b><span>31 настройка и правило</span></button></li></ul></section><section class="ix-group" style="--gc: var(--g-data)"><h2>Данные и правила</h2><ul><li><button type="button" data-open="model"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Модель</b><span>11 методов</span></button></li><li><button type="button" data-open="rules"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Правила и валидаторы</b><span>24 встроенных</span></button></li><li><button type="button" data-open="scenarios"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Сценарии</b><span>2 способа</span></button></li></ul></section><section class="ix-group" style="--gc: var(--g-db)"><h2>База данных</h2><ul><li><button type="button" data-open="ar"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Active Record</b><span>9 событий</span></button></li><li><button type="button" data-open="query"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Query Builder</b><span>16 операторов</span></button></li><li><button type="button" data-open="migrations"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Миграции</b><span>24 метода схемы</span></button></li></ul></section><section class="ix-group" style="--gc: var(--g-view)"><h2>Вывод и состояние</h2><ul><li><button type="button" data-open="views"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Представления и ресурсы</b><span>33 метода и настройки</span></button></li><li><button type="button" data-open="widgets"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Виджеты</b><span>14 встроенных</span></button></li><li><button type="button" data-open="state"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Сессии, куки и кэш</b><span>10 хранилищ кэша</span></button></li></ul></section><section class="ix-group" style="--gc: var(--g-object)"><h2>Объектная модель</h2><ul><li><button type="button" data-open="components"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Компоненты и свойства</b><span>18 компонентов приложения</span></button></li><li><button type="button" data-open="di"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>DI-контейнер</b><span>16 приёмов</span></button></li><li><button type="button" data-open="behaviors"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Поведения</b><span>7 встроенных</span></button></li><li><button type="button" data-open="events"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>События</b><span>40+ точек в ядре</span></button></li><li><button type="button" data-open="helpers"><svg class="tick" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><b>Хелперы</b><span>13 классов</span></button></li></ul></section></nav>
   </div>
 </main>
 
@@ -754,6 +818,7 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
   <div class="panel-bar">
     <span class="pb-title" id="pb-title"></span>
     <span class="sp"></span>
+    <label class="learn-box"><input type="checkbox" id="learn-check"> изучено</label>
     <kbd>Esc</kbd>
     <button type="button" class="icon-btn" id="panel-close" aria-label="Закрыть">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
@@ -942,7 +1007,8 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 
 <span class="t-kw">if</span> (<span class="t-ct">YII_ENV_DEV</span>) {
     <span class="t-va">$config</span>[<span class="t-st">'bootstrap'</span>][] = <span class="t-st">'debug'</span>;
-}</code></pre></figure></div></div><div class="ref-item" data-search="yii_enable_error_handler включать ли обработчик ошибок yii. выключают редко — разве что при отладке самого обработчика. по умолчанию true"><button type="button" class="ref-btn" aria-controls="rp-4"><span class="ref-n">YII_ENABLE_ERROR_HANDLER</span><span class="ref-d">Включать ли обработчик ошибок Yii. Выключают редко — разве что при отладке самого обработчика.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> по умолчанию true</p><figure class="code bare"><pre><code><span class="t-fn">defined</span>(<span class="t-st">'YII_ENABLE_ERROR_HANDLER'</span>) <span class="t-kw">or</span> <span class="t-fn">define</span>(<span class="t-st">'YII_ENABLE_ERROR_HANDLER'</span>, <span class="t-lt">false</span>);</code></pre></figure></div></div><div class="ref-item" data-search="beforerequest приложение создано, запрос ещё не обрабатывался. удобное место выбрать язык по домену или увести на страницу обслуживания. вешается прямо в конфигурации через &#x27;on имясобытия&#x27;"><button type="button" class="ref-btn" aria-controls="rp-4"><span class="ref-n">beforeRequest</span><span class="ref-d">Приложение создано, запрос ещё не обрабатывался. Удобное место выбрать язык по домену или увести на страницу обслуживания.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> вешается прямо в конфигурации через 'on имяСобытия'</p><figure class="code bare"><pre><code><span class="t-st">'on beforeRequest'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$event</span>) {
+}</code></pre></figure></div></div><div class="ref-item" data-search="yii_enable_error_handler включать ли обработчик ошибок yii. выключают редко — разве что при отладке самого обработчика. по умолчанию true"><button type="button" class="ref-btn" aria-controls="rp-4"><span class="ref-n">YII_ENABLE_ERROR_HANDLER</span><span class="ref-d">Включать ли обработчик ошибок Yii. Выключают редко — разве что при отладке самого обработчика.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> по умолчанию true</p><figure class="code bare"><pre><code><span class="t-fn">defined</span>(<span class="t-st">'YII_ENABLE_ERROR_HANDLER'</span>)
+    <span class="t-kw">or</span> <span class="t-fn">define</span>(<span class="t-st">'YII_ENABLE_ERROR_HANDLER'</span>, <span class="t-lt">false</span>);</code></pre></figure></div></div><div class="ref-item" data-search="beforerequest приложение создано, запрос ещё не обрабатывался. удобное место выбрать язык по домену или увести на страницу обслуживания. вешается прямо в конфигурации через &#x27;on имясобытия&#x27;"><button type="button" class="ref-btn" aria-controls="rp-4"><span class="ref-n">beforeRequest</span><span class="ref-d">Приложение создано, запрос ещё не обрабатывался. Удобное место выбрать язык по домену или увести на страницу обслуживания.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> вешается прямо в конфигурации через 'on имяСобытия'</p><figure class="code bare"><pre><code><span class="t-st">'on beforeRequest'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$event</span>) {
     <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;language = <span class="t-fn">detectLanguage</span>();
 },</code></pre></figure></div></div><div class="ref-item" data-search="afterrequest запрос обработан, ответ ещё не отправлен. постобработка, статистика"><button type="button" class="ref-btn" aria-controls="rp-4"><span class="ref-n">afterRequest</span><span class="ref-d">Запрос обработан, ответ ещё не отправлен.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> постобработка, статистика</p><figure class="code bare"><pre><code><span class="t-st">'on afterRequest'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$event</span>) {
     <span class="t-cl">Yii</span>::<span class="t-fn">info</span>(<span class="t-st">'готово за '</span> . (<span class="t-fn">microtime</span>(<span class="t-lt">true</span>) - <span class="t-ct">YII_BEGIN_TIME</span>));
@@ -1362,7 +1428,8 @@ admin/post-comment/index <span class="t-cm">// подпапка admin</span></co
     <span class="t-kw">return</span> [<span class="t-nu">100</span>, <span class="t-nu">600</span>];   <span class="t-cm">// 100 запросов за 600 секунд</span>
 }
 <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">loadAllowance</span>(<span class="t-va">$request</span>, <span class="t-va">$action</span>) { … }
-<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">saveAllowance</span>(<span class="t-va">$request</span>, <span class="t-va">$action</span>, <span class="t-va">$allowance</span>, <span class="t-va">$ts</span>) { … }</code></pre></figure></div></div><div class="ref-item" data-search="ajaxfilter пропускает только ajax-запросы. для действий, которые не должны открываться в адресной строке. errormessage"><button type="button" class="ref-btn" aria-controls="rp-9"><span class="ref-n">AjaxFilter</span><span class="ref-d">Пропускает только AJAX-запросы. Для действий, которые не должны открываться в адресной строке.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> errorMessage</p><figure class="code bare"><pre><code>[<span class="t-st">'class'</span> =&gt; <span class="t-cl">AjaxFilter</span>::<span class="t-kw">class</span>,
+<span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">saveAllowance</span>(<span class="t-va">$request</span>, <span class="t-va">$action</span>, <span class="t-va">$allowance</span>, <span class="t-va">$ts</span>)
+{ … }</code></pre></figure></div></div><div class="ref-item" data-search="ajaxfilter пропускает только ajax-запросы. для действий, которые не должны открываться в адресной строке. errormessage"><button type="button" class="ref-btn" aria-controls="rp-9"><span class="ref-n">AjaxFilter</span><span class="ref-d">Пропускает только AJAX-запросы. Для действий, которые не должны открываться в адресной строке.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> errorMessage</p><figure class="code bare"><pre><code>[<span class="t-st">'class'</span> =&gt; <span class="t-cl">AjaxFilter</span>::<span class="t-kw">class</span>,
  <span class="t-st">'only'</span> =&gt; [<span class="t-st">'suggest'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="httpbasicauth логин и пароль в заголовке authorization. по умолчанию логин трактуется как токен. auth, realm"><button type="button" class="ref-btn" aria-controls="rp-9"><span class="ref-n">HttpBasicAuth</span><span class="ref-d">Логин и пароль в заголовке Authorization. По умолчанию логин трактуется как токен.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> auth, realm</p><figure class="code bare"><pre><code><span class="t-st">'authenticator'</span> =&gt; [
     <span class="t-st">'class'</span> =&gt; <span class="t-cl">HttpBasicAuth</span>::<span class="t-kw">class</span>,
     <span class="t-st">'auth'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$username</span>, <span class="t-va">$password</span>) {
@@ -1487,12 +1554,15 @@ admin/post-comment/index <span class="t-cm">// подпапка admin</span></co
     },
 ],</code></pre></figure></div></div></div><div class="ref-pane" id="rp-10" role="region" aria-label="Пример выбранного пункта"><p class="rp-kicker">пример</p><h4 class="rp-name">identityClass</h4><p class="rp-desc">Класс, реализующий IdentityInterface. Без него компонент не работает.</p><div class="rp-body"><p class="ref-o"><b>опции:</b> обычно модель User</p><figure class="code bare"><pre><code><span class="t-st">'user'</span> =&gt; [
     <span class="t-st">'identityClass'</span> =&gt; <span class="t-cl">app\models\User</span>::<span class="t-kw">class</span>,
-],</code></pre></figure></div></div></div><div class="ref-empty" hidden>Ничего не нашлось. Попробуйте другое слово.</div></div><h3>Правила AccessControl</h3><p>Правила проверяются сверху вниз до первого совпадения. Совпало <code>allow</code> — пропустить, <code>deny</code> — запретить. Не совпало ни одно — <strong>запретить</strong>: гостя отправят на вход, вошедшего встретит 403.</p><div class="ref-block"><div class="ref-tools"><label class="ref-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="text" placeholder="фильтр по названию и описанию" aria-label="Фильтр по списку"></label><span class="ref-count">9 шт.</span></div><div class="ref-work"><div class="ref"><div class="ref-item is-active" data-search="allow true — разрешающее правило, false — запрещающее. обязательный ключ"><button type="button" class="ref-btn" aria-controls="rp-11" aria-current="true"><span class="ref-n">allow</span><span class="ref-d">true — разрешающее правило, false — запрещающее.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> обязательный ключ</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'@'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="actions id действий, к которым правило относится. пусто — ко всем. имена без префикса action"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">actions</span><span class="ref-d">ID действий, к которым правило относится. Пусто — ко всем.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> имена без префикса action</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'login'</span>, <span class="t-st">'signup'</span>], <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'?'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="controllers id контроллеров. контроллер из модуля пишется вместе с ним. например &#x27;admin/user&#x27;"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">controllers</span><span class="ref-d">ID контроллеров. Контроллер из модуля пишется вместе с ним.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> например 'admin/user'</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">false</span>, <span class="t-st">'controllers'</span> =&gt; [<span class="t-st">'admin/user'</span>], <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'?'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="roles знак ? — гость, @ — любой вошедший. всё остальное считается ролью или разрешением rbac и проверяется через can(). можно перечислить несколько"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">roles</span><span class="ref-d">Знак ? — гость, @ — любой вошедший. Всё остальное считается ролью или разрешением RBAC и проверяется через can().</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> можно перечислить несколько</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'update'</span>], <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'moderator'</span>, <span class="t-st">'admin'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="roleparams параметры для can(). замыкание удобно тем, что модель грузится только когда правило действительно проверяется. массив или замыкание"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">roleParams</span><span class="ref-d">Параметры для can(). Замыкание удобно тем, что модель грузится только когда правило действительно проверяется.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> массив или замыкание</p><figure class="code bare"><pre><code>[
+],</code></pre></figure></div></div></div><div class="ref-empty" hidden>Ничего не нашлось. Попробуйте другое слово.</div></div><h3>Правила AccessControl</h3><p>Правила проверяются сверху вниз до первого совпадения. Совпало <code>allow</code> — пропустить, <code>deny</code> — запретить. Не совпало ни одно — <strong>запретить</strong>: гостя отправят на вход, вошедшего встретит 403.</p><div class="ref-block"><div class="ref-tools"><label class="ref-search"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><input type="text" placeholder="фильтр по названию и описанию" aria-label="Фильтр по списку"></label><span class="ref-count">9 шт.</span></div><div class="ref-work"><div class="ref"><div class="ref-item is-active" data-search="allow true — разрешающее правило, false — запрещающее. обязательный ключ"><button type="button" class="ref-btn" aria-controls="rp-11" aria-current="true"><span class="ref-n">allow</span><span class="ref-d">true — разрешающее правило, false — запрещающее.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> обязательный ключ</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'@'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="actions id действий, к которым правило относится. пусто — ко всем. имена без префикса action"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">actions</span><span class="ref-d">ID действий, к которым правило относится. Пусто — ко всем.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> имена без префикса action</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'login'</span>, <span class="t-st">'signup'</span>], <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'?'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="controllers id контроллеров. контроллер из модуля пишется вместе с ним. например &#x27;admin/user&#x27;"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">controllers</span><span class="ref-d">ID контроллеров. Контроллер из модуля пишется вместе с ним.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> например 'admin/user'</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">false</span>, <span class="t-st">'controllers'</span> =&gt; [<span class="t-st">'admin/user'</span>], <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'?'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="roles знак ? — гость, @ — любой вошедший. всё остальное считается ролью или разрешением rbac и проверяется через can(). можно перечислить несколько"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">roles</span><span class="ref-d">Знак ? — гость, @ — любой вошедший. Всё остальное считается ролью или разрешением RBAC и проверяется через can().</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> можно перечислить несколько</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'update'</span>],
+ <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'moderator'</span>, <span class="t-st">'admin'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="roleparams параметры для can(). замыкание удобно тем, что модель грузится только когда правило действительно проверяется. массив или замыкание"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">roleParams</span><span class="ref-d">Параметры для can(). Замыкание удобно тем, что модель грузится только когда правило действительно проверяется.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> массив или замыкание</p><figure class="code bare"><pre><code>[
     <span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>,
     <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'update'</span>],
     <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'updatePost'</span>],
     <span class="t-st">'roleParams'</span> =&gt; <span class="t-kw">function</span> (<span class="t-va">$rule</span>) {
-        <span class="t-kw">return</span> [<span class="t-st">'post'</span> =&gt; <span class="t-cl">Post</span>::<span class="t-fn">findOne</span>(<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;<span class="t-fn">get</span>(<span class="t-st">'id'</span>))];
+        <span class="t-kw">return</span> [
+            <span class="t-st">'post'</span> =&gt; <span class="t-cl">Post</span>::<span class="t-fn">findOne</span>(<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;<span class="t-fn">get</span>(<span class="t-st">'id'</span>)),
+        ];
     },
 ],</code></pre></figure></div></div><div class="ref-item" data-search="ips ip клиента. в конце допускается звёздочка. например &#x27;192.168.*&#x27;"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">ips</span><span class="ref-d">IP клиента. В конце допускается звёздочка.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> например '192.168.*'</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'ips'</span> =&gt; [<span class="t-st">'192.168.*'</span>], <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'debug'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="verbs http-методы, на которые распространяется правило. get, post, put, delete"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">verbs</span><span class="ref-d">HTTP-методы, на которые распространяется правило.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> GET, POST, PUT, DELETE</p><figure class="code bare"><pre><code>[<span class="t-st">'allow'</span> =&gt; <span class="t-lt">false</span>, <span class="t-st">'verbs'</span> =&gt; [<span class="t-st">'DELETE'</span>], <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'@'</span>]],</code></pre></figure></div></div><div class="ref-item" data-search="matchcallback произвольное условие: возвращает true, если правило подходит. function ($rule, $action)"><button type="button" class="ref-btn" aria-controls="rp-11"><span class="ref-n">matchCallback</span><span class="ref-d">Произвольное условие: возвращает true, если правило подходит.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> function ($rule, $action)</p><figure class="code bare"><pre><code>[
     <span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>,
@@ -3070,7 +3140,9 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
 <span class="t-kw">echo</span> <span class="t-cl">LinkPager</span>::<span class="t-fn">widget</span>([<span class="t-st">'maxButtonCount'</span> =&gt; <span class="t-nu">20</span>]);  <span class="t-cm">// 20</span></code></pre></figure></div></div><div class="ref-item" data-search="set($name, [&#x27;class&#x27; =&gt; ...]) псевдоним вместе с конфигурацией: имя, класс и свойства одной записью. ключ class обязателен"><button type="button" class="ref-btn" aria-controls="rp-28"><span class="ref-n">set($name, ['class' =&gt; ...])</span><span class="ref-d">Псевдоним вместе с конфигурацией: имя, класс и свойства одной записью.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> ключ class обязателен</p><figure class="code bare"><pre><code><span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'db'</span>, [
     <span class="t-st">'class'</span> =&gt; <span class="t-cl">yii\db\Connection</span>::<span class="t-kw">class</span>,
     <span class="t-st">'dsn'</span> =&gt; <span class="t-st">'mysql:host=localhost;dbname=app'</span>,
-]);</code></pre></figure></div></div><div class="ref-item" data-search="set($name, $object) готовый экземпляр. контейнер будет отдавать именно его, ничего не создавая. по сути ручной синглтон"><button type="button" class="ref-btn" aria-controls="rp-28"><span class="ref-n">set($name, $object)</span><span class="ref-d">Готовый экземпляр. Контейнер будет отдавать именно его, ничего не создавая.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> по сути ручной синглтон</p><figure class="code bare"><pre><code><span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'pageCache'</span>, <span class="t-kw">new</span> <span class="t-cl">FileCache</span>());</code></pre></figure></div></div><div class="ref-item" data-search="set($name, $closure) фабрика: полный контроль над созданием. замыкание получает контейнер, параметры и конфигурацию. function ($container, $params, $config)"><button type="button" class="ref-btn" aria-controls="rp-28"><span class="ref-n">set($name, $closure)</span><span class="ref-d">Фабрика: полный контроль над созданием. Замыкание получает контейнер, параметры и конфигурацию.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> function ($container, $params, $config)</p><figure class="code bare"><pre><code><span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'search'</span>, <span class="t-kw">function</span> (<span class="t-va">$container</span>, <span class="t-va">$params</span>, <span class="t-va">$config</span>) {
+]);</code></pre></figure></div></div><div class="ref-item" data-search="set($name, $object) готовый экземпляр. контейнер будет отдавать именно его, ничего не создавая. по сути ручной синглтон"><button type="button" class="ref-btn" aria-controls="rp-28"><span class="ref-n">set($name, $object)</span><span class="ref-d">Готовый экземпляр. Контейнер будет отдавать именно его, ничего не создавая.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> по сути ручной синглтон</p><figure class="code bare"><pre><code><span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'pageCache'</span>, <span class="t-kw">new</span> <span class="t-cl">FileCache</span>());</code></pre></figure></div></div><div class="ref-item" data-search="set($name, $closure) фабрика: полный контроль над созданием. замыкание получает контейнер, параметры и конфигурацию. function ($container, $params, $config)"><button type="button" class="ref-btn" aria-controls="rp-28"><span class="ref-n">set($name, $closure)</span><span class="ref-d">Фабрика: полный контроль над созданием. Замыкание получает контейнер, параметры и конфигурацию.</span></button><div class="ref-body" hidden><p class="ref-o"><b>опции:</b> function ($container, $params, $config)</p><figure class="code bare"><pre><code><span class="t-cl">Yii</span>::<span class="t-va">$container</span>-&gt;<span class="t-fn">set</span>(<span class="t-st">'search'</span>, <span class="t-kw">function</span> (
+    <span class="t-va">$container</span>, <span class="t-va">$params</span>, <span class="t-va">$config</span>
+) {
     <span class="t-va">$solr</span> = <span class="t-kw">new</span> <span class="t-cl">SolrService</span>(<span class="t-st">'127.0.0.1'</span>);
     <span class="t-cm">// ...сложная инициализация...</span>
     <span class="t-kw">return</span> <span class="t-va">$solr</span>;
@@ -3549,6 +3621,11 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
   function store(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* приватный режим */ } }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 
+  /* ключи общие с курсом и хабом: тема должна переноситься между страницами */
+  var KEY_THEME = 'yii2:theme';
+  var KEY_DONE = 'yii2:explorer-done';
+  var KEY_QUICK = 'yii2:explorer-quick';
+
   /* --------------------------------------------------------------------------- тема */
 
   var themeBtn = $('#theme-btn');
@@ -3557,7 +3634,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     if (mode === 'dark' || mode === 'light') root.setAttribute('data-theme', mode);
     else root.removeAttribute('data-theme');
   }
-  applyTheme(read('yii-explorer:theme'));
+  applyTheme(read(KEY_THEME));
 
   if (themeBtn) {
     themeBtn.addEventListener('click', function () {
@@ -3566,9 +3643,63 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
         window.matchMedia('(prefers-color-scheme: dark)').matches);
       var next = dark ? 'light' : 'dark';
       applyTheme(next);
-      store('yii-explorer:theme', next);
+      store(KEY_THEME, next);
     });
   }
+
+  /* ------------------------------------------------------------- изученные узлы */
+
+  var learnCheck = $('#learn-check');
+  var learnedBox = $('#learned');
+  var learnedNum = $('#learned-n');
+
+  function doneList() {
+    try { var a = JSON.parse(read(KEY_DONE) || '[]'); return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+
+  function renderDone() {
+    var done = doneList();
+    $$('[data-open]').forEach(function (el) {
+      el.classList.toggle('is-done', done.indexOf(el.getAttribute('data-open')) >= 0);
+    });
+    if (learnedNum) learnedNum.textContent = done.length;
+    if (learnedBox) learnedBox.hidden = done.length === 0;
+    if (learnCheck && current) learnCheck.checked = done.indexOf(current) >= 0;
+  }
+
+  function setDone(id, on) {
+    var a = doneList().filter(function (x) { return x !== id; });
+    if (on) a.push(id);
+    store(KEY_DONE, JSON.stringify(a));
+    renderDone();
+  }
+
+  if (learnCheck) learnCheck.addEventListener('change', function () {
+    if (current) setDone(current, learnCheck.checked);
+  });
+
+  var learnedReset = $('#learned-reset');
+  if (learnedReset) learnedReset.addEventListener('click', function () {
+    if (confirm('Сбросить отметки об изученных узлах?')) { store(KEY_DONE, '[]'); renderDone(); }
+  });
+
+  /* ------------------------------------------------------- быстрый режим */
+
+  var quickBtn = $('#quick-btn');
+  var quickTab = quickBtn ? quickBtn.getAttribute('data-tab') : null;
+  var quick = read(KEY_QUICK) === '1';
+
+  function renderQuick() {
+    if (quickBtn) quickBtn.setAttribute('aria-pressed', quick ? 'true' : 'false');
+  }
+  renderQuick();
+
+  if (quickBtn) quickBtn.addEventListener('click', function () {
+    quick = !quick;
+    store(KEY_QUICK, quick ? '1' : '0');
+    renderQuick();
+  });
 
   /* --------------------------------------------------------------------------- панель */
 
@@ -3588,6 +3719,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     closeTopic(false);
     lastFocused = document.activeElement;
     current = id;
+    if (learnCheck) learnCheck.checked = doneList().indexOf(id) >= 0;
 
     panelBody.appendChild(node);
     node.hidden = false;
@@ -3631,11 +3763,19 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
   }
 
   $$('[data-open]').forEach(function (el) {
-    el.addEventListener('click', function (e) {
+    function open(e) {
       e.preventDefault();
-      openTopic(el.getAttribute('data-open'));
-    });
+      openTopic(el.getAttribute('data-open'), quick ? quickTab : undefined);
+    }
+    el.addEventListener('click', open);
+    /* узлы карты — <g role="link">: браузер не превращает Enter в клик сам */
+    if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') open(e);
+      });
+    }
   });
+  renderDone();
 
   $$('.tab').forEach(function (tab) {
     tab.addEventListener('click', function () {
@@ -3759,6 +3899,9 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
 
   /* --------------------------------------------------------------------------- справочники: фильтр */
 
+  /* держать в паре с .ref-work в explorer.css */
+  var STACK_Q = '(max-width: 900px)';
+
   $$('.ref-block').forEach(function (block) {
     var input = $('.ref-search input', block);
     var count = $('.ref-count', block);
@@ -3772,7 +3915,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     var rpName = $('.rp-name', pane);
     var rpDesc = $('.rp-desc', pane);
     var rpBody = $('.rp-body', pane);
-    var narrow = window.matchMedia('(max-width: 760px)');
+    var narrow = window.matchMedia(STACK_Q);
     var hoverable = window.matchMedia('(hover: hover)').matches;
     var active = items[0];
 
@@ -3795,6 +3938,19 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
       rpDesc.innerHTML = $('.ref-d', btn).innerHTML;
       rpBody.innerHTML = $('.ref-body', active).innerHTML;
       place();
+      markOverflow();
+    }
+
+    /* длинная строка прокручивается — отмечаем это тенью, иначе читается как обрезка */
+    function markOverflow() {
+      var fig = $('.code', rpBody);
+      var pre = fig && $('pre', fig);
+      if (!pre) return;
+      var more = function () {
+        fig.classList.toggle('has-more', pre.scrollWidth - pre.scrollLeft - pre.clientWidth > 2);
+      };
+      more();
+      pre.addEventListener('scroll', more, { passive: true });
     }
 
     function visible() {
@@ -3820,6 +3976,7 @@ $.pjax.reload({container: '#post-grid'});</code></pre></figure></div></div><div 
     });
 
     place();
+    markOverflow();
     if (narrow.addEventListener) narrow.addEventListener('change', place);
 
     if (!input) return;

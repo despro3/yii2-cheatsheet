@@ -150,6 +150,13 @@ a:hover { color: var(--signal-2); }
 
 code, kbd, pre { font-family: var(--font-mono); }
 
+/* JetBrains Mono склеивает => -> === в один знак: `===` выглядит как ≡, а это другой оператор */
+code, kbd, pre, .ref-n, .rp-name, .kv-k, .out, .tip .tip-cls,
+.lc-step .lc-n, .dg .dg-note, .chip, .field input[type="text"], .field select {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
 /* ---------------------------------------------------------------- шапка */
 
 .top {
@@ -239,6 +246,13 @@ code, kbd, pre { font-family: var(--font-mono); }
 .mp-head { fill: var(--line-2); }
 .mp-label { fill: var(--muted); font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; }
 .mp-io rect { fill: var(--surface-2); stroke-dasharray: 4 3; }
+.mp-tick {
+  fill: none; stroke: var(--ok); stroke-width: 1.8;
+  stroke-linecap: round; stroke-linejoin: round;
+  opacity: 0; transition: opacity .15s;
+}
+.mp-node.is-done .mp-tick { opacity: 1; }
+.mp-node.is-done rect { fill: color-mix(in srgb, var(--ok) 8%, var(--surface)); }
 
 /* --------------------------------------------------------------- панель */
 
@@ -253,7 +267,7 @@ body.panel-open .scrim { opacity: 1; }
 .panel {
   position: fixed; z-index: 45;
   inset: max(24px, env(safe-area-inset-top, 0px)) 0 0;
-  max-width: 1080px; margin: 0 auto;
+  max-width: 1240px; margin: 0 auto;
   display: flex; flex-direction: column;
   background: var(--bg);
   border: 1px solid var(--line); border-bottom: 0;
@@ -322,7 +336,7 @@ body.panel-open .panel { transform: none; opacity: 1; }
 .tab:hover { color: var(--ink); }
 .tab[aria-selected="true"] { color: var(--pc, var(--signal)); border-bottom-color: var(--pc, var(--signal)); }
 
-.tab-panel { padding: 22px 22px 0; max-width: 980px; }
+.tab-panel { padding: 22px 22px 0; max-width: 1200px; }
 @media (max-width: 760px) {
   .panel-hero { padding: 20px 16px 14px; }
   .tabs { padding-inline: 16px; }
@@ -449,7 +463,7 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 
 .ref-work {
   display: grid; gap: 16px;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+  grid-template-columns: minmax(0, 1fr) minmax(340px, min(620px, 54%));
   align-items: start;
 }
 .ref { display: grid; gap: 2px; align-content: start; min-width: 0; }
@@ -491,16 +505,22 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 .rp-desc { margin: 0; min-height: 2.9em; font-size: 14px; color: var(--ink-2); line-height: 1.45; overflow-wrap: anywhere; }
 .rp-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; }
 .rp-body > * { min-width: 0; }
+.rp-body .code { position: relative; }
+.rp-body .code::after {
+  content: ""; position: absolute; top: 1px; right: 1px; bottom: 1px; width: 34px;
+  border-radius: 0 var(--r-sm) var(--r-sm) 0;
+  background: linear-gradient(90deg, transparent, var(--code-bg));
+  opacity: 0; transition: opacity .15s; pointer-events: none;
+}
+.rp-body .code.has-more::after { opacity: 1; }
 .rp-body .ref-o { overflow-wrap: anywhere; }
-.rp-body .code pre { min-height: 118px; }
 .ref-o { font-size: 13.5px; color: var(--muted); }
 .ref-o b { color: var(--ink-2); font-weight: 500; }
 
 /* узкий экран: панель переезжает под выбранный пункт — до неё иначе не дотянуться */
-@media (max-width: 760px) {
+@media (max-width: 900px) {
   .ref-work { grid-template-columns: minmax(0, 1fr); gap: 8px; }
   .ref-pane { position: static; min-height: 0; margin: 2px 0 6px; }
-  .rp-body .code pre { min-height: 0; }
   /* панель стоит вплотную под пунктом — повторять его имя и описание незачем */
   .rp-name, .rp-desc { display: none; }
 }
@@ -660,6 +680,46 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
   white-space: nowrap;
 }
 @media (max-width: 720px) { .top-count { display: none; } }
+
+.learned {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 11.5px; color: var(--muted); white-space: nowrap;
+}
+.learned b { color: var(--ok); font-weight: 500; }
+.learned button {
+  border: 0; background: none; padding: 0; cursor: pointer; font: inherit;
+  color: var(--faint); text-decoration: underline; text-underline-offset: 2px;
+}
+.learned button:hover { color: var(--bad); }
+.pill-btn {
+  flex: 0 0 auto; padding: 7px 12px;
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--muted);
+  font: inherit; font-size: 13.5px; white-space: nowrap; cursor: pointer;
+  transition: color .15s, border-color .15s, background .15s;
+}
+.pill-btn:hover { color: var(--signal); border-color: var(--signal); }
+.pill-btn[aria-pressed="true"] {
+  color: var(--signal); border-color: var(--signal); background: var(--signal-bg);
+}
+@media (max-width: 860px) { .learned button { display: none; } }
+@media (max-width: 620px) { .learned { display: none; } }
+
+/* отметка «изучено» в шапке панели */
+.learn-box {
+  display: inline-flex; align-items: center; gap: 7px; flex: 0 0 auto;
+  font-size: 13px; color: var(--muted); cursor: pointer; user-select: none; white-space: nowrap;
+}
+.learn-box input { width: 15px; height: 15px; accent-color: var(--ok); cursor: pointer; margin: 0; }
+.learn-box:hover { color: var(--ink-2); }
+
+/* отметка в указателе для узкого экрана */
+.ix-group .tick {
+  width: 14px; height: 14px; flex: 0 0 auto; color: var(--ok);
+  opacity: 0; transition: opacity .15s;
+}
+.ix-group button.is-done .tick { opacity: 1; }
+.ix-group button.is-done { border-color: color-mix(in srgb, var(--ok) 45%, var(--line)); }
 
 /* ------------------------------------------------------- подсказка */
 

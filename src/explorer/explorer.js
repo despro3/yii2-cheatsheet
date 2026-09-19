@@ -10,6 +10,11 @@
   function store(k, v) { try { localStorage.setItem(k, v); } catch (e) { /* приватный режим */ } }
   function read(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
 
+  /* ключи общие с курсом и хабом: тема должна переноситься между страницами */
+  var KEY_THEME = 'yii2:theme';
+  var KEY_DONE = 'yii2:explorer-done';
+  var KEY_QUICK = 'yii2:explorer-quick';
+
   /* --------------------------------------------------------------------------- тема */
 
   var themeBtn = $('#theme-btn');
@@ -18,7 +23,7 @@
     if (mode === 'dark' || mode === 'light') root.setAttribute('data-theme', mode);
     else root.removeAttribute('data-theme');
   }
-  applyTheme(read('yii-explorer:theme'));
+  applyTheme(read(KEY_THEME));
 
   if (themeBtn) {
     themeBtn.addEventListener('click', function () {
@@ -27,9 +32,63 @@
         window.matchMedia('(prefers-color-scheme: dark)').matches);
       var next = dark ? 'light' : 'dark';
       applyTheme(next);
-      store('yii-explorer:theme', next);
+      store(KEY_THEME, next);
     });
   }
+
+  /* ------------------------------------------------------------- изученные узлы */
+
+  var learnCheck = $('#learn-check');
+  var learnedBox = $('#learned');
+  var learnedNum = $('#learned-n');
+
+  function doneList() {
+    try { var a = JSON.parse(read(KEY_DONE) || '[]'); return Array.isArray(a) ? a : []; }
+    catch (e) { return []; }
+  }
+
+  function renderDone() {
+    var done = doneList();
+    $$('[data-open]').forEach(function (el) {
+      el.classList.toggle('is-done', done.indexOf(el.getAttribute('data-open')) >= 0);
+    });
+    if (learnedNum) learnedNum.textContent = done.length;
+    if (learnedBox) learnedBox.hidden = done.length === 0;
+    if (learnCheck && current) learnCheck.checked = done.indexOf(current) >= 0;
+  }
+
+  function setDone(id, on) {
+    var a = doneList().filter(function (x) { return x !== id; });
+    if (on) a.push(id);
+    store(KEY_DONE, JSON.stringify(a));
+    renderDone();
+  }
+
+  if (learnCheck) learnCheck.addEventListener('change', function () {
+    if (current) setDone(current, learnCheck.checked);
+  });
+
+  var learnedReset = $('#learned-reset');
+  if (learnedReset) learnedReset.addEventListener('click', function () {
+    if (confirm('Сбросить отметки об изученных узлах?')) { store(KEY_DONE, '[]'); renderDone(); }
+  });
+
+  /* ------------------------------------------------------- быстрый режим */
+
+  var quickBtn = $('#quick-btn');
+  var quickTab = quickBtn ? quickBtn.getAttribute('data-tab') : null;
+  var quick = read(KEY_QUICK) === '1';
+
+  function renderQuick() {
+    if (quickBtn) quickBtn.setAttribute('aria-pressed', quick ? 'true' : 'false');
+  }
+  renderQuick();
+
+  if (quickBtn) quickBtn.addEventListener('click', function () {
+    quick = !quick;
+    store(KEY_QUICK, quick ? '1' : '0');
+    renderQuick();
+  });
 
   /* --------------------------------------------------------------------------- панель */
 
@@ -49,6 +108,7 @@
     closeTopic(false);
     lastFocused = document.activeElement;
     current = id;
+    if (learnCheck) learnCheck.checked = doneList().indexOf(id) >= 0;
 
     panelBody.appendChild(node);
     node.hidden = false;
@@ -92,11 +152,19 @@
   }
 
   $$('[data-open]').forEach(function (el) {
-    el.addEventListener('click', function (e) {
+    function open(e) {
       e.preventDefault();
-      openTopic(el.getAttribute('data-open'));
-    });
+      openTopic(el.getAttribute('data-open'), quick ? quickTab : undefined);
+    }
+    el.addEventListener('click', open);
+    /* узлы карты — <g role="link">: браузер не превращает Enter в клик сам */
+    if (el.tagName !== 'BUTTON' && el.tagName !== 'A') {
+      el.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') open(e);
+      });
+    }
   });
+  renderDone();
 
   $$('.tab').forEach(function (tab) {
     tab.addEventListener('click', function () {
@@ -220,6 +288,9 @@
 
   /* --------------------------------------------------------------------------- справочники: фильтр */
 
+  /* держать в паре с .ref-work в explorer.css */
+  var STACK_Q = '(max-width: 900px)';
+
   $$('.ref-block').forEach(function (block) {
     var input = $('.ref-search input', block);
     var count = $('.ref-count', block);
@@ -233,7 +304,7 @@
     var rpName = $('.rp-name', pane);
     var rpDesc = $('.rp-desc', pane);
     var rpBody = $('.rp-body', pane);
-    var narrow = window.matchMedia('(max-width: 760px)');
+    var narrow = window.matchMedia(STACK_Q);
     var hoverable = window.matchMedia('(hover: hover)').matches;
     var active = items[0];
 
@@ -256,6 +327,19 @@
       rpDesc.innerHTML = $('.ref-d', btn).innerHTML;
       rpBody.innerHTML = $('.ref-body', active).innerHTML;
       place();
+      markOverflow();
+    }
+
+    /* длинная строка прокручивается — отмечаем это тенью, иначе читается как обрезка */
+    function markOverflow() {
+      var fig = $('.code', rpBody);
+      var pre = fig && $('pre', fig);
+      if (!pre) return;
+      var more = function () {
+        fig.classList.toggle('has-more', pre.scrollWidth - pre.scrollLeft - pre.clientWidth > 2);
+      };
+      more();
+      pre.addEventListener('scroll', more, { passive: true });
     }
 
     function visible() {
@@ -281,6 +365,7 @@
     });
 
     place();
+    markOverflow();
     if (narrow.addEventListener) narrow.addEventListener('change', place);
 
     if (!input) return;
