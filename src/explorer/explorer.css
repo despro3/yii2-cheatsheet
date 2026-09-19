@@ -130,7 +130,10 @@
 
 body {
   margin: 0;
-  background: var(--bg);
+  /* мягкий отлив в углу: на плоской заливке страница выглядит старше, чем она есть */
+  background-color: var(--bg);
+  background-image: linear-gradient(152deg, var(--signal-bg), transparent 40rem);
+  background-repeat: no-repeat;
   color: var(--ink);
   font-family: var(--font-body);
   font-size: 16px;
@@ -444,23 +447,64 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
 }
 .ref-count { font-family: var(--font-mono); font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
 
-.ref { display: grid; gap: 8px; }
-.ref-item { border: 1px solid var(--line); border-radius: var(--r-sm); background: var(--surface); overflow: hidden; }
-.ref-item.open { border-color: var(--pc, var(--signal)); }
+.ref-work {
+  display: grid; gap: 16px;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+  align-items: start;
+}
+.ref { display: grid; gap: 2px; align-content: start; min-width: 0; }
+.ref-item { border-radius: var(--r-sm); overflow: hidden; min-width: 0; }
 .ref-btn {
-  width: 100%; display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: baseline;
-  padding: 12px 14px; border: 0; background: none; color: inherit; font: inherit;
+  width: 100%; display: grid; grid-template-columns: minmax(130px, max-content) minmax(0, 1fr); gap: 12px;
+  align-items: baseline;
+  padding: 9px 12px; border: 0; border-left: 2px solid transparent;
+  border-radius: var(--r-sm); background: none; color: inherit; font: inherit;
   text-align: left; cursor: pointer;
 }
 .ref-btn:hover { background: var(--surface-2); }
-.ref-n { font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--pc, var(--signal)); }
-.ref-d { font-size: 14px; color: var(--ink-2); line-height: 1.5; }
-.ref-chev { color: var(--faint); transition: transform .18s; align-self: center; }
-.ref-chev svg { width: 14px; height: 14px; display: block; }
-.ref-item.open .ref-chev { transform: rotate(90deg); color: var(--pc, var(--signal)); }
-.ref-body { padding: 0 14px 14px; display: grid; gap: 12px; }
+.ref-item.is-active .ref-btn {
+  background: var(--surface-2);
+  border-left-color: var(--pc, var(--signal));
+}
+.ref-n { min-width: 0; font-family: var(--font-mono); font-size: 13px; font-weight: 500; color: var(--pc, var(--signal)); overflow-wrap: anywhere; }
+.ref-d { min-width: 0; font-size: 14px; color: var(--ink-2); line-height: 1.45; overflow-wrap: anywhere; }
+.ref-body { display: grid; gap: 12px; }
+
+/* панель примера: держит выбранный пункт рядом со списком */
+.ref-pane {
+  position: sticky; top: 56px;
+  display: grid; grid-template-columns: minmax(0, 1fr); gap: 8px; align-content: start; min-width: 0;
+  min-height: 300px;
+  padding: 14px 15px 15px;
+  border: 1px solid var(--line); border-radius: var(--r);
+  background: var(--surface-2);
+}
+.rp-kicker {
+  margin: 0; font-family: var(--font-mono); font-size: 10.5px;
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.rp-name {
+  margin: 0; font-family: var(--font-mono); font-size: 14.5px; font-weight: 600;
+  color: var(--pc, var(--signal)); line-height: 1.3; word-break: break-word;
+}
+/* минимумы гасят прыжок вёрстки при переходе к пункту с более коротким текстом */
+.rp-desc { margin: 0; min-height: 2.9em; font-size: 14px; color: var(--ink-2); line-height: 1.45; overflow-wrap: anywhere; }
+.rp-body { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; min-width: 0; }
+.rp-body > * { min-width: 0; }
+.rp-body .ref-o { overflow-wrap: anywhere; }
+.rp-body .code pre { min-height: 118px; }
 .ref-o { font-size: 13.5px; color: var(--muted); }
 .ref-o b { color: var(--ink-2); font-weight: 500; }
+
+/* узкий экран: панель переезжает под выбранный пункт — до неё иначе не дотянуться */
+@media (max-width: 760px) {
+  .ref-work { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .ref-pane { position: static; min-height: 0; margin: 2px 0 6px; }
+  .rp-body .code pre { min-height: 0; }
+  /* панель стоит вплотную под пунктом — повторять его имя и описание незачем */
+  .rp-name, .rp-desc { display: none; }
+}
+
 .ref-empty { padding: 18px; text-align: center; color: var(--muted); font-size: 14px; }
 
 /* ----------------------------------------------------------------- демо */
@@ -570,8 +614,7 @@ figure.dgf figcaption { margin-top: 10px; font-size: 13.5px; color: var(--muted)
   .row2 { grid-template-columns: 1fr; }
   .kv-row { grid-template-columns: 1fr; }
   .kv-k { border-bottom: 1px solid var(--line); }
-  .ref-btn { grid-template-columns: 1fr auto; }
-  .ref-n { grid-column: 1 / -1; }
+  .ref-btn { grid-template-columns: minmax(0, 1fr); gap: 3px; }
 }
 
 @media (prefers-reduced-motion: reduce) {

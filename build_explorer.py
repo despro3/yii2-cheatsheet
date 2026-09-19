@@ -36,8 +36,6 @@ GROUP_COLOR = {
     'object': 'var(--g-object)',
 }
 
-ICON_CHEVRON = ('<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" '
-                'stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>')
 ICON_SEARCH = ('<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5" fill="none" '
                'stroke="currentColor" stroke-width="2"/><path d="M16 16l4.5 4.5" stroke="currentColor" '
                'stroke-width="2" stroke-linecap="round"/></svg>')
@@ -83,8 +81,22 @@ def block_code(lang, title, code):
         head, site.highlight(code, lang))
 
 
+# сквозная нумерация списков: панели примера нужен собственный id для aria-controls
+REF_SEQ = [0]
+
+
 def block_ref(items):
+    """Список встроенного + панель примера.
+
+    Раскрывающийся список заставлял открывать пункты по одному и уезжал вниз
+    на каждом клике. Здесь выбранный пункт показывается рядом, так что 24
+    валидатора можно просмотреть, не теряя места в списке.
+    """
+    REF_SEQ[0] += 1
+    pane_id = 'rp-%d' % REF_SEQ[0]
     rows = []
+    head = ('', '')
+    lead = ''
     for n, item in enumerate(items):
         search = (item['n'] + ' ' + item.get('d', '') + ' ' + item.get('o', '')).lower()
         body = ''
@@ -92,15 +104,21 @@ def block_ref(items):
             body += '<p class="ref-o"><b>опции:</b> %s</p>' % inline(item['o'])
         if item.get('c'):
             body += '<figure class="code bare"><pre><code>%s</code></pre></figure>' % site.highlight(item['c'], 'php')
+        if n == 0:
+            # первый пункт разложен в панель прямо при сборке: до загрузки
+            # скрипта страница уже показывает пример, а не пустое место
+            head = (esc(item['n']), inline(item.get('d', '')))
+            lead = body
         rows.append(
-            '<div class="ref-item" data-search="%s">'
-            '<button type="button" class="ref-btn" aria-expanded="false">'
+            '<div class="ref-item%s" data-search="%s">'
+            '<button type="button" class="ref-btn" aria-controls="%s"%s>'
             '<span class="ref-n">%s</span>'
             '<span class="ref-d">%s</span>'
-            '<span class="ref-chev">%s</span>'
             '</button>'
             '<div class="ref-body" hidden>%s</div>'
-            '</div>' % (attr(search), esc(item['n']), inline(item.get('d', '')), ICON_CHEVRON, body))
+            '</div>' % (' is-active' if n == 0 else '', attr(search), pane_id,
+                        ' aria-current="true"' if n == 0 else '',
+                        esc(item['n']), inline(item.get('d', '')), body))
     return (
         '<div class="ref-block">'
         '<div class="ref-tools">'
@@ -108,9 +126,17 @@ def block_ref(items):
         'aria-label="Фильтр по списку"></label>'
         '<span class="ref-count">%d шт.</span>'
         '</div>'
+        '<div class="ref-work">'
         '<div class="ref">%s</div>'
+        '<div class="ref-pane" id="%s" role="region" aria-label="Пример выбранного пункта">'
+        '<p class="rp-kicker">пример</p>'
+        '<h4 class="rp-name">%s</h4>'
+        '<p class="rp-desc">%s</p>'
+        '<div class="rp-body">%s</div>'
+        '</div>'
+        '</div>'
         '<div class="ref-empty" hidden>Ничего не нашлось. Попробуйте другое слово.</div>'
-        '</div>' % (ICON_SEARCH, len(items), ''.join(rows)))
+        '</div>' % (ICON_SEARCH, len(items), ''.join(rows), pane_id, head[0], head[1], lead))
 
 
 def block_kv(pairs):
@@ -372,6 +398,7 @@ def build_index():
 
 
 def build_topics():
+    REF_SEQ[0] = 0
     out = []
     for t in data.TOPICS:
         tabs, panels = [], []

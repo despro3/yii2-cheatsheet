@@ -223,19 +223,65 @@
   $$('.ref-block').forEach(function (block) {
     var input = $('.ref-search input', block);
     var count = $('.ref-count', block);
+    var work = $('.ref-work', block);
+    var pane = $('.ref-pane', block);
     var items = $$('.ref-item', block);
     var empty = $('.ref-empty', block);
     var total = items.length;
+    if (!work || !pane || !total) return;
+
+    var rpName = $('.rp-name', pane);
+    var rpDesc = $('.rp-desc', pane);
+    var rpBody = $('.rp-body', pane);
+    var narrow = window.matchMedia('(max-width: 760px)');
+    var hoverable = window.matchMedia('(hover: hover)').matches;
+    var active = items[0];
+
+    /* на узком экране панель стоит под выбранным пунктом, на широком — в правой колонке */
+    function place() {
+      if (narrow.matches) active.parentNode.insertBefore(pane, active.nextSibling);
+      else work.appendChild(pane);
+    }
+
+    function show(item) {
+      if (!item) return;
+      if (item === active) { place(); return; }
+      $('.ref-btn', active).removeAttribute('aria-current');
+      active.classList.remove('is-active');
+      active = item;
+      active.classList.add('is-active');
+      var btn = $('.ref-btn', active);
+      btn.setAttribute('aria-current', 'true');
+      rpName.textContent = $('.ref-n', btn).textContent;
+      rpDesc.innerHTML = $('.ref-d', btn).innerHTML;
+      rpBody.innerHTML = $('.ref-body', active).innerHTML;
+      place();
+    }
+
+    function visible() {
+      return items.filter(function (it) { return !it.hidden; });
+    }
+
+    /* стрелками — к соседнему пункту; фокус сам покажет его в панели */
+    function step(dir) {
+      var vis = visible();
+      var next = vis[vis.indexOf(active) + dir];
+      if (next) $('.ref-btn', next).focus();
+    }
 
     items.forEach(function (item) {
       var btn = $('.ref-btn', item);
-      btn.addEventListener('click', function () {
-        var open = !item.classList.contains('open');
-        item.classList.toggle('open', open);
-        btn.setAttribute('aria-expanded', open ? 'true' : 'false');
-        $('.ref-body', item).hidden = !open;
+      btn.addEventListener('click', function () { show(item); });
+      btn.addEventListener('focus', function () { show(item); });
+      if (hoverable) btn.addEventListener('mouseenter', function () { show(item); });
+      btn.addEventListener('keydown', function (e) {
+        if (e.key === 'ArrowDown') { e.preventDefault(); step(1); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); step(-1); }
       });
     });
+
+    place();
+    if (narrow.addEventListener) narrow.addEventListener('change', place);
 
     if (!input) return;
     input.addEventListener('input', function () {
@@ -248,6 +294,9 @@
       });
       count.textContent = q ? shown + ' из ' + total : total + ' шт.';
       if (empty) empty.hidden = shown > 0;
+      work.hidden = shown === 0;
+      /* выбранный пункт мог уйти под фильтр — показываем первый оставшийся */
+      if (shown && active.hidden) show(visible()[0]);
     });
   });
 

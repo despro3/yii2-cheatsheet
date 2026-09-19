@@ -738,7 +738,12 @@ td:first-child code { font-weight: 500; }
    Хаб: выбор между курсом, справочником и выжимкой
    -------------------------------------------------------------------------- */
 
-body.hub { background: var(--bg); }
+body.hub {
+  /* мягкий отлив в углу: на плоской заливке страница выглядит старше, чем она есть */
+  background-color: var(--bg);
+  background-image: linear-gradient(152deg, var(--accent-soft), transparent 46rem);
+  background-repeat: no-repeat;
+}
 
 .hub-top {
   display: flex; align-items: center; gap: 12px;
