@@ -787,6 +787,8 @@ body.hub {
   text-decoration: none; transform: translateY(-3px);
   border-color: var(--hc); box-shadow: var(--shadow-lg);
 }
+/* общая обводка фокуса зелёная: на оранжевой и фиолетовой карточке это читалось как чужой элемент */
+.hub-card:focus-visible { outline-color: var(--hc); }
 .hub-kind {
   align-self: flex-start;
   font-family: var(--mono); font-size: 11px; letter-spacing: .1em; text-transform: uppercase;

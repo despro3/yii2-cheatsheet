@@ -805,6 +805,9 @@ td code { white-space: nowrap; }
   .progress-btn, .learned, .learned-cta, .nav-done, .link-btn { display: none !important; }
 }
 </style>
+<script>
+(function(){try{var t=localStorage.getItem('yii2:theme');if(t==='dark'||t==='light'){document.documentElement.setAttribute('data-theme',t);}}catch(e){}})();
+</script>
 
 <header class="topbar">
   <button type="button" id="menu-btn" class="icon-btn menu-btn" aria-label="Список разделов">
@@ -3739,7 +3742,7 @@ window.YII_INDEX=[{"s":0,"a":"intro","t":"Старт","d":1,"x":"Что тако
       : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M20.5 14.3A8.8 8.8 0 1 1 9.7 3.5a7 7 0 0 0 10.8 10.8z"/></svg>';
   }
 
-  applyTheme(read('yii-theme') || 'system');
+  applyTheme(read('yii2:theme') || 'system');
 
   themeBtn.addEventListener('click', function () {
     var current = root.getAttribute('data-theme');
@@ -3747,7 +3750,7 @@ window.YII_INDEX=[{"s":0,"a":"intro","t":"Старт","d":1,"x":"Что тако
       window.matchMedia('(prefers-color-scheme: dark)').matches);
     var next = dark ? 'light' : 'dark';
     applyTheme(next);
-    store('yii-theme', next);
+    store('yii2:theme', next);
   });
 
   /* ---------------- routing ---------------- */
