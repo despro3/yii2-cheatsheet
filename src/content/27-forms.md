@@ -148,14 +148,14 @@ public function actionUpload()
 ```
 
 ```php title="views/site/upload.php"
-<?php $form = ActiveForm::begin(['options' => ['enctype' => 'multipart/form-data']]) ?>
-    <?= $form->field($model, 'imageFile')->fileInput() ?>
+<?php $form = ActiveForm::begin() ?>
+    <?= $form->field($model, 'imageFile')->fileInput() ?>  <?php // enctype проставится сам ?>
     <button>Загрузить</button>
 <?php ActiveForm::end() ?>
 ```
 
 > [!GOTCHA]
-> Три вещи, без которых не работает: `enctype="multipart/form-data"` у формы, `UploadedFile::getInstance()` в контроллере (через `load()` файл не придёт) и `skipOnEmpty => false`, если файл обязателен. И никогда не сохраняйте под именем, которое прислал клиент, — генерируйте своё.
+> Две вещи, без которых не работает: `UploadedFile::getInstance()` в контроллере (через `load()` файл не придёт) и `skipOnEmpty => false`, если файл обязателен. Третья — `enctype="multipart/form-data"` у формы — тоже обязательна, но с 2.0.8 `ActiveForm` дописывает её сам, как только встретит `fileInput()`; руками её задают только в форме, собранной без `ActiveForm`. И никогда не сохраняйте под именем, которое прислал клиент, — генерируйте своё.
 
 ### Несколько файлов
 
@@ -299,7 +299,7 @@ $('#contact-form').yiiActiveForm('find', 'contactform-email');   // настро
 Q: Почему после `load()` атрибут остался пустым, хотя поле было в POST?
 A: Атрибут не «безопасный»: он не упомянут в `rules()` (или в правиле `safe`) для текущего сценария, и массовое присваивание его пропустило.
 Q: Что нужно для загрузки файла помимо `fileInput()`?
-A: `enctype="multipart/form-data"` у формы и `UploadedFile::getInstance($model, 'attr')` в контроллере; затем `saveAs()`.
+A: `UploadedFile::getInstance($model, 'attr')` в контроллере, затем `saveAs()`. `enctype="multipart/form-data"` у формы тоже обязателен, но `ActiveForm` добавляет его сам.
 Q: Как проверить `unique` на клиенте без перезагрузки страницы?
 A: Включить `enableAjaxValidation` и в действии вернуть `ActiveForm::validate($model)` в формате JSON для AJAX-запроса.
 Q: Как назвать поля, чтобы `Model::loadMultiple()` разложил их по объектам?

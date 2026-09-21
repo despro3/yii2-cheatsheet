@@ -176,7 +176,7 @@ public function actionView($id, $version = null) { /* ... */ }
 `renderContent($html)` — обернуть готовую строку в шаблон
 `redirect($url, $statusCode = 302)` — перенаправление; `$url` может быть маршрутом-массивом
 `goHome()`, `goBack()`, `refresh()` — на главную, на предыдущий URL (см. `Url::remember()`), перезагрузка текущей страницы
-`asJson($data)`, `asXml($data)` — ответ в нужном формате без правки `response->format`
+`asJson($data)`, `asXml($data)` — сами выставляют `response->format` и возвращают объект ответа: его нужно вернуть из действия
 `behaviors()` — фильтры контроллера: доступ, HTTP-методы, кеш
 `$layout` — свой шаблон для этого контроллера; `false` — без шаблона
 `$enableCsrfValidation` — проверка CSRF-токена для POST (по умолчанию включена)

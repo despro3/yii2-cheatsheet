@@ -55,7 +55,7 @@ $customers = Customer::findBySql('SELECT * FROM customer WHERE status=:status', 
 ```
 
 > [!GOTCHA] Инъекция через findOne()
-> `Customer::findOne(Yii::$app->request->get('id'))` — опасно: если в `id` передать массив `['id' => 1, 'status' => 1]`, он превратится в условие. Приводите тип (`(int)$id`) или пишите `findOne(['id' => $id])` явно. С 2.0.15 фреймворк сам выбрасывает исключение на такие попытки, но привычка остаётся.
+> `Customer::findOne(Yii::$app->request->get('id'))` — опасно: если в `id` передать массив `['id' => 1, 'status' => 1]`, он превратится в условие. Приводите тип (`(int)$id`) или пишите `findOne(['id' => $id])` явно. С 2.0.15 фреймворк отбрасывает часть таких массивов, но полагаться на это не стоит: ключами по-прежнему могут быть настоящие столбцы таблицы.
 
 ### Форма результата
 
@@ -399,18 +399,19 @@ Customer::find()->with(['comments' => function (CommentQuery $q) { $q->active();
 ```php
 class Room extends ActiveRecord
 {
-    public $length;      // будет заполнен из SELECT
-    public $width;
-
-    public function getVolume() { return $this->length * $this->width; }
+    public $volume;      // НЕ столбец таблицы — заполнится из псевдонима в SELECT
 }
 
 $rooms = Room::find()
-    ->select(['{{room}}.*', 'length' => 'length', 'width' => 'width'])   // вычисляемые/дополнительные столбцы
+    ->select(['{{room}}.*', '([[length]] * [[width]] * [[height]]) AS volume'])
+    ->where(['>', 'volume', 10])        // по вычисленному столбцу можно фильтровать и сортировать
+    ->orderBy('volume DESC')
     ->all();
 ```
 
-Публичные свойства класса, совпадающие с псевдонимами в `select()`, заполняются при загрузке. Так же добавляют агрегаты по связям: `->select(['customer.*', 'ordersCount' => 'COUNT(o.id)'])->joinWith('orders o', false)->groupBy('customer.id')`.
+Заполняются публичные свойства, которых **нет** среди столбцов таблицы. Объявлять так
+существующий столбец бессмысленно: его значение уйдёт в атрибуты, а одноимённое
+свойство останется пустым — и вычисление по нему даст ноль. Так же добавляют агрегаты по связям: `->select(['customer.*', 'ordersCount' => 'COUNT(o.id)'])->joinWith('orders o', false)->groupBy('customer.id')`.
 
 :::quiz Проверь себя
 Q: Что означает `['customer_id' => 'id']` в `$this->hasMany(Order::class, ['customer_id' => 'id'])`?

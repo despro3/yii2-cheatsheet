@@ -127,7 +127,8 @@ Yii::$app->user->identity->username;
 
 Yii::$app->user->getReturnUrl();         // куда вернуть после логина
 Yii::$app->user->setReturnUrl($url);
-Yii::$app->user->loginRequired();        // редирект на loginUrl с сохранением returnUrl (или 403 для AJAX)
+Yii::$app->user->loginRequired();        // редирект на loginUrl с сохранением returnUrl
+// 403 вместо редиректа — если клиент по заголовку Accept не ждёт HTML (например, просит JSON)
 Yii::$app->user->switchIdentity($newUser, $duration);   // сменить пользователя (например, «войти как»)
 ```
 
