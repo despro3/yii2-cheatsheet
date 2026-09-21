@@ -783,6 +783,10 @@ body.hub {
   box-shadow: var(--shadow);
   transition: transform .16s ease, border-color .16s, box-shadow .16s;
 }
+/* карточка про другой предмет занимает всю ширину: в ряду из трёх она висела бы сиротой */
+.hub-card-wide { grid-column: 1 / -1; }
+.hub-card-wide p { max-width: 68ch; }
+
 .hub-card:hover {
   text-decoration: none; transform: translateY(-3px);
   border-color: var(--hc); box-shadow: var(--shadow-lg);

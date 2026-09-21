@@ -947,13 +947,25 @@ def reading_time(words, code_lines):
     return max(1, int(round(minutes)))
 
 
-def explorer_counts():
-    """Числа для карточки каталога на главной — берутся из самого каталога."""
-    sys.path.insert(0, os.path.join(SRC, 'explorer'))
+def catalog_counts(subdir):
+    """Числа для карточки справочника на хабе — берутся из самого справочника.
+
+    Справочников два (src/explorer и src/php), и модуль содержимого у обоих
+    называется content.py, поэтому загружаем по пути и под разными именами.
+    """
+    import importlib.util
+
+    path = os.path.join(SRC, subdir, 'content.py')
+    empty = {'topics': 0, 'refs': 0, 'demos': 0}
+    if not os.path.exists(path):             # справочника рядом нет — карточка обойдётся нулями
+        return empty
+    sys.path.insert(0, os.path.join(SRC, subdir))
     try:
-        import content as catalogue
-    except ImportError:                      # каталога рядом нет — карточка обойдётся нулями
-        return {'topics': 0, 'refs': 0, 'demos': 0}
+        spec = importlib.util.spec_from_file_location('catalog_' + subdir, path)
+        catalogue = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(catalogue)
+    except ImportError:
+        return empty
     blocks = [b for t in catalogue.TOPICS for _, _, bl in t['tabs'] for b in bl]
     return {
         'topics': len(catalogue.TOPICS),
@@ -1119,7 +1131,8 @@ def main():
         "    ->orderBy(['created_at' => SORT_DESC])\n"
         "    ->limit(10)\n"
         "    ->all();", 'php')
-    catalogue = explorer_counts()
+    catalogue = catalog_counts('explorer')
+    php = catalog_counts('php')
     index_main = fill(index_tpl, {
         'hero_code': hero_code,
         'explorer_topics': str(catalogue['topics']),
@@ -1144,6 +1157,9 @@ def main():
         'explorer_topics': str(catalogue['topics']),
         'explorer_refs': str(catalogue['refs']),
         'explorer_demos': str(catalogue['demos']),
+        'php_topics': str(php['topics']),
+        'php_refs': str(php['refs']),
+        'php_demos': str(php['demos']),
     }))
 
     # всё одной страницей
@@ -1176,10 +1192,11 @@ def main():
           'window.PAGE_LIST=' + json.dumps([{'id': p['id'], 't': p['meta']['title'], 'g': p['part']['id']} for p in ordered],
                                              ensure_ascii=False, separators=(',', ':')) + ';\n')
     write(os.path.join(OUT, '404.html'), fill(template('404.html'), {'site': esc(SITE_NAME)}))
-    explorer = os.path.join(ROOT, 'build_explorer.py')
-    if os.path.exists(explorer):
-        # docs/ очищается выше, поэтому каталог механизмов пересобираем следом
-        subprocess.run([sys.executable, explorer], check=True)
+    # docs/ очищается выше, поэтому справочники пересобираем следом
+    for name in ('build_explorer.py', 'build_php.py'):
+        script = os.path.join(ROOT, name)
+        if os.path.exists(script):
+            subprocess.run([sys.executable, script], check=True)
 
     print('Готово: %s' % OUT)
     return 0

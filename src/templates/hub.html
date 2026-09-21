@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Разбор Yii 2</title>
-<meta name="description" content="Конспект официального руководства Yii 2.0 на русском: курс из {{pages_count}} разделов, выжимка в 17 разделах и справочник из {{explorer_topics}} механизмов.">
+<meta name="description" content="Конспект официального руководства Yii 2.0 на русском: курс из {{pages_count}} разделов, выжимка в 17 разделах, справочник из {{explorer_topics}} механизмов фреймворка и справочник по PHP 8+ из {{php_topics}} узлов.">
 <meta name="color-scheme" content="light dark">
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,9 +30,10 @@
 
 <main class="hub-main" id="content">
   <section class="hub-hero">
-    <p class="eyebrow">Конспект официального руководства · Yii 2.0 · на русском</p>
+    <p class="eyebrow">Конспект официального руководства · Yii 2.0 · и справочник по PHP 8+</p>
     <h1>Разбор Yii 2</h1>
-    <p class="lead">Одно руководство, три способа с ним работать. Выберите, что нужно прямо сейчас.</p>
+    <p class="lead">Одно руководство, три способа с ним работать — и отдельный справочник по самому языку,
+      на котором всё это написано. Выберите, что нужно прямо сейчас.</p>
   </section>
 
   <div class="hub-cards">
@@ -59,7 +60,7 @@
       <span class="hub-go">Открыть выжимку →</span>
     </a>
 
-    <a class="hub-card" style="--hc: var(--why)" href="explorer.html">
+    <a class="hub-card" style="--hc: var(--example)" href="explorer.html">
       <span class="hub-kind">найти и кликнуть</span>
       <h2>Справочник Yii 2</h2>
       <p>{{explorer_topics}} механизмов фреймворка карточками. Клик раскрывает панель: схема работы, полный перечень всего встроенного, заготовка своего варианта и грабли. Внутри четыре живые демонстрации.</p>
@@ -70,10 +71,26 @@
       <span class="hub-go">Открыть справочник →</span>
     </a>
 
+    <a class="hub-card hub-card-wide" style="--hc: var(--why)" href="php.html">
+      <span class="hub-kind">про сам язык</span>
+      <h2>Справочник PHP 8+</h2>
+      <p>{{php_topics}} механизмов языка одной схемой: типы и операторы, объекты, стандартная библиотека,
+        Composer и PSR. У каждой возможности отмечена версия, с которой она работает, — от 8.0 до 8.5.
+        Внутри {{php_demos}} живые демонстрации, которые считал сам PHP.</p>
+      <ul class="hub-stats">
+        <li><b>{{php_topics}}</b> узлов</li>
+        <li><b>{{php_refs}}</b> возможностей</li>
+        <li><b>8.0–8.5</b> версии</li>
+      </ul>
+      <span class="hub-go">Открыть справочник →</span>
+    </a>
+
   </div>
 
   <footer class="hub-foot">
-    <p>Собрано по <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">официальному руководству Yii 2.0</a> (ветка <code>guide-ru</code> репозитория yiisoft/yii2). Тексты — авторский пересказ, примеры кода переписаны под суть. Ссылки на исходные главы есть внизу каждого раздела курса.</p>
+    <p>Справочник по PHP собран по <a href="https://www.php.net/manual/ru/" target="_blank" rel="noopener">руководству PHP</a>
+      и файлам UPGRADING из репозитория php-src; таблицы в демонстрациях посчитал сам PHP.</p>
+    <p>Остальное собрано по <a href="https://www.yiiframework.com/doc/guide/2.0/ru" target="_blank" rel="noopener">официальному руководству Yii 2.0</a> (ветка <code>guide-ru</code> репозитория yiisoft/yii2). Тексты — авторский пересказ, примеры кода переписаны под суть. Ссылки на исходные главы есть внизу каждого раздела курса.</p>
   </footer>
 </main>
 
