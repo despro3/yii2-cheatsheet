@@ -198,7 +198,7 @@
 <span class="t-va">$model</span>-&gt;<span class="t-fn">getActiveValidators</span>();  <span class="t-cm">// валидаторы сценария</span>
 <span class="t-va">$model</span>-&gt;<span class="t-fn">getActiveValidators</span>(<span class="t-st">'email'</span>);
 <span class="t-va">$model</span>-&gt;validators;             <span class="t-cm">// ArrayObject всех валидаторов — можно добавить объект на лету</span></code></pre></figure>
-<p>Правило активно, если сценарий модели попадает в <code>on</code> (или <code>on</code> не задан) и не попадает в <code>except</code>. Атрибуты активных правил становятся <em>безопасными</em> для <code>load()</code> — кроме тех, что упомянуты только в правилах с <code>'safe' =&gt; false</code> или с восклицательным знаком в <code>scenarios()</code>.</p>
+<p>Правило активно, если сценарий модели попадает в <code>on</code> (или <code>on</code> не задан) и не попадает в <code>except</code>. Атрибуты активных правил становятся <em>безопасными</em> для <code>load()</code> — кроме тех, что помечены восклицательным знаком в <code>scenarios()</code>.</p>
 <h2 id="pustye-znacheniya">Пустые значения<a class="anchor" href="#pustye-znacheniya" aria-label="Ссылка на раздел">#</a></h2>
 <p>По умолчанию валидатор <strong>пропускает пустой</strong> атрибут (<code>null</code>, <code>''</code>, <code>[]</code>) — проверяет только <code>required</code>. Меняется опцией:</p>
 <figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code>[<span class="t-st">'email'</span>, <span class="t-st">'email'</span>, <span class="t-st">'skipOnEmpty'</span> =&gt; <span class="t-lt">false</span>],

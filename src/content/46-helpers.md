@@ -128,7 +128,7 @@ Json::htmlEncode($data);                   // безопасно для вста
 // всегда массив (assoc = true); бросает InvalidArgumentException при ошибке
 Json::decode($json);
 Json::decode($json, false);                // stdClass
-Json::prettyPrint = true;                  // отладка
+Json::$prettyPrint = true;                 // отладка (статическое свойство)
 Json::errorSummary($model);                // ошибки модели как JSON
 ```
 
@@ -166,7 +166,7 @@ Url::isRelative($url); Url::ensureScheme('//host/path', 'https');
 
 :::kv
 `Inflector` — `pluralize('person')` → people, `singularize`, `camelize`, `camel2id('PostTag')` → post-tag, `id2camel`, `humanize`, `slug('Привет мир')` → privet-mir, `titleize`, `classify`, `tableize`, `ordinalize(1)` → 1st
-`StringHelper` — `byteLength`, `byteSubstr`, `truncate($s, 20, '…')`, `truncateWords`, `startsWith`, `endsWith`, `explode(',', $s, true, true)` (trim + skip empty), `basename`, `dirname`, `mb_ucfirst`, `base64UrlEncode`
+`StringHelper` — `byteLength`, `byteSubstr`, `truncate($s, 20, '…')`, `truncateWords`, `startsWith`, `endsWith`, `explode($s, ',', true, true)` (строка первым аргументом; trim + skip empty), `basename`, `dirname`, `mb_ucfirst`, `base64UrlEncode`
 `FileHelper` — `normalizePath`, `findFiles($dir, ['only' => ['*.php'], 'except' => ['/tests/']])`, `createDirectory`, `removeDirectory`, `copyDirectory`, `getMimeType`, `getExtensionsByMimeType`, `localize`
 `VarDumper` — `dump($var, $depth, $highlight)`, `dumpAsString`, `export` — читаемый вывод любых структур
 `Console` — цвета, `ansiFormat`, `prompt`, `confirm`, `select`, прогресс-бары, `wrapText`, `getScreenSize`

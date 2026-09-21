@@ -399,9 +399,10 @@
 <span class="t-tg">&lt;?=</span> <span class="t-cl">Html</span>::<span class="t-fn">submitButton</span>(<span class="t-st">'Сохранить'</span>, [<span class="t-st">'class'</span> =&gt; <span class="t-st">'btn btn-primary'</span>]) <span class="t-tg">?&gt;</span>
 
 <span class="t-tg">&lt;?php</span> <span class="t-cl">ActiveForm</span>::<span class="t-fn">end</span>() <span class="t-tg">?&gt;</span></code></pre></figure>
-<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// файл из формы</span>
+<figure class="code" data-lang="php"><div class="code-head"><span class="code-lang">PHP</span></div><button type="button" class="copy" aria-label="Копировать код" title="Копировать">Копировать</button><pre><code><span class="t-cm">// файл из формы; имя генерируем своё — присланному доверять нельзя</span>
 <span class="t-va">$model</span>-&gt;file = <span class="t-cl">UploadedFile</span>::<span class="t-fn">getInstance</span>(<span class="t-va">$model</span>, <span class="t-st">'file'</span>);
-<span class="t-va">$model</span>-&gt;file-&gt;<span class="t-fn">saveAs</span>(<span class="t-st">'@webroot/uploads/'</span> . <span class="t-va">$model</span>-&gt;file-&gt;name);
+<span class="t-va">$name</span> = <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;security-&gt;<span class="t-fn">generateRandomString</span>(<span class="t-nu">16</span>);
+<span class="t-va">$model</span>-&gt;file-&gt;<span class="t-fn">saveAs</span>(<span class="t-st">'@webroot/uploads/'</span> . <span class="t-va">$name</span> . <span class="t-st">'.'</span> . <span class="t-va">$model</span>-&gt;file-&gt;extension);
 
 <span class="t-cm">// список</span>
 <span class="t-va">$dataProvider</span> = <span class="t-kw">new</span> <span class="t-cl">ActiveDataProvider</span>([
@@ -461,7 +462,7 @@
 <span class="t-st">'rules'</span> =&gt; [
     [<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'actions'</span> =&gt; [<span class="t-st">'login'</span>], <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'?'</span>]],   <span class="t-cm">// гости</span>
     [<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'roles'</span> =&gt; [<span class="t-st">'@'</span>]],                            <span class="t-cm">// вошедшие</span>
-    [<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'matchCallback'</span> =&gt; <span class="t-kw">fn</span> () =&gt; <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;identity-&gt;isAdmin],
+    [<span class="t-st">'allow'</span> =&gt; <span class="t-lt">true</span>, <span class="t-st">'matchCallback'</span> =&gt; <span class="t-kw">fn</span> () =&gt; <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">can</span>(<span class="t-st">'admin'</span>)],
     <span class="t-cm">// также: 'ips', 'verbs', 'controllers', 'denyCallback'</span>
 ],
 

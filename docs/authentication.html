@@ -244,7 +244,8 @@
 
 <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">getReturnUrl</span>();         <span class="t-cm">// куда вернуть после логина</span>
 <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">setReturnUrl</span>(<span class="t-va">$url</span>);
-<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">loginRequired</span>();        <span class="t-cm">// редирект на loginUrl с сохранением returnUrl (или 403 для AJAX)</span>
+<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">loginRequired</span>();        <span class="t-cm">// редирект на loginUrl с сохранением returnUrl</span>
+<span class="t-cm">// 403 вместо редиректа — если клиент по заголовку Accept не ждёт HTML (например, просит JSON)</span>
 <span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;user-&gt;<span class="t-fn">switchIdentity</span>(<span class="t-va">$newUser</span>, <span class="t-va">$duration</span>);   <span class="t-cm">// сменить пользователя (например, «войти как»)</span></code></pre></figure>
 <p><code>identity</code> загружается лениво один раз за запрос — <code>findIdentity()</code> вызовется только если к нему обратились.</p>
 <h2 id="dostup-tolko-dlya-voshedshih">Доступ только для вошедших<a class="anchor" href="#dostup-tolko-dlya-voshedshih" aria-label="Ссылка на раздел">#</a></h2>

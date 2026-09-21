@@ -87,7 +87,7 @@ return $config;
 'container' => [
     'definitions' => [
         'yii\widgets\LinkPager' => ['maxButtonCount' => 5],
-        'yii\mail\MailInterface' => 'yii\symfonymailer\Mailer',
+        'yii\mail\MailerInterface' => 'yii\symfonymailer\Mailer',
     ],
     'singletons' => [],
 ],

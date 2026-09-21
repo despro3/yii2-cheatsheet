@@ -299,9 +299,10 @@ AppAsset::register($this);
 ```
 
 ```php
-// файл из формы
+// файл из формы; имя генерируем своё — присланному доверять нельзя
 $model->file = UploadedFile::getInstance($model, 'file');
-$model->file->saveAs('@webroot/uploads/' . $model->file->name);
+$name = Yii::$app->security->generateRandomString(16);
+$model->file->saveAs('@webroot/uploads/' . $name . '.' . $model->file->extension);
 
 // список
 $dataProvider = new ActiveDataProvider([
@@ -375,7 +376,7 @@ Yii::$app->security->generateRandomString();
 'rules' => [
     ['allow' => true, 'actions' => ['login'], 'roles' => ['?']],   // гости
     ['allow' => true, 'roles' => ['@']],                            // вошедшие
-    ['allow' => true, 'matchCallback' => fn () => Yii::$app->user->identity->isAdmin],
+    ['allow' => true, 'matchCallback' => fn () => Yii::$app->user->can('admin')],
     // также: 'ips', 'verbs', 'controllers', 'denyCallback'
 ],
 
