@@ -228,14 +228,14 @@ if ($model->validate()) {
 
 $model->validate(['email', 'name']);   // только эти атрибуты'''),
             ('note', 'trap', 'Пустое значение проходит мимо правила',
-             'По умолчанию любой валидатор кроме `required` пропускает `null`, `\'\'` и `[]`. '
+             'По умолчанию любой проверяющий валидатор, кроме `required` и `captcha`, пропускает `null`, `\'\'` и `[]`. '
              'Хотите проверять и пустые — добавьте `\'skipOnEmpty\' => false`.'),
         ]),
         ('all', 'Все 24 валидатора', [
             ('p', 'Каждый валидатор — класс в `yii\\validators`, но в правилах пишут короткое имя. '
                   'Общие опции у всех: `message`, `on`, `except`, `skipOnEmpty`, `skipOnError`, `when`, `whenClient`, `enableClientValidation`.'),
             ('ref', [
-                {'n': 'required', 'd': 'Значение не пустое. Единственный проверяющий валидатор, который работает и с пустым значением: у остальных включён `skipOnEmpty`. У `default`, `filter` и `trim` он тоже выключен, но они не проверяют, а меняют значение.', 'o': 'requiredValue — ждать конкретное значение; strict — сравнивать строго', 'c': "[['username', 'password'], 'required'],\n['accept', 'required', 'requiredValue' => 1,\n    'message' => 'Примите условия'],"},
+                {'n': 'required', 'd': 'Значение не пустое. Один из двух проверяющих валидаторов, которые работают и с пустым значением (второй — `captcha`): у остальных включён `skipOnEmpty`. У `default`, `filter` и `trim` он тоже выключен, но они не проверяют, а меняют значение.', 'o': 'requiredValue — ждать конкретное значение; strict — сравнивать строго', 'c': "[['username', 'password'], 'required'],\n['accept', 'required', 'requiredValue' => 1,\n    'message' => 'Примите условия'],"},
                 {'n': 'safe', 'd': 'Ничего не проверяет, но делает атрибут безопасным для массового присваивания через load().', 'o': 'без опций', 'c': "['notes', 'safe'],"},
                 {'n': 'default', 'd': 'Подставляет значение, если атрибут пуст. Не проверяет, а заполняет — ставьте до проверяющих правил.', 'o': 'value — значение или замыкание', 'c': "['status', 'default', 'value' => 1],\n['created_at', 'default',\n    'value' => function ($m) { return time(); }],"},
                 {'n': 'filter', 'd': 'Прогоняет значение через callback и записывает результат обратно в атрибут.', 'o': 'filter — строка, замыкание или [класс, метод]; skipOnArray', 'c': "['username', 'filter', 'filter' => 'strtolower'],\n['phone', 'filter', 'filter' => function ($v) {\n    return preg_replace('/\\D/', '', $v);\n}],"},
@@ -258,7 +258,7 @@ $model->validate(['email', 'name']);   // только эти атрибуты''
                 {'n': 'unique', 'd': 'Такой записи ещё нет. При обновлении сама себя из проверки исключает.', 'o': 'targetClass, targetAttribute, filter, comboNotUnique', 'c': "['username', 'unique'],\n[['slug', 'lang'], 'unique',\n    'targetAttribute' => ['slug', 'lang']],"},
                 {'n': 'file', 'd': 'Загруженный файл: расширение, тип, размер, количество.', 'o': 'extensions, mimeTypes, minSize, maxSize, maxFiles, checkExtensionByMimeType', 'c': "['doc', 'file', 'extensions' => ['pdf', 'docx'],\n    'maxSize' => 5 * 1024 * 1024,\n    'skipOnEmpty' => false],\n['docs', 'file', 'maxFiles' => 10],"},
                 {'n': 'image', 'd': 'Всё, что умеет file, плюс размеры картинки в пикселях.', 'o': 'minWidth, maxWidth, minHeight, maxHeight, notImage', 'c': "['avatar', 'image', 'extensions' => 'png, jpg',\n    'minWidth' => 100, 'maxWidth' => 2000],"},
-                {'n': 'captcha', 'd': 'Сверяет ввод с картинкой, которую отдаёт CaptchaAction. Нужен GD или ImageMagick.', 'o': 'captchaAction, caseSensitive', 'c': "['verifyCode', 'captcha'],\n// в контроллере:\n'captcha' => ['class' => CaptchaAction::class],"},
+                {'n': 'captcha', 'd': 'Сверяет ввод с картинкой, которую отдаёт CaptchaAction. Нужен GD или ImageMagick. Как и `required`, проверяет пустое значение — незаполненное поле сразу даёт ошибку.', 'o': 'captchaAction, caseSensitive', 'c': "['verifyCode', 'captcha'],\n// в контроллере:\n'captcha' => ['class' => CaptchaAction::class],"},
             ]),
         ]),
         ('own', 'Свой валидатор', [
@@ -1233,7 +1233,7 @@ topic(
             ('h', 'Завершающие методы'),
             ('kv', [
                 ('all()', 'все строки'),
-                ('one()', 'первая строка или false; просто добавляет LIMIT 1'),
+                ('one()', 'первая строка или false; LIMIT 1 сам не добавляет — при необходимости ставьте limit(1)'),
                 ('column()', 'массив значений первого столбца'),
                 ('scalar()', 'одно значение из первой строки'),
                 ('exists()', 'есть ли хоть одна строка'),
@@ -1306,8 +1306,8 @@ $result = Yii::$app->db->cache(function ($db) {
             ('note', 'trap', 'count() игнорирует limit',
              'Агрегаты специально отбрасывают `limit`, `offset` и `orderBy`, чтобы считать общее количество для постраничной навигации. '
              'Это не баг, но удивляет.'),
-            ('note', 'warn', 'one() не проверяет единственность',
-             'Метод просто добавляет `LIMIT 1` и отдаёт первую попавшуюся строку. Если вы рассчитывали на одну запись, проверяйте это сами.'),
+            ('note', 'warn', 'one() не добавляет LIMIT 1',
+             'Запрос уходит в базу как есть, а PHP забирает из результата первую строку. Единственность метод тоже не проверяет. На большой выборке добавляйте `limit(1)` сами.'),
             ('note', 'trap', 'Пустой массив в IN',
              '`[\'id\' => []]` превращается в условие, которое не выполнится никогда. Обычно это верно, но иногда неожиданно: '
              'проверяйте массив перед добавлением условия или используйте `filterWhere`.'),

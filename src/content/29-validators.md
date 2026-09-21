@@ -13,7 +13,7 @@ sources: tutorial-core-validators
 ## Обязательность и умолчания
 
 :::kv
-`required` — не пусто. `requiredValue` (ожидать конкретное значение), `strict` (сравнивать строго). Единственный проверяющий валидатор, который срабатывает и на пустом значении; у `default`, `filter` и `trim` `skipOnEmpty` тоже выключен, но они не проверяют, а меняют значение
+`required` — не пусто. `requiredValue` (ожидать конкретное значение), `strict` (сравнивать строго). Один из двух проверяющих валидаторов (второй — `captcha`), который срабатывает и на пустом значении; у `default`, `filter` и `trim` `skipOnEmpty` тоже выключен, но они не проверяют, а меняют значение
 `default` — подставить `value` (значение или замыкание), если атрибут пуст. Не проверяет, а заполняет
 `safe` — «ничего не проверять, но считать атрибут безопасным» для массового присваивания
 :::
@@ -150,7 +150,7 @@ sources: tutorial-core-validators
 ## CAPTCHA
 
 :::kv
-`captcha` — сверяет ввод с виджетом `yii\captcha\Captcha`; `captchaAction` (по умолчанию `site/captcha`), `caseSensitive`
+`captcha` — сверяет ввод с виджетом `yii\captcha\Captcha`; `captchaAction` (по умолчанию `site/captcha`), `caseSensitive`. Как и `required`, работает с пустым значением — пустое поле сразу даёт ошибку
 :::
 
 ```php
@@ -182,8 +182,8 @@ sources: tutorial-core-validators
 | `filter`, `trim`, `default` | `filter` / `chars` / `value` — меняют значение |
 
 :::quiz Проверь себя
-Q: Какой единственный валидатор проверяет пустые значения по умолчанию?
-A: `required`; остальные пропускают пустые атрибуты, пока не указан `'skipOnEmpty' => false`.
+Q: Какие валидаторы проверяют пустые значения по умолчанию?
+A: `required` и `captcha`; остальные проверяющие пропускают пустые атрибуты, пока не указан `'skipOnEmpty' => false`. У `default`, `filter` и `trim` он тоже выключен, но они не проверяют, а меняют значение.
 Q: Что делает `timestampAttribute` у валидатора `date`?
 A: Записывает в указанный атрибут UNIX-время (или строку в `timestampAttributeFormat`), полученное из проверенной даты.
 Q: Почему `['end', 'compare', 'compareAttribute' => 'start', 'operator' => '>']` может считать 10 меньше 9?

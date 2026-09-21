@@ -269,7 +269,7 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 
 :::quiz Проверь себя
 Q: Почему валидатор `email` не ругается на пустое поле?
-A: По умолчанию `skipOnEmpty = true`: пустые значения проверяет только `required`. Задайте `'skipOnEmpty' => false`, если нужно.
+A: По умолчанию `skipOnEmpty = true`: из проверяющих валидаторов пустые значения смотрят только `required` и `captcha`. Задайте `'skipOnEmpty' => false`, если нужно.
 Q: Как проверить несколько значений без создания класса модели?
 A: `DynamicModel::validateData($data, $rules)` или `new DynamicModel()` с `addRule()`.
 Q: Как сделать правило обязательным только при определённом значении другого поля?
