@@ -125,7 +125,7 @@ topic(
             ('svg', '''<svg viewBox="0 0 760 178" role="img" aria-label="Обращение к классу: PHP не находит его, зовёт автозагрузчик, тот подключает файл по PSR-4" class="dg">
 <defs><marker id="p-a1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
 <g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#p-a1)" opacity=".55">
-<path d="M186 48h40"/><path d="M406 48h40"/><path d="M596 72v34H340"/>
+<path d="M186 48h40"/><path d="M406 48h40"/><path d="M596 72v58H448"/>
 </g>
 <g class="dg-box"><rect x="16" y="24" width="170" height="48" rx="8"/><text x="101" y="44">new App\\Mail\\Sender</text><text x="101" y="61" class="dg-sub">класс ещё не загружен</text></g>
 <g class="dg-box"><rect x="226" y="24" width="180" height="48" rx="8"/><text x="316" y="44">автозагрузчик</text><text x="316" y="61" class="dg-sub">spl_autoload_register</text></g>
@@ -210,23 +210,25 @@ topic(
                   '`Error` — это **ошибки самого языка** (не тот тип, деление на ноль, нет метода), '
                   '`Exception` — ошибки приложения. Ловить `Error` обычно не нужно: '
                   'он означает, что код написан неверно.'),
-            ('svg', '''<svg viewBox="0 0 760 268" role="img" aria-label="Иерархия Throwable: слева Error с TypeError, ValueError, ArithmeticError, справа Exception с RuntimeException и LogicException" class="dg">
-<g stroke="currentColor" stroke-width="1.4" fill="none" opacity=".5">
-<path d="M380 44v16H176v14"/><path d="M380 44v16h204v14"/>
-<path d="M176 108v98"/><path d="M176 130h44"/><path d="M176 166h44"/><path d="M176 202h44"/>
-<path d="M584 108v98"/><path d="M584 130h44"/><path d="M584 202h44"/><path d="M584 166h44"/>
+            ('svg', '''<svg viewBox="0 0 760 250" role="img" aria-label="Иерархия Throwable: слева Error с TypeError, ValueError и ArithmeticError, справа Exception с RuntimeException, LogicException и ErrorException" class="dg">
+<g stroke="currentColor" stroke-width="1.4" fill="none" opacity=".45">
+<path d="M380 44v14H104v14"/><path d="M380 58H476v14"/>
+<path d="M104 106v92"/><path d="M104 130h24"/><path d="M104 164h24"/><path d="M104 198h24"/>
+<path d="M476 106v92"/><path d="M476 130h24"/><path d="M476 164h24"/><path d="M476 198h24"/>
 </g>
-<g class="dg-box"><rect x="300" y="14" width="160" height="30" rx="7"/><text x="380" y="34">Throwable</text></g>
-<g class="dg-box dg-bad"><rect x="96" y="74" width="160" height="34" rx="7"/><text x="176" y="96">Error</text></g>
-<g class="dg-box"><rect x="504" y="74" width="160" height="34" rx="7"/><text x="584" y="96">Exception</text></g>
-<g class="dg-chip"><text x="228" y="135" class="dg-sub">TypeError · ArgumentCountError</text>
-<text x="228" y="171" class="dg-sub">ValueError · UnhandledMatchError</text>
-<text x="228" y="207" class="dg-sub">ArithmeticError · DivisionByZeroError</text>
-<text x="636" y="135" class="dg-sub">RuntimeException</text>
-<text x="636" y="171" class="dg-sub">LogicException</text>
-<text x="636" y="207" class="dg-sub">ErrorException · JsonException</text></g>
-<text x="176" y="238" class="dg-note" text-anchor="middle">ошибка в коде — чинить, а не ловить</text>
-<text x="584" y="238" class="dg-note" text-anchor="middle">ошибка в ситуации — обрабатывать</text>
+<g class="dg-box"><rect x="300" y="12" width="160" height="32" rx="7"/><text x="380" y="33">Throwable</text></g>
+<g class="dg-box dg-bad"><rect x="24" y="72" width="160" height="34" rx="7"/><text x="104" y="94">Error</text></g>
+<g class="dg-box"><rect x="396" y="72" width="160" height="34" rx="7"/><text x="476" y="94">Exception</text></g>
+<g class="dg-sub" text-anchor="start">
+<text x="136" y="134">TypeError · ArgumentCountError</text>
+<text x="136" y="168">ValueError · UnhandledMatchError</text>
+<text x="136" y="202">ArithmeticError · DivisionByZeroError</text>
+<text x="508" y="134">RuntimeException</text>
+<text x="508" y="168">LogicException</text>
+<text x="508" y="202">ErrorException · JsonException</text>
+</g>
+<text x="24" y="236" class="dg-note" text-anchor="start">ошибка в коде — чинить, а не ловить</text>
+<text x="396" y="236" class="dg-note" text-anchor="start">ошибка в ситуации — обрабатывать</text>
 </svg>''', 'Свой класс исключения наследуют от `Exception` или его потомков: реализовать `Throwable` напрямую язык не разрешает.'),
             ('code', 'php', None, r'''try {
     $order = $repo->find($id) ?? throw new NotFound("заказ $id");  // throw — выражение с 8.0

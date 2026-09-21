@@ -20,19 +20,19 @@ topic(
             ('p', 'Что он сделает с неподходящим значением, решает не объявление, а файл, **из которого сделан вызов**: '
                   'с `declare(strict_types=1)` в его первой строке несоответствие сразу даёт `TypeError`, '
                   'без него PHP сначала попробует привести значение к нужному типу.'),
-            ('svg', '''<svg viewBox="0 0 760 214" role="img" aria-label="Значение на входе в параметр с объявленным типом: в строгом режиме TypeError, в обычном приведение" class="dg">
+            ('svg', '''<svg viewBox="0 0 760 200" role="img" aria-label="Значение на входе в параметр с объявленным типом: в строгом режиме TypeError, в обычном приведение" class="dg">
 <defs><marker id="p-t1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0L10 5 0 10z" fill="currentColor"/></marker></defs>
 <g stroke="currentColor" stroke-width="1.5" fill="none" marker-end="url(#p-t1)" opacity=".55">
-<path d="M150 50h40"/><path d="M330 50h40"/>
-<path d="M448 72v42h-60"/><path d="M448 28V14h140"/>
+<path d="M150 100h32"/><path d="M330 100h32"/>
+<path d="M448 76V34h132"/><path d="M448 124V166H396"/>
 </g>
-<g class="dg-box"><rect x="16" y="26" width="134" height="48" rx="8"/><text x="83" y="46">'42'</text><text x="83" y="63" class="dg-sub">строка</text></g>
-<g class="dg-box"><rect x="190" y="26" width="140" height="48" rx="8"/><text x="260" y="46">function f(int $n)</text><text x="260" y="63" class="dg-sub">объявленный тип</text></g>
-<g class="dg-box"><rect x="370" y="26" width="156" height="48" rx="8"/><text x="448" y="46">чей это вызов?</text><text x="448" y="63" class="dg-sub">режим файла-вызывателя</text></g>
-<g class="dg-box dg-bad"><rect x="228" y="114" width="160" height="48" rx="8"/><text x="308" y="134">TypeError</text><text x="308" y="151" class="dg-sub">strict_types=1</text></g>
-<g class="dg-box dg-ok"><rect x="588" y="0" width="160" height="48" rx="8"/><text x="668" y="20">int(42)</text><text x="668" y="37" class="dg-sub">обычный режим</text></g>
-<text x="398" y="104" class="dg-note" text-anchor="end">строго</text>
-<text x="500" y="12" class="dg-note">приведение</text>
+<g class="dg-box"><rect x="16" y="76" width="134" height="48" rx="8"/><text x="83" y="96">'42'</text><text x="83" y="113" class="dg-sub">строка</text></g>
+<g class="dg-box"><rect x="190" y="76" width="140" height="48" rx="8"/><text x="260" y="96">function f(int $n)</text><text x="260" y="113" class="dg-sub">объявленный тип</text></g>
+<g class="dg-box"><rect x="370" y="76" width="156" height="48" rx="8"/><text x="448" y="96">чей это вызов?</text><text x="448" y="113" class="dg-sub">режим файла-вызывателя</text></g>
+<g class="dg-box dg-ok"><rect x="588" y="10" width="160" height="48" rx="8"/><text x="668" y="30">int(42)</text><text x="668" y="47" class="dg-sub">обычный режим</text></g>
+<g class="dg-box dg-bad"><rect x="228" y="142" width="160" height="48" rx="8"/><text x="308" y="162">TypeError</text><text x="308" y="179" class="dg-sub">strict_types=1</text></g>
+<text x="514" y="26" class="dg-note" text-anchor="middle">приведение</text>
+<text x="436" y="152" class="dg-note" text-anchor="end">строго</text>
 </svg>''', 'Объявление типа одно и то же — разойдутся только вызовы из файлов с разным режимом.'),
             ('code', 'php', 'src/Price.php', r'''<?php
 
