@@ -1486,7 +1486,7 @@ admin/post-comment/index <span class="t-cm">// подпапка admin</span></co
 
 <span class="t-kw">use</span> <span class="t-cl">Yii</span>;
 <span class="t-kw">use</span> <span class="t-cl">yii\base\ActionFilter</span>;
-<span class="t-kw">use</span> <span class="t-cl">yii\web\ServiceUnavailableHttpException</span>;
+<span class="t-kw">use</span> <span class="t-cl">yii\web\HttpException</span>;
 
 <span class="t-kw">class</span> <span class="t-cl">MaintenanceFilter</span> <span class="t-kw">extends</span> <span class="t-cl">ActionFilter</span>
 {
@@ -1501,7 +1501,8 @@ admin/post-comment/index <span class="t-cm">// подпапка admin</span></co
         <span class="t-kw">if</span> (<span class="t-fn">in_array</span>(<span class="t-cl">Yii</span>::<span class="t-va">$app</span>-&gt;request-&gt;userIP, <span class="t-va">$this</span>-&gt;allowedIps, <span class="t-lt">true</span>)) {
             <span class="t-kw">return</span> <span class="t-lt">true</span>;
         }
-        <span class="t-kw">throw</span> <span class="t-kw">new</span> <span class="t-cl">ServiceUnavailableHttpException</span>(<span class="t-st">'Идут технические работы, вернитесь позже.'</span>);
+        <span class="t-cm">// отдельного класса для 503 в ядре нет — берём HttpException с кодом</span>
+        <span class="t-kw">throw</span> <span class="t-kw">new</span> <span class="t-cl">HttpException</span>(<span class="t-nu">503</span>, <span class="t-st">'Идут технические работы, вернитесь позже.'</span>);
     }
 
     <span class="t-kw">public</span> <span class="t-kw">function</span> <span class="t-fn">afterAction</span>(<span class="t-va">$action</span>, <span class="t-va">$result</span>)

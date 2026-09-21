@@ -2155,7 +2155,7 @@ topic(
 
 use Yii;
 use yii\base\ActionFilter;
-use yii\web\ServiceUnavailableHttpException;
+use yii\web\HttpException;
 
 class MaintenanceFilter extends ActionFilter
 {
@@ -2170,7 +2170,8 @@ class MaintenanceFilter extends ActionFilter
         if (in_array(Yii::$app->request->userIP, $this->allowedIps, true)) {
             return true;
         }
-        throw new ServiceUnavailableHttpException('Идут технические работы, вернитесь позже.');
+        // отдельного класса для 503 в ядре нет — берём HttpException с кодом
+        throw new HttpException(503, 'Идут технические работы, вернитесь позже.');
     }
 
     public function afterAction($action, $result)
