@@ -82,7 +82,7 @@ sources: tutorial-core-validators
 
 :::kv
 `date` — дата в формате `format` (ICU: `yyyy-MM-dd`, или `php:Y-m-d`); `timestampAttribute` — куда записать UNIX-время; `timestampAttributeFormat` — или в каком формате записать; `min`/`max` (+`tooSmall`/`tooBig`); `timeZone`, `locale`
-`datetime`, `time` — тот же валидатор с `type => 'datetime'` / `'time'` (с 2.0.8)
+`datetime`, `time` — тот же валидатор с `type => 'datetime'` / `'time'` (короткие имена — с 2.0.10)
 :::
 
 ```php

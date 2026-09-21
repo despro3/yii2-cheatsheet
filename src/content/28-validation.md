@@ -158,7 +158,7 @@ public function validateCountry($attribute, $params, $validator)
 }
 ```
 
-Inline-валидаторы **не** имеют клиентской части и, как и все, пропускают пустые значения, если не задан `skipOnEmpty => false`. С 2.0.11 удобнее `$validator->addError($this, $attribute, $message)` — работает с плейсхолдерами.
+Inline-валидаторы, как и все, пропускают пустые значения, если не задан `skipOnEmpty => false`. С 2.0.11 третьим аргументом приходит сам `InlineValidator`, поэтому удобнее `$validator->addError($this, $attribute, $message)` — работает с плейсхолдерами. Клиентская часть по умолчанию не генерируется, но её можно задать: `['country', 'validateCountry', 'clientValidate' => 'clientValidateCountry']`, где метод возвращает JS-код.
 
 ### Отдельный класс
 
@@ -256,7 +256,7 @@ if (Yii::$app->request->isAjax && $model->load(Yii::$app->request->post())) {
 }
 ```
 
-`ActiveForm::validate($model, 'attr1', 'attr2')` вернёт ошибки в формате, который ждёт JS формы. Для табличного ввода — `ActiveForm::validateMultiple($models)`.
+`ActiveForm::validate($model, ['attr1', 'attr2'])` вернёт ошибки в формате, который ждёт JS формы: второй аргумент — **массив** имён атрибутов. Несколько моделей перечисляют аргументами — `ActiveForm::validate($user, $profile)`, а для табличного ввода есть `ActiveForm::validateMultiple($models)`.
 
 ## Порядок выполнения на практике
 
@@ -276,6 +276,6 @@ Q: Как сделать правило обязательным только п
 A: Опцией `when` (и `whenClient` для JS): `'when' => function ($model) { return $model->country == 'USA'; }`.
 Q: Что нужно, чтобы свой валидатор работал через `$validator->validate($value)` вне модели?
 A: Реализовать `validateValue($value)`, возвращающий `null` либо `[сообщение, параметры]`.
-Q: Почему inline-валидатор не проверяет данные на клиенте?
-A: У него нет `clientValidateAttribute()`; используйте класс-валидатор с JS-кодом или AJAX-валидацию.
+Q: Почему inline-валидатор по умолчанию не проверяет данные на клиенте?
+A: JS-код для него сгенерировать неоткуда. Задайте `clientValidate` в правиле (метод вернёт JS-код), вынесите проверку в класс-валидатор или включите AJAX-валидацию.
 :::
