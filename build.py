@@ -974,6 +974,20 @@ def catalog_counts(subdir):
     }
 
 
+def quiz_counts():
+    """Числа для карточки проверки знаний — берутся из самого набора вопросов."""
+    import importlib.util
+
+    path = os.path.join(SRC, 'quiz', 'content.py')
+    if not os.path.exists(path):
+        return {'questions': 0, 'topics': 0}
+    sys.path.insert(0, os.path.join(SRC, 'quiz'))
+    spec = importlib.util.spec_from_file_location('quiz_content', path)
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return {'questions': len(mod.QUESTIONS), 'topics': len(mod.TOPICS)}
+
+
 def main():
     check_only = '--check' in sys.argv
     warnings = []
@@ -1133,6 +1147,7 @@ def main():
         "    ->all();", 'php')
     catalogue = catalog_counts('explorer')
     php = catalog_counts('php')
+    quiz = quiz_counts()
     index_main = fill(index_tpl, {
         'hero_code': hero_code,
         'explorer_topics': str(catalogue['topics']),
@@ -1160,6 +1175,8 @@ def main():
         'php_topics': str(php['topics']),
         'php_refs': str(php['refs']),
         'php_demos': str(php['demos']),
+        'quiz_count': str(quiz['questions']),
+        'quiz_topics': str(quiz['topics']),
     }))
 
     # всё одной страницей
@@ -1193,7 +1210,7 @@ def main():
                                              ensure_ascii=False, separators=(',', ':')) + ';\n')
     write(os.path.join(OUT, '404.html'), fill(template('404.html'), {'site': esc(SITE_NAME)}))
     # docs/ очищается выше, поэтому справочники пересобираем следом
-    for name in ('build_explorer.py', 'build_php.py'):
+    for name in ('build_explorer.py', 'build_php.py', 'build_quiz.py'):
         script = os.path.join(ROOT, name)
         if os.path.exists(script):
             subprocess.run([sys.executable, script], check=True)

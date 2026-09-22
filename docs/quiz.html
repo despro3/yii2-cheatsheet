@@ -1,0 +1,865 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Вопросы по Yii 2 с разбором: быстрый прогон, экзамен, тренировка по теме и работа над ошибками. Ответы к вопросам про код проверены на самом фреймворке.">
+<meta name="color-scheme" content="light dark">
+<title>Проверка знаний Yii 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap">
+<style>
+/* ==========================================================================
+   Проверка знаний Yii 2
+   Палитра и типографика — как у справочника: страница должна читаться
+   как часть того же сайта, а не как отдельная поделка.
+   ========================================================================== */
+
+:root {
+  color-scheme: light dark;
+
+  --bg:        #eef0f4;
+  --surface:   #ffffff;
+  --surface-2: #f2f6fa;
+  --surface-3: #e5ecf3;
+  --ink:       #0d1b2b;
+  --ink-2:     #22384f;
+  --muted:     #5c748c;
+  --faint:     #8399ae;
+  --line:      #cbd9e6;
+  --line-2:    #b3c6d8;
+
+  --signal:    #06788c;
+  --signal-2:  #0a94ab;
+  --signal-bg: #dff1f5;
+
+  --ok:        #1d7a55;
+  --ok-bg:     #e2f3ec;
+  --warn:      #97540c;
+  --warn-bg:   #fbeeda;
+  --bad:       #a8323f;
+  --bad-bg:    #fbe6e8;
+
+  --g-http:    #97540c;
+  --g-data:    #06788c;
+  --g-db:      #1d7a55;
+  --g-view:    #9c3468;
+  --g-object:  #5a45b8;
+
+  --code-bg:   #0b1826;
+  --code-ink:  #d6e4f2;
+  --code-line: #1b2c3e;
+  --t-cm: #6b8296; --t-st: #9ed7a8; --t-kw: #7fd2ea; --t-nu: #f0b48f;
+  --t-va: #ddc3f5; --t-fn: #ffd291; --t-cl: #8fc2ff; --t-ct: #f4a8c0;
+  --t-lt: #7fd2ea; --t-tg: #8fc2ff; --t-at: #ffd291; --t-pk: #9ed7a8;
+  --t-tp: #8fc2ff; --t-ins: #9ed7a8; --t-del: #f0a0a8;
+
+  --font-display: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-body: "Golos Text", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+
+  --r: 12px;
+  --r-sm: 8px;
+  --shadow: 0 18px 44px -26px rgba(9, 27, 45, .5);
+  --shadow-lg: 0 40px 90px -40px rgba(9, 27, 45, .65);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #080f18; --surface: #0f1c29; --surface-2: #142433; --surface-3: #1b2e40;
+    --ink: #e6eff8; --ink-2: #c2d4e6; --muted: #8ba3ba; --faint: #6b829a;
+    --line: #1e3244; --line-2: #2b445c;
+    --signal: #3ac6dd; --signal-2: #6ddcef; --signal-bg: #0c2f38;
+    --ok: #4fcf9b; --ok-bg: #0e2e25; --warn: #eda94f; --warn-bg: #2f2412;
+    --bad: #f0838f; --bad-bg: #2f1519;
+    --g-http: #eda94f; --g-data: #3ac6dd; --g-db: #4fcf9b; --g-view: #f58cb8; --g-object: #a795ff;
+    --code-bg: #060f19; --code-line: #16273a;
+    --shadow: 0 18px 44px -26px rgba(0, 0, 0, .8);
+    --shadow-lg: 0 40px 90px -40px rgba(0, 0, 0, .9);
+  }
+}
+
+:root[data-theme="dark"] {
+  --bg: #080f18; --surface: #0f1c29; --surface-2: #142433; --surface-3: #1b2e40;
+  --ink: #e6eff8; --ink-2: #c2d4e6; --muted: #8ba3ba; --faint: #6b829a;
+  --line: #1e3244; --line-2: #2b445c;
+  --signal: #3ac6dd; --signal-2: #6ddcef; --signal-bg: #0c2f38;
+  --ok: #4fcf9b; --ok-bg: #0e2e25; --warn: #eda94f; --warn-bg: #2f2412;
+  --bad: #f0838f; --bad-bg: #2f1519;
+  --g-http: #eda94f; --g-data: #3ac6dd; --g-db: #4fcf9b; --g-view: #f58cb8; --g-object: #a795ff;
+  --code-bg: #060f19; --code-line: #16273a;
+  --shadow: 0 18px 44px -26px rgba(0, 0, 0, .8);
+  --shadow-lg: 0 40px 90px -40px rgba(0, 0, 0, .9);
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: linear-gradient(152deg, var(--signal-bg), transparent 40rem);
+  background-repeat: no-repeat;
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: var(--signal); text-decoration-color: color-mix(in srgb, var(--signal) 40%, transparent); text-underline-offset: 2px; }
+a:hover { color: var(--signal-2); }
+:focus-visible { outline: 2px solid var(--signal); outline-offset: 2px; border-radius: 4px; }
+code, kbd, pre { font-family: var(--font-mono); }
+
+/* JetBrains Mono склеивает => -> === в один знак — в вопросах про код это недопустимо */
+code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
+/* ---------------------------------------------------------------- шапка */
+
+.top {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 30;
+  background: color-mix(in srgb, var(--bg) 88%, transparent);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--line);
+}
+.top-in {
+  max-width: 1000px; margin: 0 auto; padding: 9px 20px;
+  display: flex; align-items: center; gap: 14px;
+}
+.mark {
+  font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: -.02em;
+  display: inline-flex; align-items: center; gap: 9px;
+}
+.mark b {
+  display: inline-grid; place-items: center; width: 30px; height: 30px;
+  border-radius: 8px; background: var(--signal); color: #fff; font-size: 13px; letter-spacing: 0;
+}
+.top-spacer { flex: 1 1 auto; }
+.top-count { font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); white-space: nowrap; }
+@media (max-width: 720px) { .top-count { display: none; } }
+@media (max-width: 520px) { .mark-text { display: none; } }
+
+.icon-btn {
+  display: inline-grid; place-items: center; width: 36px; height: 36px; flex: 0 0 auto;
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface); color: var(--muted);
+  cursor: pointer; transition: color .15s, border-color .15s;
+}
+.icon-btn:hover { color: var(--signal); border-color: var(--line-2); }
+.icon-btn svg { width: 17px; height: 17px; }
+.ico-moon { display: block; } .ico-sun { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .ico-moon { display: none; }
+  :root:not([data-theme="light"]) .ico-sun { display: block; }
+}
+:root[data-theme="dark"] .ico-moon { display: none; }
+:root[data-theme="dark"] .ico-sun { display: block; }
+:root[data-theme="light"] .ico-moon { display: block; }
+:root[data-theme="light"] .ico-sun { display: none; }
+
+.back-link {
+  font-size: 13.5px; color: var(--muted); text-decoration: none;
+  padding: 7px 12px; border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface); white-space: nowrap; transition: color .15s, border-color .15s;
+}
+.back-link:hover { color: var(--signal); border-color: var(--signal); }
+
+/* ---------------------------------------------------------------- сцена */
+
+.stage { max-width: 1000px; margin: 0 auto; padding: 0 20px 64px; }
+
+/* --------------------------------------------------------------- старт */
+
+.hero { padding-block: 34px 22px; max-width: 62ch; }
+.hero .eyebrow {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--signal); margin: 0 0 10px;
+}
+.hero h1 {
+  font-family: var(--font-display); font-weight: 800;
+  font-size: clamp(1.7rem, 1.2rem + 2vw, 2.4rem);
+  letter-spacing: -.03em; line-height: 1.08; margin: 0 0 10px; text-wrap: balance;
+}
+.hero p { margin: 0; color: var(--ink-2); font-size: 16.5px; }
+
+.modes { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); }
+.mode {
+  display: grid; gap: 7px; align-content: start; text-align: left;
+  padding: 18px 18px 16px; cursor: pointer;
+  border: 1px solid var(--line); border-top: 3px solid var(--mc, var(--signal));
+  border-radius: var(--r); background: var(--surface); color: inherit; font: inherit;
+  transition: transform .16s, box-shadow .16s, border-color .16s;
+}
+.mode:hover { transform: translateY(-3px); box-shadow: var(--shadow); border-color: var(--line-2); }
+.mode[disabled] { opacity: .45; cursor: default; transform: none; box-shadow: none; }
+.mode .mode-n {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .12em;
+  text-transform: uppercase; color: var(--mc, var(--signal));
+}
+.mode h2 { font-family: var(--font-display); font-weight: 700; font-size: 17px; letter-spacing: -.02em; margin: 0; }
+.mode p { margin: 0; font-size: 14px; color: var(--muted); line-height: 1.5; }
+
+.sec-h {
+  font-family: var(--font-mono); font-size: 11px; letter-spacing: .14em;
+  text-transform: uppercase; color: var(--faint);
+  margin: 32px 0 12px; display: flex; align-items: center; gap: 12px;
+}
+.sec-h::after { content: ""; flex: 1 1 auto; height: 1px; background: var(--line); }
+
+.topics { display: grid; gap: 8px; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); }
+.topic {
+  display: flex; align-items: center; gap: 10px; text-align: left;
+  padding: 10px 13px; cursor: pointer;
+  border: 1px solid var(--line); border-left: 3px solid var(--tc, var(--signal));
+  border-radius: var(--r-sm); background: var(--surface); color: inherit; font: inherit; font-size: 14.5px;
+  transition: border-color .15s, background .15s;
+}
+.topic:hover { border-color: var(--tc, var(--signal)); background: var(--surface-2); }
+.topic .t-n { flex: 1 1 auto; }
+.topic .t-c { font-family: var(--font-mono); font-size: 11.5px; color: var(--faint); }
+.topic .t-bar {
+  flex: 0 0 46px; height: 5px; border-radius: 99px; background: var(--surface-3); overflow: hidden;
+}
+.topic .t-bar i { display: block; height: 100%; background: var(--ok); }
+
+.reset-row { margin-top: 26px; font-size: 13.5px; color: var(--muted); display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+.linkish {
+  border: 0; background: none; padding: 0; cursor: pointer; font: inherit;
+  color: var(--faint); text-decoration: underline; text-underline-offset: 2px;
+}
+.linkish:hover { color: var(--bad); }
+
+/* ----------------------------------------------------------- прохождение */
+
+.run { max-width: 760px; margin: 0 auto; padding-top: 22px; }
+
+.runbar { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.runbar .rb-t { font-family: var(--font-mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
+.dots { display: flex; gap: 4px; flex: 1 1 auto; flex-wrap: wrap; }
+.dot { width: 9px; height: 9px; border-radius: 50%; background: var(--surface-3); flex: 0 0 auto; }
+.dot.ok { background: var(--ok); }
+.dot.no { background: var(--bad); }
+.dot.now { box-shadow: 0 0 0 2px var(--signal); }
+
+.qbox {
+  border: 1px solid var(--line); border-radius: var(--r);
+  background: var(--surface); padding: 22px 22px 20px; box-shadow: var(--shadow);
+}
+.q-top {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 12px;
+  font-family: var(--font-mono); font-size: 10.5px; letter-spacing: .12em; text-transform: uppercase;
+}
+.q-topic { color: var(--tc, var(--signal)); }
+.q-kind { color: var(--faint); }
+.q-kind::before { content: "·"; margin-right: 10px; color: var(--line-2); }
+.q-text { margin: 0 0 16px; font-size: 17px; line-height: 1.55; }
+.q-text code { font-size: .88em; background: var(--surface-3); padding: 1px 5px; border-radius: 4px; }
+
+/* длинное имя вроде `create_junction_table_for_xxx_and_yyy_tables` шире телефона:
+   без переноса оно распирает колонку и возвращает странице горизонтальный скролл */
+.q-text, .opt .opt-t, .verdict p, .miss .m-q, .miss .m-a, .topic .t-n { overflow-wrap: anywhere; }
+.q-text code, .opt .opt-t code, .verdict code, .miss code { overflow-wrap: anywhere; }
+
+.code { position: relative; margin: 0 0 16px; }
+.code-head {
+  display: flex; align-items: center; gap: 10px; padding: 7px 12px;
+  background: var(--surface-3); border: 1px solid var(--line); border-bottom: 0;
+  border-radius: var(--r-sm) var(--r-sm) 0 0;
+  font-family: var(--font-mono); font-size: 10px; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--muted);
+}
+.code pre {
+  margin: 0; padding: 13px 15px; overflow-x: auto;
+  background: var(--code-bg); color: var(--code-ink);
+  border: 1px solid var(--code-line); border-radius: 0 0 var(--r-sm) var(--r-sm);
+  font-size: 13px; line-height: 1.62; tab-size: 4;
+}
+.code pre code { background: none; padding: 0; font-size: inherit; color: inherit; }
+.t-cm { color: var(--t-cm); font-style: italic; } .t-st { color: var(--t-st); }
+.t-kw { color: var(--t-kw); } .t-nu { color: var(--t-nu); } .t-va { color: var(--t-va); }
+.t-fn { color: var(--t-fn); } .t-cl { color: var(--t-cl); } .t-ct { color: var(--t-ct); }
+.t-lt { color: var(--t-lt); } .t-tg { color: var(--t-tg); } .t-at { color: var(--t-at); }
+.t-pk { color: var(--t-pk); } .t-tp { color: var(--t-tp); }
+
+.opts { display: grid; gap: 8px; }
+.opt {
+  display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 11px; align-items: start;
+  padding: 11px 13px; text-align: left; cursor: pointer;
+  border: 1px solid var(--line); border-radius: var(--r-sm);
+  background: var(--surface-2); color: inherit; font: inherit; font-size: 15px;
+  transition: border-color .14s, background .14s;
+}
+.opt:hover:not([disabled]) { border-color: var(--line-2); background: var(--surface-3); }
+.opt .opt-k {
+  display: grid; place-items: center; width: 22px; height: 22px;
+  border: 1px solid var(--line-2); border-radius: 6px;
+  font-family: var(--font-mono); font-size: 11px; color: var(--muted); background: var(--surface);
+}
+.opt.many .opt-k { border-radius: 5px; }
+.opt .opt-t { min-width: 0; overflow-wrap: anywhere; }
+.opt.mono .opt-t { font-family: var(--font-mono); font-size: 13.5px; }
+.opt[aria-pressed="true"] { border-color: var(--signal); background: var(--signal-bg); }
+.opt[aria-pressed="true"] .opt-k { border-color: var(--signal); color: var(--signal); background: var(--surface); }
+.opt[disabled] { cursor: default; }
+.opt.is-right { border-color: var(--ok); background: var(--ok-bg); }
+.opt.is-right .opt-k { border-color: var(--ok); color: var(--ok); }
+.opt.is-wrong { border-color: var(--bad); background: var(--bad-bg); }
+.opt.is-wrong .opt-k { border-color: var(--bad); color: var(--bad); }
+
+.acts { display: flex; gap: 10px; align-items: center; margin-top: 18px; flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 10px 20px; border-radius: var(--r-sm);
+  border: 1px solid var(--signal); background: var(--signal); color: #fff;
+  font: inherit; font-size: 15px; font-weight: 500; cursor: pointer;
+}
+:root[data-theme="dark"] .btn { color: #04222a; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn { color: #04222a; } }
+.btn:hover { background: var(--signal-2); border-color: var(--signal-2); }
+.btn.ghost { background: none; color: var(--signal); }
+.btn.ghost:hover { background: var(--signal-bg); }
+.btn[disabled] { opacity: .45; cursor: default; background: var(--signal); }
+.kbd-hint { font-size: 12px; color: var(--faint); margin-left: auto; }
+@media (max-width: 620px) { .kbd-hint { display: none; } }
+
+.verdict {
+  margin-top: 16px; padding: 14px 16px;
+  border: 1px solid var(--vc); border-left-width: 3px; border-radius: var(--r-sm);
+  background: var(--vbg);
+}
+.verdict.ok { --vc: var(--ok); --vbg: var(--ok-bg); }
+.verdict.no { --vc: var(--bad); --vbg: var(--bad-bg); }
+.verdict h3 {
+  margin: 0 0 6px; font-size: 14px; font-weight: 600; color: var(--vc);
+  display: flex; align-items: center; gap: 8px;
+}
+.verdict p { margin: 0; font-size: 14.5px; color: var(--ink-2); line-height: 1.55; }
+.verdict code { font-size: .88em; background: color-mix(in srgb, var(--surface) 70%, transparent); padding: 1px 5px; border-radius: 4px; }
+.vlinks { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 11px; }
+.vlinks a {
+  font-size: 13px; text-decoration: none; padding: 5px 11px;
+  border: 1px solid var(--line-2); border-radius: 99px; background: var(--surface); color: var(--ink-2);
+}
+.vlinks a:hover { border-color: var(--signal); color: var(--signal); }
+
+/* --------------------------------------------------------------- итог */
+
+.result { max-width: 760px; margin: 0 auto; padding-top: 28px; }
+.score {
+  display: flex; align-items: center; gap: 22px; flex-wrap: wrap;
+  padding: 22px; border: 1px solid var(--line); border-radius: var(--r);
+  background: var(--surface); box-shadow: var(--shadow);
+}
+.score-n {
+  font-family: var(--font-display); font-weight: 800; letter-spacing: -.04em;
+  font-size: clamp(2.4rem, 1.6rem + 3vw, 3.4rem); line-height: 1; color: var(--sc, var(--signal));
+}
+.score-side { flex: 1 1 220px; min-width: 0; }
+.score-side h2 { margin: 0 0 4px; font-family: var(--font-display); font-size: 19px; letter-spacing: -.02em; }
+.score-side p { margin: 0; color: var(--muted); font-size: 14.5px; }
+
+.by-topic { display: grid; gap: 7px; margin-top: 20px; }
+.bt-row { display: grid; grid-template-columns: minmax(0, 1fr) 54px 62px; gap: 12px; align-items: center; font-size: 14.5px; }
+.bt-row .bt-n { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.bt-row .bt-bar { height: 6px; border-radius: 99px; background: var(--surface-3); overflow: hidden; }
+.bt-row .bt-bar i { display: block; height: 100%; background: var(--ok); }
+.bt-row .bt-c { font-family: var(--font-mono); font-size: 12.5px; color: var(--muted); text-align: right; }
+
+.misses { display: grid; gap: 10px; margin-top: 12px; }
+.miss {
+  padding: 13px 15px; border: 1px solid var(--line); border-left: 3px solid var(--bad);
+  border-radius: var(--r-sm); background: var(--surface);
+}
+.miss .m-q { font-size: 15px; margin: 0 0 6px; }
+.miss .m-a { margin: 0; font-size: 14px; color: var(--muted); }
+.miss .m-a b { color: var(--ok); font-weight: 500; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="top-in">
+    <span class="mark"><b>Yii</b><span class="mark-text">Проверка знаний</span></span>
+    <span class="top-count">72 вопроса · 12 тем</span>
+    <span class="top-spacer"></span>
+    <a class="back-link" href="index.html">на главную</a>
+    <button type="button" class="icon-btn" id="theme-btn" aria-label="Переключить тему">
+      <svg class="ico-moon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+      <svg class="ico-sun" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M18.7 5.3l-1.8 1.8M7.1 16.9l-1.8 1.8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</header>
+
+<main class="stage">
+
+  <section id="screen-start">
+    <div class="hero">
+      <p class="eyebrow">после курса и справочника</p>
+      <h1>Проверка знаний</h1>
+      <p>Вопрос, четыре варианта и разбор с ссылкой туда, где об этом написано подробно.
+        Ответы к вопросам про код не сочинялись — каждый прогонялся на настоящем Yii&nbsp;2.</p>
+    </div>
+
+    <div class="modes">
+      <button type="button" class="mode" id="mode-quick" style="--mc: var(--g-data)">
+        <span class="mode-n">10 вопросов</span>
+        <h2>Быстрый прогон</h2>
+        <p>Случайная выборка по всем темам — размяться за пару минут.</p>
+      </button>
+      <button type="button" class="mode" id="mode-exam" style="--mc: var(--g-db)">
+        <span class="mode-n">40 вопросов</span>
+        <h2>Экзамен</h2>
+        <p>Длинный набор вперемешку: видно, где знания просели.</p>
+      </button>
+      <button type="button" class="mode" id="mode-missed" style="--mc: var(--g-http)" disabled>
+        <span class="mode-n">по вашим промахам</span>
+        <h2>Работа над ошибками</h2>
+        <p id="missed-note">Пока пусто — сначала пройдите любой набор</p>
+      </button>
+    </div>
+
+    <h2 class="sec-h">Тренировка по теме</h2>
+    <div class="topics" id="topics"></div>
+
+    <div class="reset-row">
+      <span id="seen-note"></span>
+      <button type="button" class="linkish" id="reset">сбросить статистику</button>
+    </div>
+  </section>
+
+  <section id="screen-run" class="run" hidden>
+    <div class="runbar">
+      <span class="rb-t" id="rb-title"></span>
+      <span class="dots" id="dots"></span>
+      <span class="rb-t" id="rb-pos"></span>
+    </div>
+
+    <div class="qbox" id="qbox">
+      <div class="q-top">
+        <span class="q-topic" id="q-topic"></span>
+        <span class="q-kind" id="q-kind"></span>
+      </div>
+      <p class="q-text" id="q-text"></p>
+      <div id="q-code" hidden></div>
+      <div class="opts" id="opts"></div>
+
+      <div class="verdict" id="verdict" hidden>
+        <h3 id="v-head"></h3>
+        <p id="v-why"></p>
+        <div class="vlinks" id="v-links"></div>
+      </div>
+
+      <div class="acts">
+        <button type="button" class="btn" id="act-main" disabled>Проверить</button>
+        <button type="button" class="btn ghost" id="act-skip">Не знаю</button>
+        <span class="kbd-hint">цифры — выбор, Enter — дальше</span>
+      </div>
+    </div>
+  </section>
+
+  <section id="screen-result" class="result" hidden>
+    <div class="score">
+      <span class="score-n" id="score-n"></span>
+      <span class="score-side">
+        <h2 id="score-h"></h2>
+        <p id="score-p"></p>
+      </span>
+    </div>
+
+    <h2 class="sec-h">По темам</h2>
+    <div class="by-topic" id="by-topic"></div>
+
+    <h2 class="sec-h" id="misses-h" hidden>Разобрать</h2>
+    <div class="misses" id="misses"></div>
+
+    <div class="acts">
+      <button type="button" class="btn" id="again">Пройти ещё раз</button>
+      <button type="button" class="btn ghost" id="again-missed" hidden>Только промахи</button>
+      <button type="button" class="btn ghost" id="to-start">К выбору набора</button>
+    </div>
+  </section>
+
+</main>
+
+<script>
+window.QUIZ={"topics":[{"id":"http","title":"Запрос, ответ, маршруты","color":"var(--g-http)"},{"id":"flow","title":"Контроллеры, действия, фильтры","color":"var(--g-http)"},{"id":"views","title":"Представления и ресурсы","color":"var(--g-view)"},{"id":"model","title":"Модели, сценарии, формы","color":"var(--g-data)"},{"id":"valid","title":"Валидация","color":"var(--g-data)"},{"id":"ar","title":"Active Record","color":"var(--g-db)"},{"id":"query","title":"Query Builder и DAO","color":"var(--g-db)"},{"id":"migr","title":"Миграции","color":"var(--g-db)"},{"id":"core","title":"Компоненты, DI, события","color":"var(--g-object)"},{"id":"state","title":"Кэш, сессии, куки","color":"var(--g-view)"},{"id":"sec","title":"Безопасность и доступ","color":"var(--g-http)"},{"id":"misc","title":"Консоль, i18n, REST","color":"var(--g-object)"}],"questions":[{"id":"http-pathinfo","topic":"http","kind":"one","text":"Входной скрипт лежит в подпапке <code>/admin</code>. Что выведет этот код при обращении к <code>https://example.com/admin/index.php/product?id=100</code>?","options":["/product","product","/admin/index.php/product","product?id=100"],"answer":[1],"why":"<code>getPathInfo()</code> отрезает строку запроса и путь до входного скрипта, а затем срезает ведущий слэш. Остаётся <code>product</code> — именно эту строку и разбирает <code>UrlManager</code>.","links":[{"href":"request-response.html","label":"Курс: Запрос и ответ"},{"href":"explorer.html#http","label":"Справочник: Запрос и ответ"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-kw\">echo</span> <span class=\"t-cl\">Yii</span>::<span class=\"t-va\">$app</span>-&gt;request-&gt;pathInfo;</code></pre></figure>"},{"id":"http-userip-proxy","topic":"http","kind":"one","text":"Приложение стоит за обратным прокси, <code>trustedHosts</code> не настроен. Что вернёт <code>Yii::$app-&gt;request-&gt;userIP</code>?","options":["Адрес клиента из заголовка <code>X-Forwarded-For</code>","Адрес самого прокси","<code>null</code> — Yii откажется гадать","Первый адрес из списка <code>X-Forwarded-For</code>"],"answer":[1],"why":"Заголовки <code>X-Forwarded-*</code> — это то, что легко подделать, поэтому Yii читает их только для адресов, перечисленных в <code>trustedHosts</code>. Пока прокси не объявлен доверенным, вы видите его самого.","links":[{"href":"request-response.html","label":"Курс: Запрос и ответ"},{"href":"explorer.html#http","label":"Справочник: Запрос и ответ"}]},{"id":"http-verb-rule","topic":"http","kind":"one","text":"В правилах маршрутизации есть строка с HTTP-методом. Что выведет генерация ссылки?","options":["/post/delete?id=1","/post/1","Пустую строку","Бросит исключение"],"answer":[1],"why":"<code>verb</code> смотрят только при разборе входящего запроса — при генерации его просто игнорируют, а само правило из перебора не выключают. Поэтому адрес соберётся по первому подходящему шаблону. Чтобы правило работало только на разбор, задайте ему <code>'mode' =&gt; UrlRule::PARSING_ONLY</code>.","links":[{"href":"routing.html","label":"Курс: Маршрутизация и URL"},{"href":"explorer.html#routing/traps","label":"Справочник: Маршруты и URL"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-cm\">// config/web.php</span>\n<span class=\"t-st\">'rules'</span> =&gt; [\n    <span class=\"t-st\">'DELETE post/&lt;id:\\d+&gt;'</span> =&gt; <span class=\"t-st\">'post/delete'</span>,\n    <span class=\"t-st\">'post/&lt;id:\\d+&gt;'</span>        =&gt; <span class=\"t-st\">'post/view'</span>,\n],\n\n<span class=\"t-cm\">// в представлении</span>\n<span class=\"t-kw\">echo</span> <span class=\"t-cl\">Url</span>::<span class=\"t-fn\">to</span>([<span class=\"t-st\">'/post/delete'</span>, <span class=\"t-st\">'id'</span> =&gt; <span class=\"t-nu\">1</span>]);</code></pre></figure>"},{"id":"http-strict-parsing","topic":"http","kind":"one","text":"<code>enableStrictParsing = true</code>, адрес <code>/posts/php</code> не подошёл ни одному правилу. Что будет?","options":["404","Запрос уйдёт в маршрут <code>posts/php</code>","Редирект на главную","Возьмётся <code>defaultRoute</code>"],"answer":[0],"why":"Строгий разбор означает «маршрут существует, только если есть правило». Без строгого разбора путь трактуется как маршрут напрямую, и <code>/posts/php</code> ушло бы в <code>posts/php</code>.","links":[{"href":"routing.html","label":"Курс: Маршрутизация и URL"},{"href":"explorer.html#routing","label":"Справочник: Маршруты и URL"}]},{"id":"http-route-slash","topic":"http","kind":"one","text":"Представление контроллера <code>post</code> внутри модуля <code>admin</code>. В какой маршрут превратится <code>Url::to(['/post/view', 'id' =&gt; 1])</code>?","options":["admin/post/view","post/view","admin/view","Зависит от правил в <code>urlManager</code>"],"answer":[1],"why":"Ведущий слэш означает маршрут от корня приложения — модуль пропускается. Без слэша (<code>['post/view']</code>) маршрут считался бы относительно текущего модуля, то есть <code>admin/post/view</code>.","links":[{"href":"routing.html","label":"Курс: Маршрутизация и URL"},{"href":"explorer.html#routing","label":"Справочник: Маршруты и URL"}]},{"id":"http-json-out","topic":"http","kind":"many","text":"Какими способами действие может отдать JSON? Отметьте все подходящие.","options":["<code>return $this-&gt;asJson($data);</code>","<code>Yii::$app-&gt;response-&gt;format = Response::FORMAT_JSON; return $data;</code>","<code>return json_encode($data);</code>","<code>return $this-&gt;renderPartial('data', $data);</code>"],"answer":[0,1],"why":"<code>asJson()</code> ставит формат и возвращает данные одним вызовом; второй способ — то же самое вручную. А <code>json_encode()</code> вернёт обычную строку, которую Yii отдаст как HTML — с заголовком <code>text/html</code> и без сериализации вложенных объектов.","links":[{"href":"request-response.html","label":"Курс: Запрос и ответ"},{"href":"explorer.html#http","label":"Справочник: Запрос и ответ"}]},{"id":"flow-missing-param","topic":"flow","kind":"one","text":"Действие объявлено как <code>public function actionView($id)</code>, а в запросе параметра <code>id</code> нет. Что произойдёт?","options":["<code>$id</code> будет <code>null</code>, действие выполнится","<code>BadRequestHttpException</code> (400) ещё до входа в действие","<code>NotFoundHttpException</code> (404)","Ошибка PHP: too few arguments"],"answer":[1],"why":"Параметры действия заполняет <code>bindActionParams()</code>. Если обязательного параметра нет, он бросает <code>BadRequestHttpException</code> с сообщением «Missing required parameters» — тело действия не запускается.","links":[{"href":"controllers.html","label":"Курс: Контроллеры и действия"},{"href":"explorer.html#controllers","label":"Справочник: Контроллеры и действия"}]},{"id":"flow-action-case","topic":"flow","kind":"one","text":"В контроллере есть публичный метод <code>public function ActionIndex()</code> — с большой буквы. Будет ли он доступен по маршруту <code>site/index</code>?","options":["Да, имена методов в PHP регистронезависимы","Нет — Yii дополнительно сверяет настоящее имя метода","Да, но только при <code>YII_DEBUG</code>","Да, с предупреждением в журнале"],"answer":[1],"why":"<code>method_exists()</code> в PHP действительно не различает регистр, поэтому Yii добавляет вторую проверку: <code>(new ReflectionMethod(...))-&gt;getName() === $methodName</code>. Она и отсекает <code>ActionIndex</code>.","links":[{"href":"controllers.html","label":"Курс: Контроллеры и действия"},{"href":"explorer.html#controllers/traps","label":"Справочник: Контроллеры и действия"}]},{"id":"flow-before-order","topic":"flow","kind":"one","text":"В каком порядке вызываются <code>beforeAction()</code> приложения, модуля и контроллера?","options":["Контроллер → модуль → приложение","Приложение → модуль → контроллер","Модуль → контроллер → приложение","Порядок не определён"],"answer":[1],"why":"Пре-фильтры идут снаружи внутрь, и любой <code>false</code> обрывает цепочку. Пост-фильтры — в обратном порядке: контроллер, модуль, приложение.","links":[{"href":"filters.html","label":"Курс: Фильтры"},{"href":"explorer.html#filters","label":"Справочник: Фильтры"}]},{"id":"flow-cors-order","topic":"flow","kind":"one","text":"Почему фильтр <code>Cors</code> объявляют <strong>раньше</strong> <code>authenticator</code>?","options":["<code>Cors</code> работает только первым в массиве <code>behaviors()</code>","Браузер шлёт preflight <code>OPTIONS</code> без токена — аутентификация вернёт 401 раньше, чем уйдут CORS-заголовки","<code>authenticator</code> удаляет заголовки, которые ставит <code>Cors</code>","Порядок не важен, это вопрос стиля"],"answer":[1],"why":"Предварительный запрос <code>OPTIONS</code> браузер отправляет без авторизационных заголовков. Если первой отработает аутентификация, ответ будет 401 без нужных CORS-заголовков, и браузер не пустит основной запрос.","links":[{"href":"filters.html","label":"Курс: Фильтры"},{"href":"explorer.html#filters/traps","label":"Справочник: Фильтры"}]},{"id":"flow-verbfilter","topic":"flow","kind":"one","text":"<code>VerbFilter</code> настроен как <code>['delete' =&gt; ['POST', 'DELETE']]</code>. Пришёл GET на <code>site/delete</code>. Что вернёт сервер?","options":["403 Forbidden","404 Not Found","405 Method Not Allowed и заголовок <code>Allow</code>","400 Bad Request"],"answer":[2],"why":"<code>VerbFilter</code> бросает <code>MethodNotAllowedHttpException</code> и заодно проставляет заголовок <code>Allow</code> со списком разрешённых методов — как того требует HTTP.","links":[{"href":"filters.html","label":"Курс: Фильтры"},{"href":"explorer.html#filters","label":"Справочник: Фильтры"}]},{"id":"flow-acf-star","topic":"flow","kind":"one","text":"Чтобы пустить в действие вообще всех, в правило ACF написали <code>'roles' =&gt; ['*']</code>. Что получится?","options":["Пустит всех — это подстановочный знак","Ничего не пустит: особых значений всего два, <code>?</code> и <code>@</code>, а <code>*</code> уйдёт в <code>$user-&gt;can('*')</code>","Ошибка конфигурации при старте","Пустит только гостей"],"answer":[1],"why":"<code>AccessRule::matchRole()</code> отдельно разбирает только <code>?</code> (гость) и <code>@</code> (авторизованный). Всё остальное считается именем роли или разрешения и уходит в <code>can()</code>, который без настроенного RBAC вернёт <code>false</code>. Чтобы пустить всех, роли в правиле просто не указывают.","links":[{"href":"authorization.html","label":"Курс: Авторизация и доступ"},{"href":"explorer.html#user/traps","label":"Справочник: Пользователь и доступ"}]},{"id":"views-renderajax","topic":"views","kind":"one","text":"Чем <code>renderAjax()</code> отличается от <code>renderPartial()</code>?","options":["<code>renderAjax()</code> применяет шаблон, <code>renderPartial()</code> — нет","Оба без шаблона, но <code>renderAjax()</code> ещё выводит зарегистрированные JS и CSS","<code>renderAjax()</code> возвращает JSON","Ничем, это псевдонимы"],"answer":[1],"why":"Шаблон не применяет ни тот, ни другой. Разница в ресурсах: фрагмент, подгружаемый по AJAX, обычно содержит виджеты со своими скриптами — без <code>renderAjax()</code> они бы просто потерялись.","links":[{"href":"views.html","label":"Курс: Представления"},{"href":"explorer.html#views","label":"Справочник: Представления и ресурсы"}]},{"id":"views-this","topic":"views","kind":"one","text":"Что такое <code>$this</code> внутри файла представления в Yii 2?","options":["Контроллер, как было в Yii 1","Объект <code>yii\\web\\View</code>; контроллер доступен как <code>$this-&gt;context</code>","Модель, переданную в <code>render()</code>","Приложение <code>yii\\web\\Application</code>"],"answer":[1],"why":"Представление рендерит компонент <code>View</code>, он же и становится <code>$this</code>. Отсюда <code>$this-&gt;title</code>, <code>$this-&gt;registerJs()</code>, <code>$this-&gt;params</code>. Контроллер лежит в <code>$this-&gt;context</code>.","links":[{"href":"views.html","label":"Курс: Представления"},{"href":"explorer.html#views/traps","label":"Справочник: Представления и ресурсы"}]},{"id":"views-double-slash","topic":"views","kind":"one","text":"Контроллер модуля <code>admin</code> вызывает <code>$this-&gt;render('//site/error')</code>. Какой файл будет взят?","options":["<code>@app/modules/admin/views/site/error.php</code>","<code>@app/views/site/error.php</code>","<code>@app/views/admin/site/error.php</code>","Зависит от <code>viewPath</code> модуля"],"answer":[1],"why":"Двойной слэш всегда означает папку представлений <strong>приложения</strong>, в обход модуля. Один слэш — от папки представлений текущего модуля, без слэша — от папки текущего контроллера.","links":[{"href":"views.html","label":"Курс: Представления"},{"href":"explorer.html#views","label":"Справочник: Представления и ресурсы"}]},{"id":"views-registerjs-key","topic":"views","kind":"one","text":"Зачем третий аргумент в <code>$this-&gt;registerJs($code, $position, $key)</code>?","options":["Задаёт порядок вывода блоков","Это ключ блока: повторная регистрация с тем же ключом заменит прежний код, а не добавит второй","Имя функции-обёртки","Идентификатор пакета ресурсов"],"answer":[1],"why":"Без ключа им становится хеш самого кода, поэтому два разных вызова дадут два блока. Ключ нужен, когда один и тот же виджет рендерится несколько раз, а скрипт нужен один.","links":[{"href":"assets.html","label":"Курс: Ресурсы"},{"href":"explorer.html#views","label":"Справочник: Представления и ресурсы"}]},{"id":"views-sourcepath","topic":"views","kind":"one","text":"Когда пакету ресурсов нужен <code>sourcePath</code>, а когда <code>basePath</code> с <code>baseUrl</code>?","options":["<code>sourcePath</code> — для CSS, <code>basePath</code> — для JS","<code>sourcePath</code> — когда файлы лежат вне веб-корня и их надо опубликовать; <code>basePath</code>/<code>baseUrl</code> — когда они уже в <code>web/</code>","<code>sourcePath</code> — только для внешних CDN","Это синонимы, оставлен один для совместимости"],"answer":[1],"why":"<code>sourcePath</code> включает публикацию: <code>AssetManager</code> копирует папку в <code>web/assets</code> под хешем. Для файлов, которые и так доступны по HTTP, публикация — лишняя работа, им достаточно <code>basePath</code> и <code>baseUrl</code>.","links":[{"href":"assets.html","label":"Курс: Ресурсы"},{"href":"explorer.html#views","label":"Справочник: Представления и ресурсы"}]},{"id":"views-html-a-escape","topic":"views","kind":"one","text":"Текст ссылки пришёл из базы и содержит теги. Что выведет <code>Html::a()</code>?","options":["&lt;a href=\"/post/7\"&gt;&amp;lt;i&amp;gt;тык&amp;lt;/i&amp;gt;&lt;/a&gt;","&lt;a href=\"/post/7\"&gt;&lt;i&gt;тык&lt;/i&gt;&lt;/a&gt;","Бросит исключение: текст ссылки не должен содержать теги","&lt;a href=\"/post/view?id=7\"&gt;тык&lt;/a&gt;"],"answer":[1],"why":"<code>Html::a()</code> экранирует только значения атрибутов, а текст ссылки вставляет как есть — иначе в ссылку нельзя было бы положить иконку. Если текст пришёл от пользователя, оборачивайте его в <code>Html::encode()</code> сами.","links":[{"href":"security.html","label":"Курс: Безопасность"},{"href":"explorer.html#helpers","label":"Справочник: Хелперы"}],"mono":true,"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-kw\">echo</span> <span class=\"t-cl\">Html</span>::<span class=\"t-fn\">a</span>(<span class=\"t-st\">'&lt;i&gt;тык&lt;/i&gt;'</span>, [<span class=\"t-st\">'/post/view'</span>, <span class=\"t-st\">'id'</span> =&gt; <span class=\"t-nu\">7</span>]);</code></pre></figure>"},{"id":"model-bang-attr","topic":"model","kind":"one","text":"Что означает <code>!secret</code> в списке атрибутов сценария в <code>scenarios()</code>?","options":["Атрибут запрещён в этом сценарии","Атрибут валидируется, но не присваивается массово — только явно","Атрибут присваивается, но не валидируется","Атрибут обязателен"],"answer":[1],"why":"Восклицательный знак делает атрибут активным, но небезопасным: правила на него работают, а <code>load()</code> его не заполнит. Так защищают поля вроде <code>is_admin</code>, которые задаются кодом.","links":[{"href":"models.html","label":"Курс: Модели"},{"href":"explorer.html#scenarios","label":"Справочник: Сценарии"}]},{"id":"model-load-false","topic":"model","kind":"one","text":"Форма <code>ContactForm</code>, в POST нет ключа <code>ContactForm</code>. Что вернёт <code>$model-&gt;load(Yii::$app-&gt;request-&gt;post())</code>?","options":["<code>true</code>, модель останется пустой","<code>false</code>","<code>null</code>","Бросит <code>InvalidArgumentException</code>"],"answer":[1],"why":"<code>load()</code> сам ищет данные по имени формы и возвращает <code>false</code>, если их нет. На этом и держится обычный шаблон действия: <code>if ($model-&gt;load(...) &amp;&amp; $model-&gt;validate())</code> — иначе просто показываем форму.","links":[{"href":"forms.html","label":"Курс: Формы"},{"href":"explorer.html#model","label":"Справочник: Модель"}]},{"id":"model-unsafe-attr","topic":"model","kind":"one","text":"Атрибут есть в модели, поле было в POST, но после <code>load()</code> он пуст. Самая частая причина?","options":["Атрибут не объявлен в <code>attributes()</code>","Атрибут не «безопасный»: для текущего сценария на него нет ни одного правила","Не вызван <code>validate()</code>","Имя поля в форме не совпало с именем атрибута"],"answer":[1],"why":"Массово присваиваются только безопасные атрибуты, а они по умолчанию выводятся из <code>rules()</code>. Нет правила — нет присваивания. Если проверять нечего, добавьте <code>['attr', 'safe']</code>.","links":[{"href":"forms.html","label":"Курс: Формы"},{"href":"explorer.html#scenarios/traps","label":"Справочник: Сценарии"}]},{"id":"model-fields","topic":"model","kind":"one","text":"Модель Active Record отдаётся через REST. Что по умолчанию вернёт <code>fields()</code>?","options":["Только первичный ключ","Все атрибуты записи, включая <code>password_hash</code>","Ничего — метод надо переопределить","Атрибуты, у которых есть правила в <code>rules()</code>"],"answer":[1],"why":"Базовая реализация возвращает все загруженные атрибуты — то есть всю строку таблицы. Для любой модели, которая выходит наружу, <code>fields()</code> нужно переопределять, а связи выносить в <code>extraFields()</code>.","links":[{"href":"rest.html","label":"Курс: REST: основы"},{"href":"explorer.html#model","label":"Справочник: Модель"}]},{"id":"model-scenario-ctor","topic":"model","kind":"one","text":"Как задать сценарий модели?","options":["Только первым способом","Только вторым способом","Обоими: <code>scenario</code> — обычное свойство, а конструктор применяет конфигурацию","Ни одним: сценарий задаётся только в <code>scenarios()</code>"],"answer":[2],"why":"Конструктор <code>BaseObject</code> применяет переданный массив как конфигурацию, а <code>scenario</code> — свойство с геттером и сеттером. Поэтому работают оба варианта, разница только в удобстве.","links":[{"href":"models.html","label":"Курс: Модели"},{"href":"explorer.html#scenarios","label":"Справочник: Сценарии"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-va\">$model</span> = <span class=\"t-kw\">new</span> <span class=\"t-cl\">User</span>([<span class=\"t-st\">'scenario'</span> =&gt; <span class=\"t-cl\">User</span>::<span class=\"t-ct\">SCENARIO_LOGIN</span>]);\n<span class=\"t-cm\">// или</span>\n<span class=\"t-va\">$model</span>-&gt;scenario = <span class=\"t-cl\">User</span>::<span class=\"t-ct\">SCENARIO_LOGIN</span>;</code></pre></figure>"},{"id":"model-loadmultiple","topic":"model","kind":"one","text":"Как назвать поля формы, чтобы <code>Model::loadMultiple()</code> разложил их по объектам?","options":["<code>$form-&gt;field($model, \"attr[$index]\")</code>","<code>$form-&gt;field($model, \"[$index]attr\")</code>","<code>$form-&gt;field($model, \"attr\")</code> с разными <code>id</code>","<code>$form-&gt;field($model, \"$index.attr\")</code>"],"answer":[1],"why":"Индекс ставится <strong>перед</strong> именем атрибута: получится <code>Model[0][attr]</code>. Обратный порядок дал бы <code>Model[attr][0]</code> — это уже массив внутри одного атрибута, а не разные модели.","links":[{"href":"forms.html","label":"Курс: Формы"},{"href":"explorer.html#model","label":"Справочник: Модель"}]},{"id":"valid-required-zero","topic":"valid","kind":"one","text":"Что выведет проверка?","options":["<code>bool(false)</code> — ноль считается пустым","<code>bool(true)</code> — ноль не пустой","<code>bool(false)</code>, но только в строгом режиме","Бросит исключение"],"answer":[1],"why":"Пустыми Yii считает <code>null</code>, <code>''</code> и <code>[]</code> — ноль и строка <code>'0'</code> в этот список не входят. Поэтому <code>required</code> пропускает ноль. Если по смыслу ноль недопустим, добавьте <code>['qty', 'number', 'min' =&gt; 1]</code>.","links":[{"href":"validators.html","label":"Курс: Встроенные валидаторы"},{"href":"explorer.html#rules/traps","label":"Справочник: Правила и валидаторы"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-va\">$m</span> = <span class=\"t-kw\">new</span> <span class=\"t-cl\">DynamicModel</span>([<span class=\"t-st\">'qty'</span> =&gt; <span class=\"t-nu\">0</span>]);\n<span class=\"t-va\">$m</span>-&gt;<span class=\"t-fn\">addRule</span>([<span class=\"t-st\">'qty'</span>], <span class=\"t-st\">'required'</span>);\n<span class=\"t-fn\">var_dump</span>(<span class=\"t-va\">$m</span>-&gt;<span class=\"t-fn\">validate</span>());</code></pre></figure>"},{"id":"valid-compare-dates","topic":"valid","kind":"one","text":"Правило <code>['end', 'compare', 'compareAttribute' =&gt; 'start', 'operator' =&gt; '&gt;']</code>, значения <code>end = '2024-1-5'</code>, <code>start = '2024-01-10'</code>. Пройдёт ли проверка?","options":["Нет — 5 января раньше 10 января","Да — строки сравниваются посимвольно, и <code>'2024-1-5'</code> оказывается «больше»","Нет — Yii распознаёт даты сам","Да, но только с <code>'type' =&gt; 'number'</code>"],"answer":[1],"why":"По умолчанию оба значения приводятся к строке. На числах это обычно незаметно (PHP сравнивает числовые строки как числа, так что <code>'10' &gt; '9'</code> — правда), а на датах в разном формате ломается. <code>'type' =&gt; 'number'</code> тут тоже не спасёт: <code>(float)</code> от обеих дат даст <code>2024</code>. Сравнивайте UNIX-время из <code>timestampAttribute</code> валидатора <code>date</code>.","links":[{"href":"validators.html","label":"Курс: Встроенные валидаторы"},{"href":"explorer.html#rules/traps","label":"Справочник: Правила и валидаторы"}]},{"id":"valid-integer-float-string","topic":"valid","kind":"one","text":"Пройдёт ли значение <code>'5.0'</code> правило <code>['a', 'integer']</code>?","options":["Да — после приведения это целое","Нет","Да, если не задан <code>strict</code>","Зависит от локали"],"answer":[1],"why":"<code>integer</code> — это <code>NumberValidator</code> с <code>integerOnly = true</code>, а он сверяет строку с шаблоном целого числа. <code>'5.0'</code> шаблону не соответствует, хотя численно и равно пяти.","links":[{"href":"validators.html","label":"Курс: Встроенные валидаторы"},{"href":"explorer.html#rules","label":"Справочник: Правила и валидаторы"}]},{"id":"valid-skiponempty","topic":"valid","kind":"many","text":"У каких валидаторов <code>skipOnEmpty</code> выключен, то есть они срабатывают и на пустом значении? Отметьте все.","options":["<code>required</code>","<code>captcha</code>","<code>email</code>","<code>default</code>","<code>filter</code>","<code>trim</code>"],"answer":[0,1,3,4,5],"why":"Таких пять. Двое из них проверяют — <code>required</code> и <code>captcha</code> (незаполненная капча должна сразу давать ошибку). Ещё трое ничего не проверяют, а меняют значение: <code>default</code> подставляет, <code>filter</code> и <code>trim</code> преобразуют — им пустое значение как раз и интересно.","links":[{"href":"validators.html","label":"Курс: Встроенные валидаторы"},{"href":"explorer.html#rules","label":"Справочник: Правила и валидаторы"}]},{"id":"valid-activeform-validate","topic":"valid","kind":"one","text":"Действие AJAX-валидации написано так. Что проверит этот вызов?","options":["Оба атрибута","Только <code>email</code>","Только <code>username</code>","Ничего — бросит ошибку о числе аргументов"],"answer":[1],"why":"Второй параметр — это <strong>массив</strong> имён атрибутов, а не список аргументов. Лишние аргументы учитываются только когда вторым идёт модель (так проверяют несколько моделей сразу). Правильно: <code>ActiveForm::validate($model, ['email', 'username'])</code>.","links":[{"href":"validation.html","label":"Курс: Валидация"},{"href":"explorer.html#rules","label":"Справочник: Правила и валидаторы"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-kw\">return</span> <span class=\"t-cl\">ActiveForm</span>::<span class=\"t-fn\">validate</span>(<span class=\"t-va\">$model</span>, <span class=\"t-st\">'email'</span>, <span class=\"t-st\">'username'</span>);</code></pre></figure>"},{"id":"valid-inline-client","topic":"valid","kind":"one","text":"Можно ли у inline-валидатора (метода модели) сделать проверку на стороне браузера?","options":["Нет, никогда — только серверная","Да: в правиле задают <code>clientValidate</code>, и указанный метод возвращает JS-код","Да, автоматически — Yii сам переводит PHP в JS","Только через AJAX-валидацию"],"answer":[1],"why":"По умолчанию JS-кода для inline-валидатора действительно нет — взяться ему неоткуда. Но у <code>InlineValidator</code> есть свойство <code>clientValidate</code>: метод, который вернёт фрагмент JavaScript. Ещё варианты — вынести проверку в класс-валидатор или включить AJAX-валидацию.","links":[{"href":"validation.html","label":"Курс: Валидация"},{"href":"explorer.html#rules","label":"Справочник: Правила и валидаторы"}]},{"id":"ar-save-false","topic":"ar","kind":"one","text":"<code>$post-&gt;save()</code> вернул <code>false</code>, исключения не было. Что случилось?","options":["Нет соединения с базой","Не прошла валидация — ошибки лежат в <code>$post-&gt;errors</code>","Запись уже существует","Сработала оптимистичная блокировка"],"answer":[1],"why":"<code>save()</code> по умолчанию сначала валидирует и при ошибке молча возвращает <code>false</code>. Проблемы базы данных, наоборот, приходят исключением. Если валидация уже сделана раньше — <code>save(false)</code>.","links":[{"href":"active-record.html","label":"Курс: Active Record"},{"href":"explorer.html#ar","label":"Справочник: Active Record"}]},{"id":"ar-updateall-events","topic":"ar","kind":"one","text":"К модели подключён <code>TimestampBehavior</code>. Обновит ли <code>Post::updateAll(['title' =&gt; '...'])</code> колонку <code>updated_at</code>?","options":["Да, поведение подключено к модели","Нет — массовые операции не создают объектов и не вызывают событий","Да, но только у уже загруженных в память записей","Только если вызвать <code>refresh()</code>"],"answer":[1],"why":"<code>updateAll()</code> — это один SQL-запрос <code>UPDATE</code> мимо объектов. Ни события <code>beforeSave</code>, ни поведения, ни валидация не срабатывают. Это плата за скорость и одновременно частая причина «протухших» дат.","links":[{"href":"active-record.html","label":"Курс: Active Record"},{"href":"explorer.html#ar/traps","label":"Справочник: Active Record"}]},{"id":"ar-no-changes","topic":"ar","kind":"one","text":"Запись загрузили, ничего не меняли и вызвали <code>save()</code>. Что произойдёт?","options":["<code>UPDATE</code> со всеми колонками","Вернёт <code>true</code>, но запроса к базе не будет","Вернёт <code>false</code>","Бросит исключение «нечего сохранять»"],"answer":[1],"why":"В <code>UPDATE</code> попадают только «грязные» атрибуты — изменённые после загрузки. Если их нет, запрос не отправляется вовсе, а метод отчитывается об успехе.","links":[{"href":"active-record.html","label":"Курс: Active Record"},{"href":"explorer.html#ar","label":"Справочник: Active Record"}]},{"id":"ar-findone-array","topic":"ar","kind":"one","text":"Почему <code>Customer::findOne(Yii::$app-&gt;request-&gt;get('id'))</code> — опасный код?","options":["<code>findOne()</code> не экранирует значение","В <code>id</code> может прийти массив, и он превратится в набор условий по другим колонкам","<code>findOne()</code> всегда возвращает первую запись таблицы","Метод устарел и удалён"],"answer":[1],"why":"<code>?id[status]=1&amp;id[id]=1</code> придёт как массив, а массив <code>findOne()</code> трактует как условие <code>where</code>. С 2.0.15 часть таких случаев отсекается, но полагаться на это не стоит: приводите тип <code>(int)$id</code> или пишите условие явно — <code>findOne(['id' =&gt; $id])</code>.","links":[{"href":"security.html","label":"Курс: Безопасность"},{"href":"explorer.html#ar/traps","label":"Справочник: Active Record"}]},{"id":"ar-with-joinwith","topic":"ar","kind":"one","text":"Нужно выбрать заказы и отфильтровать их по колонке связанной таблицы <code>customer.status</code>. Что использовать?","options":["<code>with('customer')</code> — он подтянет связь","<code>joinWith('customer')</code> — нужен настоящий JOIN","Любой из двух, разницы нет","<code>select()</code> с именем связи"],"answer":[1],"why":"<code>with()</code> делает <strong>отдельный</strong> запрос для связи, поэтому в <code>where</code> основного запроса её колонок ещё нет. <code>joinWith()</code> добавляет JOIN — по нему и можно фильтровать и сортировать. Помните про дубли строк при JOIN с <code>hasMany</code>.","links":[{"href":"active-record.html","label":"Курс: Active Record"},{"href":"explorer.html#ar/traps","label":"Справочник: Active Record"}]},{"id":"ar-optimistic","topic":"ar","kind":"one","text":"Для чего нужен метод <code>optimisticLock()</code>?","options":["Блокирует строку в базе на время транзакции","Не даёт перезаписать чужие правки: при несовпадении версии <code>save()</code> бросит <code>StaleObjectException</code>","Ставит блокировку на файл","Включает очередь записи"],"answer":[1],"why":"Настоящей блокировки нет: в таблице держат колонку версии, форма отдаёт её скрытым полем, а <code>UPDATE</code> идёт с условием по версии. Никто не мешал — версия совпала; кто-то успел раньше — исключение.","links":[{"href":"active-record.html","label":"Курс: Active Record"},{"href":"explorer.html#ar","label":"Справочник: Active Record"}]},{"id":"query-one-limit","topic":"query","kind":"one","text":"Какой SQL уйдёт в базу?","options":["SELECT * FROM `post` LIMIT 1","SELECT * FROM `post`","SELECT * FROM `post` LIMIT 0, 1","SELECT TOP 1 * FROM `post`"],"answer":[1],"why":"<code>one()</code> не трогает запрос: он выполняет его как есть и забирает из результата первую строку через <code>fetch()</code>. На большой выборке базе придётся посчитать всё — ставьте <code>limit(1)</code> сами.","links":[{"href":"query-builder.html","label":"Курс: Query Builder"},{"href":"explorer.html#query/traps","label":"Справочник: Query Builder"}],"mono":true,"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-va\">$row</span> = (<span class=\"t-kw\">new</span> <span class=\"t-cl\">Query</span>())-&gt;<span class=\"t-fn\">from</span>(<span class=\"t-st\">'post'</span>)-&gt;<span class=\"t-fn\">one</span>();</code></pre></figure>"},{"id":"query-empty-in","topic":"query","kind":"one","text":"Что получится из условия с пустым массивом?","options":["SELECT * FROM `post`","SELECT * FROM `post` WHERE `id` IN ()","SELECT * FROM `post` WHERE 0=1","Бросит исключение"],"answer":[2],"why":"<code>IN ()</code> — некорректный SQL, поэтому Yii подставляет заведомо ложное условие: выборка честно вернёт ноль строк. Логично, но неожиданно — если пустой массив у вас означает «без фильтра», проверяйте его до добавления условия или берите <code>filterWhere()</code>.","links":[{"href":"query-builder.html","label":"Курс: Query Builder"},{"href":"explorer.html#query/traps","label":"Справочник: Query Builder"}],"mono":true,"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-va\">$sql</span> = (<span class=\"t-kw\">new</span> <span class=\"t-cl\">Query</span>())-&gt;<span class=\"t-fn\">from</span>(<span class=\"t-st\">'post'</span>)-&gt;<span class=\"t-fn\">where</span>([<span class=\"t-st\">'id'</span> =&gt; []])-&gt;<span class=\"t-fn\">createCommand</span>()-&gt;<span class=\"t-fn\">getRawSql</span>();</code></pre></figure>"},{"id":"query-filterwhere-zero","topic":"query","kind":"one","text":"Останется ли условие в запросе?","options":["Нет — ноль считается пустым и условие отбросится","Да — условие <code>status = 0</code> останется в запросе","Нет — <code>andFilterWhere</code> работает только со строками","Да, но значение подставится как NULL"],"answer":[1],"why":"Пустыми для <code>filterWhere()</code> считаются <code>null</code>, <code>''</code>, строка из одних пробелов и <code>[]</code>. Ноль и <code>'0'</code> — нормальные значения, условие остаётся. Именно поэтому фильтр «статус = 0» в поиске работает, а «строка пробелов» — нет.","links":[{"href":"query-builder.html","label":"Курс: Query Builder"},{"href":"explorer.html#query","label":"Справочник: Query Builder"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-va\">$q</span> = (<span class=\"t-kw\">new</span> <span class=\"t-cl\">Query</span>())-&gt;<span class=\"t-fn\">from</span>(<span class=\"t-st\">'post'</span>)-&gt;<span class=\"t-fn\">andFilterWhere</span>([<span class=\"t-st\">'status'</span> =&gt; <span class=\"t-nu\">0</span>]);</code></pre></figure>"},{"id":"query-count-limit","topic":"query","kind":"one","text":"Сколько вернёт <code>count()</code> при таком запросе, если условию отвечают 42 строки?","options":["10","42","1","Зависит от СУБД"],"answer":[1],"why":"Агрегаты специально отбрасывают <code>limit</code>, <code>offset</code> и <code>orderBy</code>, но сохраняют <code>where</code>, <code>join</code> и <code>groupBy</code>. Иначе постраничная навигация не могла бы узнать общее число строк, пользуясь тем же запросом.","links":[{"href":"query-builder.html","label":"Курс: Query Builder"},{"href":"explorer.html#query/traps","label":"Справочник: Query Builder"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-va\">$n</span> = (<span class=\"t-kw\">new</span> <span class=\"t-cl\">Query</span>())-&gt;<span class=\"t-fn\">from</span>(<span class=\"t-st\">'post'</span>)-&gt;<span class=\"t-fn\">where</span>([<span class=\"t-st\">'status'</span> =&gt; <span class=\"t-nu\">1</span>])-&gt;<span class=\"t-fn\">limit</span>(<span class=\"t-nu\">10</span>)-&gt;<span class=\"t-fn\">count</span>();</code></pre></figure>"},{"id":"query-braces","topic":"query","kind":"one","text":"Во что превратится <code>{{%post}}</code> и <code>[[title]]</code> при префиксе таблиц <code>tbl_</code>?","options":["В <code>%post</code> и <code>title</code> — проценты и скобки просто отбрасываются","В имя с префиксом и кавычками СУБД: <code>tbl_post</code> и экранированное имя столбца","В <code>post</code> и <code>[title]</code> — скобки остаются как есть","Ни во что: это просто текст в запросе"],"answer":[1],"why":"Двойные фигурные скобки — имя таблицы, процент внутри них — место для <code>tablePrefix</code>. Двойные квадратные — имя колонки. И то и другое экранируется под текущую СУБД, поэтому один запрос работает и в MySQL, и в PostgreSQL.","links":[{"href":"dao.html","label":"Курс: DAO: прямые запросы"},{"href":"explorer.html#query","label":"Справочник: Query Builder"}]},{"id":"query-transaction-master","topic":"query","kind":"one","text":"Настроена репликация «мастер — реплики». Куда уйдёт <code>SELECT</code>, выполненный внутри транзакции?","options":["На реплику — это чтение","На мастер","Случайно на любую из реплик","Транзакция запретит чтение"],"answer":[1],"why":"<code>Command::prepare()</code> прямо проверяет: если транзакция открыта, чтение тоже идёт по её соединению. Иначе можно было бы не увидеть собственных, ещё не зафиксированных изменений.","links":[{"href":"dao.html","label":"Курс: DAO: прямые запросы"},{"href":"explorer.html#query","label":"Справочник: Query Builder"}]},{"id":"migr-safeup","topic":"migr","kind":"one","text":"Чем <code>safeUp()</code> отличается от <code>up()</code>?","options":["<code>safeUp()</code> проверяет наличие таблиц перед изменением","<code>safeUp()</code> выполняется в транзакции — при исключении изменения откатятся","<code>safeUp()</code> нельзя откатить","Это псевдонимы"],"answer":[1],"why":"Транзакцию открывает сама миграция. Оговорка одна: транзакционный DDL умеют не все СУБД — в MySQL до 8.0 <code>CREATE TABLE</code> откатить нельзя, и «безопасность» останется на бумаге.","links":[{"href":"migrations.html","label":"Курс: Миграции"},{"href":"explorer.html#migrations","label":"Справочник: Миграции"}]},{"id":"migr-down-false","topic":"migr","kind":"one","text":"Когда <code>down()</code> должен возвращать <code>false</code>?","options":["Когда откат не нужен","Когда откат невозможен — например, данные уничтожены","Когда миграция уже применена","<code>down()</code> ничего не возвращает"],"answer":[1],"why":"<code>false</code> — это сигнал «отката нет». <code>migrate/down</code> остановится и скажет об этом вместо того, чтобы молча сделать вид, будто всё вернулось на место.","links":[{"href":"migrations.html","label":"Курс: Миграции"},{"href":"explorer.html#migrations","label":"Справочник: Миграции"}]},{"id":"migr-name","topic":"migr","kind":"one","text":"Что даст команда <code>./yii migrate/create create_post_table</code>?","options":["Пустую миграцию — имя ни на что не влияет","Заготовку с <code>createTable('post')</code> и <code>dropTable()</code> в откате","Сразу создаст таблицу","Ошибку: имя занято"],"answer":[1],"why":"Генератор разбирает имя: <code>create_xxx_table</code>, <code>drop_xxx_table</code>, <code>add_xxx_column_to_yyy_table</code> и <code>create_junction_table_for_xxx_and_yyy_tables</code>. С <code>--fields</code> в заготовку попадут и колонки.","links":[{"href":"migrations.html","label":"Курс: Миграции"},{"href":"explorer.html#migrations","label":"Справочник: Миграции"}]},{"id":"migr-path","topic":"migr","kind":"one","text":"Как применить миграции расширения — например, таблицы RBAC?","options":["Скопировать файлы в <code>@app/migrations</code>","<code>./yii migrate --migrationPath=@yii/rbac/migrations</code>","Они применяются сами при установке через Composer","Только вручную через SQL"],"answer":[1],"why":"Путь можно передать разово флагом или прописать в конфигурации консольного приложения — тогда команда будет видеть несколько источников сразу (<code>migrationPath</code> принимает массив).","links":[{"href":"migrations.html","label":"Курс: Миграции"},{"href":"explorer.html#migrations","label":"Справочник: Миграции"}]},{"id":"migr-history","topic":"migr","kind":"one","text":"Откуда <code>./yii migrate</code> знает, какие миграции уже применены?","options":["Из имён файлов и их дат","Из служебной таблицы <code>migration</code> в той же базе","Из файла в <code>@runtime</code>","Сравнивает схему базы с кодом"],"answer":[1],"why":"Таблица <code>migration</code> создаётся при первом запуске и хранит имя миграции и время применения. Поэтому откатить базу мимо Yii и ожидать, что команда это заметит, не получится.","links":[{"href":"migrations.html","label":"Курс: Миграции"},{"href":"explorer.html#migrations","label":"Справочник: Миграции"}]},{"id":"migr-pk","topic":"migr","kind":"one","text":"Какой метод в миграции даёт автоинкрементный первичный ключ?","options":["<code>$this-&gt;integer()-&gt;autoIncrement()</code>","<code>$this-&gt;primaryKey()</code>","<code>$this-&gt;pk()</code>","<code>$this-&gt;serial()</code>"],"answer":[1],"why":"<code>primaryKey()</code> разворачивается в подходящий для СУБД тип: <code>int AUTO_INCREMENT PRIMARY KEY</code> в MySQL, <code>serial PRIMARY KEY</code> в PostgreSQL. Для больших таблиц есть <code>bigPrimaryKey()</code>.","links":[{"href":"migrations.html","label":"Курс: Миграции"},{"href":"explorer.html#migrations","label":"Справочник: Миграции"}]},{"id":"core-readonly","topic":"core","kind":"one","text":"В классе есть только <code>getLabel()</code>, сеттера нет. Что будет при <code>$obj-&gt;label = 'x'</code>?","options":["Создастся обычное публичное свойство","<code>InvalidCallException</code> — свойство только для чтения","<code>UnknownPropertyException</code>","Значение молча потеряется"],"answer":[1],"why":"<code>__set()</code> различает два случая: есть геттер, но нет сеттера — <code>InvalidCallException</code> («только для чтения»); нет ни того ни другого — <code>UnknownPropertyException</code>. Разные ошибки для разных ситуаций.","links":[{"href":"components.html","label":"Курс: Компоненты и свойства"},{"href":"explorer.html#components","label":"Справочник: Компоненты и свойства"}]},{"id":"core-init-order","topic":"core","kind":"one","text":"Почему <code>parent::__construct($config)</code> вызывают в конце своего конструктора, а <code>parent::init()</code> — в начале своего <code>init()</code>?","options":["Так требует PSR","Конструктор родителя применяет конфигурацию и вызывает <code>init()</code> — свои умолчания надо задать до этого","Иначе свойства станут приватными","Порядок не важен"],"answer":[1],"why":"<code>BaseObject::__construct()</code> сначала раскладывает конфигурацию по свойствам, затем зовёт <code>init()</code>. Если вызвать родителя первым, ваши умолчания затрут значения из конфигурации. В <code>init()</code> наоборот: сначала пусть отработает родитель, а потом уже ваш код с готовым объектом.","links":[{"href":"components.html","label":"Курс: Компоненты и свойства"},{"href":"explorer.html#components/traps","label":"Справочник: Компоненты и свойства"}]},{"id":"core-event-order","topic":"core","kind":"one","text":"На событие подписаны и конкретный объект (<code>$post-&gt;on(...)</code>), и класс (<code>Event::on(Post::class, ...)</code>). Кто сработает первым?","options":["Обработчик класса","Обработчик экземпляра","В порядке подписки","Одновременно, порядок не определён"],"answer":[1],"why":"<code>Component::trigger()</code> сначала перебирает обработчики самого объекта и только потом вызывает <code>Event::trigger()</code> для уровня класса. И да: <code>$event-&gt;handled = true</code> в обработчике экземпляра до классовых просто не дойдёт.","links":[{"href":"events.html","label":"Курс: События"},{"href":"explorer.html#events","label":"Справочник: События"}]},{"id":"core-handled","topic":"core","kind":"one","text":"Как остановить выполнение остальных обработчиков события?","options":["<code>return false</code> из обработчика","<code>$event-&gt;handled = true</code>","<code>$event-&gt;stopPropagation()</code>","Бросить исключение — других способов нет"],"answer":[1],"why":"Возвращаемое значение обработчика вообще не смотрят. Флаг <code>handled</code> проверяется после каждого вызова, и цикл прерывается. У событий-«вето» вроде <code>beforeSave</code> для отмены действия есть отдельный флаг <code>isValid</code>.","links":[{"href":"events.html","label":"Курс: События"},{"href":"explorer.html#events","label":"Справочник: События"}]},{"id":"core-as-on","topic":"core","kind":"one","text":"Что означают ключи <code>on</code> и <code>as</code> в массиве конфигурации компонента?","options":["<code>on</code> — включить, <code>as</code> — переименовать","<code>'on событие' =&gt; обработчик</code> подписывает на событие, <code>'as имя' =&gt; конфиг</code> прикрепляет поведение","<code>on</code> — условие, <code>as</code> — псевдоним класса","Это зарезервированные имена свойств"],"answer":[1],"why":"Их разбирает <code>Yii::configure()</code> до присваивания остальных свойств. Так и событие, и поведение можно навесить прямо в конфигурации, не трогая код класса.","links":[{"href":"configurations.html","label":"Курс: Конфигурации"},{"href":"explorer.html#behaviors","label":"Справочник: Поведения"}]},{"id":"core-baseobject","topic":"core","kind":"one","text":"Когда достаточно унаследоваться от <code>BaseObject</code>, а когда нужен <code>Component</code>?","options":["<code>BaseObject</code> — для моделей, <code>Component</code> — для контроллеров","<code>BaseObject</code> даёт свойства и конфигурацию; <code>Component</code> добавляет события и поведения","<code>BaseObject</code> устарел","Разница только в пространстве имён"],"answer":[1],"why":"<code>Component</code> наследует <code>BaseObject</code> и добавляет <code>on()</code>, <code>trigger()</code>, <code>attachBehavior()</code>. Это удобно, но не бесплатно: у каждого компонента есть внутренние массивы обработчиков и поведений. Для простого значения-объекта хватит <code>BaseObject</code>.","links":[{"href":"components.html","label":"Курс: Компоненты и свойства"},{"href":"explorer.html#components","label":"Справочник: Компоненты и свойства"}]},{"id":"state-session-nested","topic":"state","kind":"one","text":"Почему такая запись не сохранится в сессии?","options":["Нужно сначала вызвать <code>open()</code>","<code>ArrayAccess</code> возвращает копию массива — меняется копия, а не то, что в сессии","Ключ <code>cart</code> не объявлен заранее","Сессия доступна только на чтение"],"answer":[1],"why":"<code>offsetGet()</code> отдаёт значение, а не ссылку, поэтому запись уходит во временную копию — PHP даже предупреждения не даст. Варианты: записать массив целиком, работать с <code>$_SESSION</code> напрямую после <code>open()</code> или хранить плоские ключи вроде <code>cart.qty</code>.","links":[{"href":"sessions.html","label":"Курс: Сессии и куки"},{"href":"explorer.html#state/traps","label":"Справочник: Сессии, куки и кэш"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-cl\">Yii</span>::<span class=\"t-va\">$app</span>-&gt;session[<span class=\"t-st\">'cart'</span>][<span class=\"t-st\">'qty'</span>] = <span class=\"t-nu\">2</span>;</code></pre></figure>"},{"id":"state-flash","topic":"state","kind":"one","text":"Сколько живёт flash-сообщение?","options":["До конца текущего запроса","Устанавливается в одном запросе, читается в следующем, затем удаляется","До явного вызова <code>removeFlash()</code>","Пока не истечёт время сессии"],"answer":[1],"why":"Ровно на один переход — поэтому это и работает для сообщений после редиректа. Если прочитать flash в том же запросе, где его поставили, он всё равно исчезнет к следующему.","links":[{"href":"sessions.html","label":"Курс: Сессии и куки"},{"href":"explorer.html#state","label":"Справочник: Сессии, куки и кэш"}]},{"id":"state-cache-false","topic":"state","kind":"one","text":"Что вернёт <code>$cache-&gt;get($key)</code>, если значения в кэше нет?","options":["<code>null</code>","<code>false</code>","Пустую строку","Бросит исключение"],"answer":[1],"why":"Промах — это <code>false</code>. Отсюда важное следствие: само значение <code>false</code> в кэш класть нельзя, вы не отличите его от промаха. Заворачивайте в массив или пользуйтесь <code>getOrSet()</code>.","links":[{"href":"caching.html","label":"Курс: Кэширование данных"},{"href":"explorer.html#state/traps","label":"Справочник: Сессии, куки и кэш"}]},{"id":"state-tagdependency","topic":"state","kind":"one","text":"Как одним движением сбросить кэш всех списков постов после сохранения одного поста?","options":["<code>$cache-&gt;flush()</code>","Записывать с <code>TagDependency(['tags' =&gt; 'posts'])</code> и вызывать <code>TagDependency::invalidate($cache, 'posts')</code>","Удалять ключи по маске","Задать всем записям <code>duration = 1</code>"],"answer":[1],"why":"<code>flush()</code> снесёт вообще весь кэш, включая чужой. Маски по ключам большинство хранилищ не умеют. Метки — штатный способ: помеченные записи разом становятся недействительными.","links":[{"href":"caching.html","label":"Курс: Кэширование данных"},{"href":"explorer.html#state","label":"Справочник: Сессии, куки и кэш"}]},{"id":"state-cookie-tamper","topic":"state","kind":"one","text":"Включена проверка кук. Пользователь поправил значение куки в браузере. Что увидит приложение?","options":["Изменённое значение","<code>Yii::$app-&gt;request-&gt;cookies</code> эту куку не вернёт, хотя в <code>$_COOKIE</code> она есть","Исключение при старте","Пустую строку вместо значения"],"answer":[1],"why":"К значению приписывается подпись на <code>cookieValidationKey</code>. Не сошлась — кука просто не попадает в коллекцию. Именно поэтому читать <code>$_COOKIE</code> напрямую в Yii-приложении — плохая привычка.","links":[{"href":"sessions.html","label":"Курс: Сессии и куки"},{"href":"explorer.html#state","label":"Справочник: Сессии, куки и кэш"}]},{"id":"state-keyprefix","topic":"state","kind":"one","text":"Зачем компоненту кэша свойство <code>keyPrefix</code>?","options":["Чтобы ключи были короче","Чтобы несколько приложений на одном memcached, Redis или APCu не затирали ключи друг друга","Для сортировки ключей","Это префикс таблицы для <code>DbCache</code>"],"answer":[1],"why":"Общие хранилища не разделены по приложениям: два проекта с ключом <code>user-1</code> на одном сервере будут видеть чужие данные. Префикс разводит их по пространствам имён.","links":[{"href":"caching.html","label":"Курс: Кэширование данных"},{"href":"explorer.html#state","label":"Справочник: Сессии, куки и кэш"}]},{"id":"sec-password","topic":"sec","kind":"one","text":"Как правильно хранить пароль пользователя?","options":["<code>md5($password)</code> с солью","<code>Yii::$app-&gt;security-&gt;generatePasswordHash($password)</code>, проверять <code>validatePassword()</code>","<code>sha256</code> с <code>keyPrefix</code>","Шифровать <code>encryptByKey()</code> и расшифровывать при входе"],"answer":[1],"why":"Под капотом bcrypt: соль генерируется сама и хранится внутри хеша, а стоимость подбирается так, чтобы перебор был дорогим. Шифрование тут в принципе неуместно — пароль не нужно уметь расшифровывать.","links":[{"href":"security.html","label":"Курс: Безопасность"},{"href":"explorer.html#user","label":"Справочник: Пользователь и доступ"}]},{"id":"sec-encode","topic":"sec","kind":"one","text":"Что именно экранирует <code>Html::encode()</code> — только угловые скобки или кавычки тоже?","options":["&amp;lt;b&amp;gt;\"A\" &amp;amp; 'B'&amp;lt;/b&amp;gt; — кавычки не трогаются","&amp;lt;b&amp;gt;&amp;quot;A&amp;quot; &amp;amp; &amp;#039;B&amp;#039;&amp;lt;/b&amp;gt; — экранируются и кавычки тоже","&amp;lt;b&amp;gt;&amp;quot;A&amp;quot; &amp; 'B'&amp;lt;/b&amp;gt;","b\"A\" &amp;amp; 'B'/b — теги вырезаются"],"answer":[1],"why":"<code>Html::encode()</code> — это <code>htmlspecialchars()</code> с <code>ENT_QUOTES</code>, поэтому экранируются и одинарные, и двойные кавычки. Значит, результат безопасно подставлять и в текст, и в значение атрибута.","links":[{"href":"security.html","label":"Курс: Безопасность"},{"href":"explorer.html#helpers","label":"Справочник: Хелперы"}],"mono":true,"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-kw\">echo</span> <span class=\"t-cl\">Html</span>::<span class=\"t-fn\">encode</span>(<span class=\"t-st\">'&lt;b&gt;\"A\" &amp; \\'B\\'&lt;/b&gt;'</span>);</code></pre></figure>"},{"id":"sec-csrf-off","topic":"sec","kind":"one","text":"Как отключить проверку CSRF для одного действия-вебхука?","options":["<code>Yii::$app-&gt;request-&gt;enableCsrfValidation = false</code> в самом действии","В <code>beforeAction()</code> контроллера выставить <code>$this-&gt;enableCsrfValidation = false</code> для нужного <code>$action-&gt;id</code>","Удалить <code>cookieValidationKey</code>","Отключить CSRF для всего приложения"],"answer":[1],"why":"Проверка происходит до входа в действие, поэтому внутри него отключать уже поздно. Свойство ставят в <code>beforeAction()</code> — до <code>parent::beforeAction($action)</code> — и только для конкретного действия.","links":[{"href":"security.html","label":"Курс: Безопасность"},{"href":"explorer.html#http","label":"Справочник: Запрос и ответ"}]},{"id":"sec-encrypt","topic":"sec","kind":"one","text":"Чем <code>encryptByKey()</code> отличается от <code>encryptByPassword()</code>?","options":["Первый быстрее, но требует случайного ключа достаточной длины; второй растягивает пароль через PBKDF2 и потому медленнее","Первый симметричный, второй асимметричный","Первый устарел","Разница только в длине результата"],"answer":[0],"why":"Ключ — это уже криптостойкая случайная строка, из неё можно выводить подключи быстро. Человеческий пароль энтропии почти не содержит, поэтому его намеренно растягивают — иначе перебор был бы дешёвым.","links":[{"href":"security.html","label":"Курс: Безопасность"},{"href":"explorer.html#user","label":"Справочник: Пользователь и доступ"}]},{"id":"sec-loginrequired","topic":"sec","kind":"one","text":"AJAX-запрос от гостя попал на действие, закрытое <code>AccessControl</code>. Почему вместо редиректа на страницу входа пришла ошибка 403?","options":["Для AJAX редиректы запрещены спецификацией","Yii смотрит заголовок <code>Accept</code>: если клиент не готов принять HTML, редиректить некуда — будет 403","Сработал <code>VerbFilter</code>","Не задан <code>loginUrl</code>"],"answer":[1],"why":"Решает <code>checkRedirectAcceptable()</code>, а не флаг AJAX. Запрос, который просит <code>application/json</code>, отправлять на HTML-страницу входа бессмысленно, поэтому <code>loginRequired()</code> бросает <code>ForbiddenHttpException</code>.","links":[{"href":"authentication.html","label":"Курс: Аутентификация"},{"href":"explorer.html#user/traps","label":"Справочник: Пользователь и доступ"}]},{"id":"sec-order-by","topic":"sec","kind":"one","text":"Имя колонки для <code>ORDER BY</code> пришло от пользователя. Как подставить его безопасно?","options":["Экранировать через <code>Yii::$app-&gt;db-&gt;quoteValue()</code>","Привязать параметром <code>:col</code>","Сверить со списком допустимых колонок и обернуть в <code>[[...]]</code>","Достаточно <code>addslashes()</code>"],"answer":[2],"why":"Параметрами привязывают значения, а не идентификаторы — <code>ORDER BY :col</code> превратится в сортировку по строковой константе. Единственный надёжный путь — белый список. Для сортировки в списках это уже сделано за вас в <code>yii\\data\\Sort</code>.","links":[{"href":"dao.html","label":"Курс: DAO: прямые запросы"},{"href":"explorer.html#query/traps","label":"Справочник: Query Builder"}]},{"id":"misc-exitcode","topic":"misc","kind":"one","text":"Что должно вернуть консольное действие, чтобы cron счёл запуск неудачным?","options":["<code>false</code>","Ненулевой код — например, <code>ExitCode::UNSPECIFIED_ERROR</code>","Пустую строку","Бросить исключение — других способов нет"],"answer":[1],"why":"Код возврата действия становится кодом выхода процесса. <code>ExitCode::OK</code> — это ноль, <code>UNSPECIFIED_ERROR</code> — единица; в классе есть и другие значения из sysexits.h.","links":[{"href":"console.html","label":"Курс: Консольные команды"},{"href":"explorer.html#controllers","label":"Справочник: Контроллеры и действия"}]},{"id":"misc-interactive","topic":"misc","kind":"one","text":"Команда просит подтверждения, а её надо запускать из CI. Что сделать?","options":["Передать <code>--interactive=0</code>","Перенаправить <code>yes |</code> в неё","Выставить <code>YII_ENV=prod</code>","Переопределить <code>confirm()</code>"],"answer":[0],"why":"<code>Controller::confirm()</code> при <code>interactive = 0</code> просто возвращает <code>true</code>, ничего не спрашивая. Опция объявлена в базовом консольном контроллере, поэтому работает у любой команды.","links":[{"href":"console.html","label":"Курс: Консольные команды"},{"href":"explorer.html#controllers","label":"Справочник: Контроллеры и действия"}]},{"id":"misc-array-arg","topic":"misc","kind":"one","text":"Как передать команде массив значений одним аргументом?","options":["<code>./yii send --ids=1 --ids=2</code>","<code>./yii send 1,2,3</code> — Yii разобьёт строку по запятым","<code>./yii send \"[1,2,3]\"</code> — разберётся как JSON","Массивы в аргументах не поддерживаются"],"answer":[1],"why":"<code>bindActionParams()</code> смотрит на тип параметра: если это <code>array</code>, строка режется по запятым (с обрезкой пробелов). Пустая строка даёт пустой массив.","links":[{"href":"console.html","label":"Курс: Консольные команды"},{"href":"explorer.html#controllers","label":"Справочник: Контроллеры и действия"}],"code":"<figure class=\"code\"><div class=\"code-head\">PHP</div><pre><code><span class=\"t-kw\">public</span> <span class=\"t-kw\">function</span> <span class=\"t-fn\">actionSend</span>(<span class=\"t-kw\">array</span> <span class=\"t-va\">$ids</span>) { <span class=\"t-cm\">/* ... */</span> }</code></pre></figure>"},{"id":"misc-t-missing","topic":"misc","kind":"one","text":"Что вернёт <code>Yii::t('app', 'Hello')</code>, если перевода нет?","options":["Пустую строку","Исходную строку <code>Hello</code> и вызовет событие <code>missingTranslation</code>","<code>null</code>","Ключ в виде <code>app.Hello</code>"],"answer":[1],"why":"Пропущенный перевод не должен ломать страницу, поэтому возвращается исходный текст. А событие <code>missingTranslation</code> у источника сообщений позволяет их собирать — например, дописывать в файл на лету.","links":[{"href":"i18n.html","label":"Курс: Интернационализация"},{"href":"explorer.html#app","label":"Справочник: Приложение и конфигурация"}]},{"id":"misc-rest-422","topic":"misc","kind":"one","text":"REST-действие вызвало <code>save()</code>, валидация не прошла. Что уйдёт клиенту?","options":["200 с полем <code>errors</code>","400 и текст первой ошибки","422 и массив вида <code>[{\"field\": \"...\", \"message\": \"...\"}]</code>","500"],"answer":[2],"why":"Ошибки модели сериализует <code>yii\\rest\\Serializer</code>: он ставит 422 «Data Validation Failed» и раскладывает первые ошибки каждого атрибута в плоский список. Удобно показывать прямо рядом с полями формы.","links":[{"href":"rest-advanced.html","label":"Курс: REST: продолжение"},{"href":"explorer.html#controllers","label":"Справочник: Контроллеры и действия"}]},{"id":"misc-schema-cache","topic":"misc","kind":"one","text":"Какая настройка компонента <code>db</code> сильнее прочих влияет на скорость Active Record в production?","options":["<code>enableQueryCache</code>","<code>enableSchemaCache</code>","<code>emulatePrepare</code>","<code>charset</code>"],"answer":[1],"why":"Без кэша схемы Yii перед работой с таблицей каждый раз спрашивает у базы список колонок и их типы — лишний запрос на ровном месте, причём на каждый HTTP-запрос. В разработке его держат выключенным, иначе миграции «не видны».","links":[{"href":"performance.html","label":"Курс: Производительность"},{"href":"explorer.html#ar","label":"Справочник: Active Record"}]}]};
+</script>
+<script>
+/* Проверка знаний Yii 2 — сборка набора, прохождение, разбор ошибок.
+   Вопросы приходят готовой разметкой в window.QUIZ: подсветка кода и
+   инлайновый `код` сделаны на сборке, здесь только перемешивание и логика. */
+(function () {
+  'use strict';
+
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var $$ = function (s, r) { return Array.prototype.slice.call((r || document).querySelectorAll(s)); };
+
+  var KEY_THEME = 'yii2:theme';
+  var KEY_STATE = 'yii2:quiz';
+
+  var DATA = window.QUIZ || { topics: [], questions: [] };
+  var BY_ID = {};
+  DATA.questions.forEach(function (q) { BY_ID[q.id] = q; });
+  var TOPIC = {};
+  DATA.topics.forEach(function (t) { TOPIC[t.id] = t; });
+
+  var QUICK = 10, EXAM = 40;
+
+  /* ------------------------------------------------------------ хранилище */
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY_STATE);
+      var o = raw ? JSON.parse(raw) : null;
+      if (o && o.stats) { return o; }
+    } catch (e) {}
+    return { stats: {} };
+  }
+
+  function save(o) {
+    try { localStorage.setItem(KEY_STATE, JSON.stringify(o)); } catch (e) {}
+  }
+
+  var store = load();
+
+  function record(id, right) {
+    var s = store.stats[id] || (store.stats[id] = { n: 0, w: 0, last: 0 });
+    s.n++;
+    if (!right) { s.w++; }
+    s.last = right ? 0 : 1;           // 1 — в прошлый раз ошибся, попадёт в работу над ошибками
+    save(store);
+  }
+
+  function missedIds() {
+    return Object.keys(store.stats).filter(function (id) {
+      return store.stats[id].last === 1 && BY_ID[id];
+    });
+  }
+
+  /* -------------------------------------------------------------- утилиты */
+
+  function shuffle(a) {
+    for (var i = a.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  function plural(n, one, few, many) {
+    var m = Math.abs(n) % 100;
+    if (m >= 11 && m <= 19) { return many; }
+    m %= 10;
+    if (m === 1) { return one; }
+    if (m >= 2 && m <= 4) { return few; }
+    return many;
+  }
+
+  function same(a, b) {
+    if (a.length !== b.length) { return false; }
+    var x = a.slice().sort(), y = b.slice().sort();
+    return x.every(function (v, i) { return v === y[i]; });
+  }
+
+  /* ---------------------------------------------------------- набор вопросов */
+
+  var run = null;      // { items: [...], pos, done: [] }
+
+  function prepare(list) {
+    return list.map(function (q) {
+      var order = shuffle(q.options.map(function (_, i) { return i; }));
+      return {
+        q: q,
+        order: order,                                   // порядок показа вариантов
+        answer: order.reduce(function (acc, src, shown) {
+          if (q.answer.indexOf(src) >= 0) { acc.push(shown); }
+          return acc;
+        }, []),
+        picked: [],
+        checked: false,
+        right: false
+      };
+    });
+  }
+
+  function start(mode, arg) {
+    var pool = DATA.questions.slice();
+    var title = '';
+    if (mode === 'quick') {
+      pool = shuffle(pool).slice(0, QUICK);
+      title = 'Быстрый прогон';
+    } else if (mode === 'exam') {
+      pool = shuffle(pool).slice(0, EXAM);
+      title = 'Экзамен';
+    } else if (mode === 'topic') {
+      pool = shuffle(pool.filter(function (q) { return q.topic === arg; }));
+      title = TOPIC[arg] ? TOPIC[arg].title : 'Тема';
+    } else if (mode === 'missed') {
+      var ids = missedIds();
+      pool = shuffle(pool.filter(function (q) { return ids.indexOf(q.id) >= 0; }));
+      title = 'Работа над ошибками';
+    }
+    if (!pool.length) { return; }
+    run = { items: prepare(pool), pos: 0, title: title, mode: mode, arg: arg };
+    show('run');
+    render();
+  }
+
+  /* ------------------------------------------------------------- отрисовка */
+
+  function show(what) {
+    $('#screen-start').hidden = what !== 'start';
+    $('#screen-run').hidden = what !== 'run';
+    $('#screen-result').hidden = what !== 'result';
+    window.scrollTo(0, 0);
+  }
+
+  function render() {
+    var it = run.items[run.pos];
+    var q = it.q;
+    var t = TOPIC[q.topic] || { title: '', color: 'var(--signal)' };
+
+    $('#rb-title').textContent = run.title;
+    $('#rb-pos').textContent = (run.pos + 1) + ' / ' + run.items.length;
+
+    var dots = run.items.map(function (x, i) {
+      var cls = 'dot';
+      if (x.checked) { cls += x.right ? ' ok' : ' no'; }
+      if (i === run.pos) { cls += ' now'; }
+      return '<span class="' + cls + '"></span>';
+    }).join('');
+    $('#dots').innerHTML = dots;
+
+    var box = $('#qbox');
+    box.style.setProperty('--tc', t.color);
+    $('#q-topic').textContent = t.title;
+    $('#q-kind').textContent = q.kind === 'many' ? 'несколько верных' : 'один верный';
+    $('#q-text').innerHTML = q.text;
+
+    var code = $('#q-code');
+    if (q.code) { code.innerHTML = q.code; code.hidden = false; } else { code.hidden = true; }
+
+    $('#opts').innerHTML = it.order.map(function (src, shown) {
+      var cls = 'opt' + (q.kind === 'many' ? ' many' : '') + (q.mono ? ' mono' : '');
+      return '<button type="button" class="' + cls + '" data-i="' + shown + '" aria-pressed="false">' +
+             '<span class="opt-k">' + (shown + 1) + '</span>' +
+             '<span class="opt-t">' + q.options[src] + '</span></button>';
+    }).join('');
+
+    $('#verdict').hidden = true;
+    var btn = $('#act-main');
+    btn.textContent = 'Проверить';
+    btn.disabled = true;
+    $('#act-skip').hidden = false;
+    bindOptions();
+  }
+
+  function bindOptions() {
+    $$('.opt', $('#opts')).forEach(function (el) {
+      el.addEventListener('click', function () { pick(+el.getAttribute('data-i')); });
+    });
+  }
+
+  function pick(i) {
+    var it = run.items[run.pos];
+    if (it.checked) { return; }
+    if (it.q.kind === 'many') {
+      var at = it.picked.indexOf(i);
+      if (at >= 0) { it.picked.splice(at, 1); } else { it.picked.push(i); }
+    } else {
+      it.picked = [i];
+    }
+    $$('.opt', $('#opts')).forEach(function (el) {
+      var on = it.picked.indexOf(+el.getAttribute('data-i')) >= 0;
+      el.setAttribute('aria-pressed', on ? 'true' : 'false');
+    });
+    $('#act-main').disabled = !it.picked.length;
+  }
+
+  function check() {
+    var it = run.items[run.pos];
+    var q = it.q;
+    it.checked = true;
+    it.right = same(it.picked, it.answer);
+    record(q.id, it.right);
+
+    $$('.opt', $('#opts')).forEach(function (el) {
+      var i = +el.getAttribute('data-i');
+      el.disabled = true;
+      if (it.answer.indexOf(i) >= 0) { el.classList.add('is-right'); }
+      else if (it.picked.indexOf(i) >= 0) { el.classList.add('is-wrong'); }
+    });
+
+    var v = $('#verdict');
+    v.className = 'verdict ' + (it.right ? 'ok' : 'no');
+    $('#v-head').textContent = it.right ? 'Верно' : 'Мимо';
+    $('#v-why').innerHTML = q.why;
+    $('#v-links').innerHTML = (q.links || []).map(function (l) {
+      return '<a href="' + l.href + '">' + l.label + '</a>';
+    }).join('');
+    v.hidden = false;
+
+    var btn = $('#act-main');
+    btn.disabled = false;
+    btn.textContent = run.pos + 1 < run.items.length ? 'Дальше' : 'Итог';
+    $('#act-skip').hidden = true;
+    render_dots();
+  }
+
+  function render_dots() {
+    $('#dots').innerHTML = run.items.map(function (x, i) {
+      var cls = 'dot';
+      if (x.checked) { cls += x.right ? ' ok' : ' no'; }
+      if (i === run.pos) { cls += ' now'; }
+      return '<span class="' + cls + '"></span>';
+    }).join('');
+  }
+
+  function next() {
+    if (run.pos + 1 < run.items.length) { run.pos++; render(); }
+    else { finish(); }
+  }
+
+  function skip() {
+    var it = run.items[run.pos];
+    it.checked = true;
+    it.right = false;
+    record(it.q.id, false);
+    next();
+  }
+
+  /* ----------------------------------------------------------------- итог */
+
+  function finish() {
+    var total = run.items.length;
+    var right = run.items.filter(function (x) { return x.right; }).length;
+    var pct = Math.round(right / total * 100);
+
+    var el = $('#score-n');
+    el.textContent = right + ' / ' + total;
+    var color = pct >= 80 ? 'var(--ok)' : (pct >= 50 ? 'var(--warn)' : 'var(--bad)');
+    el.style.setProperty('--sc', color);
+
+    $('#score-h').textContent = pct >= 80 ? 'Уверенно' : (pct >= 50 ? 'Есть провалы' : 'Стоит перечитать');
+    $('#score-p').textContent = pct + '% верных ответов · ' + run.title.toLowerCase();
+
+    var byTopic = {};
+    run.items.forEach(function (x) {
+      var b = byTopic[x.q.topic] || (byTopic[x.q.topic] = { n: 0, ok: 0 });
+      b.n++;
+      if (x.right) { b.ok++; }
+    });
+    $('#by-topic').innerHTML = Object.keys(byTopic).map(function (id) {
+      var b = byTopic[id], t = TOPIC[id] || { title: id };
+      var p = Math.round(b.ok / b.n * 100);
+      return '<div class="bt-row"><span class="bt-n">' + t.title + '</span>' +
+             '<span class="bt-bar"><i style="width:' + p + '%"></i></span>' +
+             '<span class="bt-c">' + b.ok + '/' + b.n + '</span></div>';
+    }).join('');
+
+    var missed = run.items.filter(function (x) { return !x.right; });
+    $('#misses-h').hidden = !missed.length;
+    $('#misses').innerHTML = missed.map(function (x) {
+      var right = x.answer.map(function (shown) { return x.q.options[x.order[shown]]; }).join(' · ');
+      return '<div class="miss"><p class="m-q">' + x.q.text + '</p>' +
+             '<p class="m-a">Верно: <b>' + right + '</b></p></div>';
+    }).join('');
+
+    $('#again-missed').hidden = !missed.length;
+    show('result');
+  }
+
+  /* --------------------------------------------------------------- экран старта */
+
+  function paintStart() {
+    var ids = missedIds();
+    var btn = $('#mode-missed');
+    btn.disabled = !ids.length;
+    $('#missed-note').textContent = ids.length
+      ? ids.length + ' ' + plural(ids.length, 'вопрос', 'вопроса', 'вопросов') + ', где вы ошиблись в прошлый раз'
+      : 'Пока пусто — сначала пройдите любой набор';
+
+    var seen = Object.keys(store.stats).filter(function (id) { return BY_ID[id]; });
+    $('#seen-note').textContent = seen.length
+      ? 'Отвечено на ' + seen.length + ' из ' + DATA.questions.length
+      : 'Ещё ни одного ответа';
+
+    $('#topics').innerHTML = DATA.topics.map(function (t) {
+      var list = DATA.questions.filter(function (q) { return q.topic === t.id; });
+      var ok = list.filter(function (q) {
+        var s = store.stats[q.id];
+        return s && s.last === 0;
+      }).length;
+      var p = list.length ? Math.round(ok / list.length * 100) : 0;
+      return '<button type="button" class="topic" data-topic="' + t.id + '" style="--tc: ' + t.color + '">' +
+             '<span class="t-n">' + t.title + '</span>' +
+             '<span class="t-bar"><i style="width:' + p + '%"></i></span>' +
+             '<span class="t-c">' + ok + '/' + list.length + '</span></button>';
+    }).join('');
+    $$('.topic', $('#topics')).forEach(function (el) {
+      el.addEventListener('click', function () { start('topic', el.getAttribute('data-topic')); });
+    });
+  }
+
+  /* ------------------------------------------------------------------ связи */
+
+  $('#mode-quick').addEventListener('click', function () { start('quick'); });
+  $('#mode-exam').addEventListener('click', function () { start('exam'); });
+  $('#mode-missed').addEventListener('click', function () { start('missed'); });
+
+  $('#act-main').addEventListener('click', function () {
+    var it = run.items[run.pos];
+    if (it.checked) { next(); } else { check(); }
+  });
+  $('#act-skip').addEventListener('click', skip);
+
+  $('#to-start').addEventListener('click', function () { paintStart(); show('start'); });
+  $('#again').addEventListener('click', function () { start(run.mode, run.arg); });
+  $('#again-missed').addEventListener('click', function () { start('missed'); });
+
+  $('#reset').addEventListener('click', function () {
+    if (!window.confirm('Сбросить всю статистику ответов?')) { return; }
+    store = { stats: {} };
+    save(store);
+    paintStart();
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if ($('#screen-run').hidden) { return; }
+    if (e.target && /^(INPUT|TEXTAREA)$/.test(e.target.tagName)) { return; }
+    if (e.key === 'Enter') {
+      if (!$('#act-main').disabled) { e.preventDefault(); $('#act-main').click(); }
+      return;
+    }
+    if (/^[1-9]$/.test(e.key)) {
+      var el = $('.opt[data-i="' + (+e.key - 1) + '"]', $('#opts'));
+      if (el && !el.disabled) { e.preventDefault(); el.click(); }
+    }
+  });
+
+  /* ------------------------------------------------------------------- тема */
+
+  $('#theme-btn').addEventListener('click', function () {
+    var root = document.documentElement;
+    var dark = root.getAttribute('data-theme') === 'dark'
+      || (!root.getAttribute('data-theme') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    var next = dark ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem(KEY_THEME, next); } catch (e) {}
+  });
+
+  paintStart();
+})();
+
+</script>
+</body>
+</html>
