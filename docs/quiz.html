@@ -123,7 +123,7 @@ a:hover { color: var(--signal-2); }
 code, kbd, pre { font-family: var(--font-mono); }
 
 /* JetBrains Mono склеивает => -> === в один знак — в вопросах про код это недопустимо */
-code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
+code, kbd, pre, .opt.mono .opt-t, .score-n, .kbd-hint {
   font-variant-ligatures: none;
   font-feature-settings: "liga" 0, "calt" 0;
 }
@@ -262,21 +262,26 @@ code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
 
 /* Ряд точек не переносится и всегда одной высоты. С переносом он на узком
    окне то занимал одну строку, то две — и вся карточка прыгала следом. */
-.dots {
+/* Ряд точек прогресса. Имя класса намеренно неходовое: пока он назывался
+   «dots», за него цеплялось чужое правило из расширения браузера и
+   дорисовывало сюда свой ::after с многоточием. Заодно запрещаем любые
+   псевдоэлементы здесь — селектор по id перебьёт чужой по классу. */
+.qprog {
   display: flex; gap: 4px; flex: 1 1 auto; min-width: 0;
   flex-wrap: nowrap;
   /* кольцо у текущего вопроса шире самой точки на 2px с каждой стороны,
      поэтому ряду нужна высота с запасом — иначе кольцо обрезается */
   height: 14px; align-items: center;
 }
+#qprog::before, #qprog::after { content: none !important; display: none !important; }
 /* точкам разрешено сжиматься, поэтому они помещаются в строку при любой ширине */
-.dot {
+.qp {
   width: 9px; height: 9px; border-radius: 99px;
   background: var(--surface-3); flex: 0 1 9px; min-width: 3px;
 }
-.dot.ok { background: var(--ok); }
-.dot.no { background: var(--bad); }
-.dot.now { box-shadow: 0 0 0 2px var(--signal); }
+.qp.is-ok { background: var(--ok); }
+.qp.is-no { background: var(--bad); }
+.qp.is-now { box-shadow: 0 0 0 2px var(--signal); }
 
 .qbox {
   border: 1px solid var(--line); border-radius: var(--r);
@@ -477,7 +482,9 @@ code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
   <section id="screen-run" class="run" hidden>
     <div class="runbar">
       <span class="rb-t" id="rb-title"></span>
-      <span class="dots" id="dots"></span>
+      <!-- имя намеренно необычное: за «dots» цеплялись чужие стили,
+           дорисовывая в строку прогресса собственный псевдоэлемент -->
+      <span class="qprog" id="qprog"></span>
       <span class="rb-t" id="rb-pos"></span>
     </div>
 
@@ -690,12 +697,12 @@ window.QUIZ={"topics":[{"id":"start","title":"Старт и устройство
     $('#rb-pos').textContent = (run.pos + 1) + ' / ' + run.items.length;
 
     var dots = run.items.map(function (x, i) {
-      var cls = 'dot';
-      if (x.checked) { cls += x.right ? ' ok' : ' no'; }
-      if (i === run.pos) { cls += ' now'; }
+      var cls = 'qp';
+      if (x.checked) { cls += x.right ? ' is-ok' : ' is-no'; }
+      if (i === run.pos) { cls += ' is-now'; }
       return '<span class="' + cls + '"></span>';
     }).join('');
-    $('#dots').innerHTML = dots;
+    $('#qprog').innerHTML = dots;
 
     var box = $('#qbox');
     box.style.setProperty('--tc', t.color);
@@ -775,10 +782,10 @@ window.QUIZ={"topics":[{"id":"start","title":"Старт и устройство
   }
 
   function render_dots() {
-    $('#dots').innerHTML = run.items.map(function (x, i) {
-      var cls = 'dot';
-      if (x.checked) { cls += x.right ? ' ok' : ' no'; }
-      if (i === run.pos) { cls += ' now'; }
+    $('#qprog').innerHTML = run.items.map(function (x, i) {
+      var cls = 'qp';
+      if (x.checked) { cls += x.right ? ' is-ok' : ' is-no'; }
+      if (i === run.pos) { cls += ' is-now'; }
       return '<span class="' + cls + '"></span>';
     }).join('');
   }

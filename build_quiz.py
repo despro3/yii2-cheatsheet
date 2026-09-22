@@ -238,7 +238,9 @@ def build_page():
   <section id="screen-run" class="run" hidden>
     <div class="runbar">
       <span class="rb-t" id="rb-title"></span>
-      <span class="dots" id="dots"></span>
+      <!-- имя намеренно необычное: за «dots» цеплялись чужие стили,
+           дорисовывая в строку прогресса собственный псевдоэлемент -->
+      <span class="qprog" id="qprog"></span>
       <span class="rb-t" id="rb-pos"></span>
     </div>
 

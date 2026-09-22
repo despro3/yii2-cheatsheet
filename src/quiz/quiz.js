@@ -154,12 +154,12 @@
     $('#rb-pos').textContent = (run.pos + 1) + ' / ' + run.items.length;
 
     var dots = run.items.map(function (x, i) {
-      var cls = 'dot';
-      if (x.checked) { cls += x.right ? ' ok' : ' no'; }
-      if (i === run.pos) { cls += ' now'; }
+      var cls = 'qp';
+      if (x.checked) { cls += x.right ? ' is-ok' : ' is-no'; }
+      if (i === run.pos) { cls += ' is-now'; }
       return '<span class="' + cls + '"></span>';
     }).join('');
-    $('#dots').innerHTML = dots;
+    $('#qprog').innerHTML = dots;
 
     var box = $('#qbox');
     box.style.setProperty('--tc', t.color);
@@ -239,10 +239,10 @@
   }
 
   function render_dots() {
-    $('#dots').innerHTML = run.items.map(function (x, i) {
-      var cls = 'dot';
-      if (x.checked) { cls += x.right ? ' ok' : ' no'; }
-      if (i === run.pos) { cls += ' now'; }
+    $('#qprog').innerHTML = run.items.map(function (x, i) {
+      var cls = 'qp';
+      if (x.checked) { cls += x.right ? ' is-ok' : ' is-no'; }
+      if (i === run.pos) { cls += ' is-now'; }
       return '<span class="' + cls + '"></span>';
     }).join('');
   }
