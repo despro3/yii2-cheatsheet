@@ -84,6 +84,15 @@
 *, *::before, *::after { box-sizing: border-box; }
 [hidden] { display: none !important; }
 
+/* Полоса прокрутки зарезервирована всегда. Иначе высота страницы ходит через
+   границу окна — на ответе выросла, на следующем вопросе уменьшилась, — полоса
+   то появляется, то исчезает, ширина содержимого скачет на её толщину, и весь
+   текст перевёрстывается. Со стороны это и выглядит как «страница прыгает». */
+html {
+  overflow-y: scroll;
+  scrollbar-gutter: stable;
+}
+
 body {
   margin: 0;
   background-color: var(--bg);
@@ -224,7 +233,11 @@ code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
 
 /* ----------------------------------------------------------- прохождение */
 
-.run { max-width: 760px; margin: 0 auto; padding-top: 22px; }
+.run {
+  max-width: 760px; margin: 0 auto; padding-top: 22px;
+  /* не даём странице становиться короче окна: режим прокрутки не переключается */
+  min-height: calc(100vh - 140px);
+}
 
 .runbar { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
 .runbar .rb-t { font-family: var(--font-mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
