@@ -141,6 +141,7 @@ def payload(questions, nodes):
         item = {
             'id': q['id'],
             'topic': q['topic'],
+            'page': q['ref'][0],          # глава курса — по ней работает ссылка «проверить этот раздел»
             'kind': q.get('kind', 'one'),
             'text': inline(q['text']),
             'options': [render(o) for o in q['options']],
@@ -166,9 +167,13 @@ def build_page():
     nodes = explorer_topics()
     check(data.QUESTIONS, course_pages(), nodes)
 
+    chapters = {}
+    for q in data.QUESTIONS:
+        chapters.setdefault(q['ref'][0], q['ref'][1])
     quiz = {
         'topics': [{'id': t['id'], 'title': t['title'], 'color': GROUP_COLOR[t['group']]}
                    for t in data.TOPICS],
+        'chapters': chapters,
         'questions': payload(data.QUESTIONS, nodes),
     }
 

@@ -980,12 +980,15 @@ def quiz_counts():
 
     path = os.path.join(SRC, 'quiz', 'content.py')
     if not os.path.exists(path):
-        return {'questions': 0, 'topics': 0}
+        return {'questions': 0, 'topics': 0, 'by_page': {}}
     sys.path.insert(0, os.path.join(SRC, 'quiz'))
     spec = importlib.util.spec_from_file_location('quiz_content', path)
     mod = importlib.util.module_from_spec(spec)
     spec.loader.exec_module(mod)
-    return {'questions': len(mod.QUESTIONS), 'topics': len(mod.TOPICS)}
+    by_page = {}
+    for q in mod.QUESTIONS:
+        by_page[q['ref'][0]] = by_page.get(q['ref'][0], 0) + 1
+    return {'questions': len(mod.QUESTIONS), 'topics': len(mod.TOPICS), 'by_page': by_page}
 
 
 def main():
@@ -1017,6 +1020,8 @@ def main():
     for k, p in enumerate(ordered):
         p['num'] = '%02d' % (k + 1)
         p['index'] = k
+
+    quiz = quiz_counts()
 
     # рендер
     search_index = []
@@ -1105,6 +1110,12 @@ def main():
             'body': p['html'],
             'sources_block': ('<details class="sources"><summary>Источник: главы официального руководства</summary><ul>%s</ul></details>'
                               % ''.join(sources)) if sources else '',
+            # вопросы именно этого раздела, а не общий вход в проверку
+            'quiz_cta': ('<a class="quiz-cta" href="quiz.html#chapter/%s">Проверить себя'
+                         '<span class="quiz-cta-n">%d %s</span></a>'
+                         % (p['id'], quiz['by_page'][p['id']],
+                            plural(quiz['by_page'][p['id']], 'вопрос', 'вопроса', 'вопросов')))
+                        if quiz['by_page'].get(p['id']) else '',
             'prev': ('<a class="pager-link prev" href="%s.html"><span class="pager-label">← Назад</span>'
                      '<span class="pager-title">%s</span></a>' % (prev_p['id'], esc(prev_p['meta']['title']))) if prev_p else '<span></span>',
             'next': ('<a class="pager-link next" href="%s.html"><span class="pager-label">Дальше →</span>'
@@ -1147,7 +1158,6 @@ def main():
         "    ->all();", 'php')
     catalogue = catalog_counts('explorer')
     php = catalog_counts('php')
-    quiz = quiz_counts()
     index_main = fill(index_tpl, {
         'hero_code': hero_code,
         'explorer_topics': str(catalogue['topics']),

@@ -15,6 +15,7 @@
   DATA.questions.forEach(function (q) { BY_ID[q.id] = q; });
   var TOPIC = {};
   DATA.topics.forEach(function (t) { TOPIC[t.id] = t; });
+  var CHAPTER = DATA.chapters || {};
 
   var QUICK = 10, EXAM = 40;
 
@@ -107,6 +108,9 @@
     } else if (mode === 'topic') {
       pool = shuffle(pool.filter(function (q) { return q.topic === arg; }));
       title = TOPIC[arg] ? TOPIC[arg].title : 'Тема';
+    } else if (mode === 'chapter') {
+      pool = shuffle(pool.filter(function (q) { return q.page === arg; }));
+      title = 'Раздел: ' + (CHAPTER[arg] || arg);
     } else if (mode === 'missed') {
       var ids = missedIds();
       pool = shuffle(pool.filter(function (q) { return ids.indexOf(q.id) >= 0; }));
@@ -120,8 +124,10 @@
 
   /* ------------------------------------------------------------- отрисовка */
 
-  /* Высота вопроса меняется от вопроса к вопросу, поэтому без этого страница
-     «подпрыгивает»: новый вопрос оказывается то выше, то ниже прежнего. */
+  /* Единственная прокрутка, которую делает страница: вернуть взгляд к началу
+     нового вопроса, и только если читатель сам уехал вниз. Подтягивать разбор
+     не нужно — он выводится сразу под кнопкой, по которой только что кликнули,
+     а на невысоком окне такая доводка читается как рывок. */
   function topOfRun() {
     var el = $('#screen-run');
     return el.getBoundingClientRect().top + window.pageYOffset - 64;
@@ -130,14 +136,6 @@
   function anchorQuestion() {
     var top = Math.max(0, topOfRun());
     if (window.pageYOffset > top + 1) { window.scrollTo(0, top); }
-  }
-
-  function revealVerdict() {
-    var v = $('#verdict');
-    var box = v.getBoundingClientRect();
-    if (box.bottom <= window.innerHeight) { return; }          // и так видно
-    var want = box.bottom - window.innerHeight + 16;
-    window.scrollTo(0, window.pageYOffset + want);
   }
 
   function show(what) {
@@ -238,7 +236,6 @@
     btn.textContent = run.pos + 1 < run.items.length ? 'Дальше' : 'Итог';
     $('#act-skip').hidden = true;
     render_dots();
-    revealVerdict();
   }
 
   function render_dots() {
@@ -348,7 +345,25 @@
   });
   $('#act-skip').addEventListener('click', skip);
 
-  $('#to-start').addEventListener('click', function () { paintStart(); show('start'); });
+  /* Ссылка из курса: quiz.html#chapter/<раздел>. Так со страницы раздела
+     попадаешь сразу к его вопросам, а не к общему выбору набора. */
+  function fromHash() {
+    var raw = decodeURIComponent((location.hash || '').replace(/^#/, ''));
+    if (!raw) { return false; }
+    var bits = raw.split('/');
+    if (bits[0] === 'chapter' && CHAPTER[bits[1]]) { start('chapter', bits[1]); return true; }
+    if (bits[0] === 'topic' && TOPIC[bits[1]]) { start('topic', bits[1]); return true; }
+    return false;
+  }
+
+  function toStart() {
+    if (location.hash) { history.replaceState(null, '', location.pathname + location.search); }
+    paintStart();
+    show('start');
+  }
+
+  $('#to-start').addEventListener('click', toStart);
+  window.addEventListener('hashchange', function () { if (!fromHash()) { toStart(); } });
   $('#again').addEventListener('click', function () { start(run.mode, run.arg); });
   $('#again-missed').addEventListener('click', function () { start('missed'); });
 
@@ -384,4 +399,5 @@
   });
 
   paintStart();
+  fromHash();
 })();

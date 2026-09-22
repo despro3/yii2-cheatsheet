@@ -518,7 +518,28 @@ td:first-child code { font-weight: 500; }
 .sources ul { list-style: none; padding: 0; margin: 10px 0 0; display: grid; gap: 4px; font-size: 14px; }
 .sources a { color: var(--fg); }
 .src-part { display: inline-block; font-size: 11px; color: var(--fg-faint); text-transform: uppercase; letter-spacing: .05em; margin-right: 8px; min-width: 150px; }
-.learned-cta { margin: 24px 0; }
+.learned-cta {
+  margin: 24px 0;
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+}
+/* ссылка на вопросы этого раздела — рядом с отметкой «изучено»: прочитал — проверься */
+.quiz-cta {
+  margin-left: auto;
+  display: inline-flex; align-items: baseline; gap: 10px;
+  padding: 9px 16px; border: 1px solid var(--line); border-radius: 999px;
+  background: var(--bg-elev); color: var(--fg); font-weight: 600; font-size: 15px;
+  white-space: nowrap; transition: border-color .15s, color .15s;
+}
+.quiz-cta::after { content: "→"; color: var(--fg-faint); }
+.quiz-cta:hover { border-color: var(--note); color: var(--note); text-decoration: none; }
+.quiz-cta:hover::after { color: var(--note); }
+.quiz-cta-n {
+  font-weight: 400; font-size: 13px; color: var(--fg-faint);
+  font-variant-numeric: tabular-nums;
+}
+@media (max-width: 560px) {
+  .quiz-cta { margin-left: 0; width: 100%; justify-content: center; }
+}
 .pager { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 1rem; }
 .pager-link { display: flex; flex-direction: column; gap: 2px; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--radius); background: var(--bg-elev); color: var(--fg); }
 .pager-link:hover { border-color: var(--accent); text-decoration: none; }
