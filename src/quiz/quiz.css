@@ -299,6 +299,7 @@ code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
 .opt.is-wrong { border-color: var(--bad); background: var(--bad-bg); }
 .opt.is-wrong .opt-k { border-color: var(--bad); color: var(--bad); }
 
+/* ряд кнопок стоит между вариантами и разбором и никуда не уезжает при ответе */
 .acts { display: flex; gap: 10px; align-items: center; margin-top: 18px; flex-wrap: wrap; }
 .btn {
   display: inline-flex; align-items: center; justify-content: center; gap: 8px;
@@ -316,7 +317,7 @@ code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
 @media (max-width: 620px) { .kbd-hint { display: none; } }
 
 .verdict {
-  margin-top: 16px; padding: 14px 16px;
+  margin-top: 14px; padding: 14px 16px;
   border: 1px solid var(--vc); border-left-width: 3px; border-radius: var(--r-sm);
   background: var(--vbg);
 }

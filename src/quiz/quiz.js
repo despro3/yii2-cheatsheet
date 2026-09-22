@@ -120,6 +120,26 @@
 
   /* ------------------------------------------------------------- отрисовка */
 
+  /* Высота вопроса меняется от вопроса к вопросу, поэтому без этого страница
+     «подпрыгивает»: новый вопрос оказывается то выше, то ниже прежнего. */
+  function topOfRun() {
+    var el = $('#screen-run');
+    return el.getBoundingClientRect().top + window.pageYOffset - 64;
+  }
+
+  function anchorQuestion() {
+    var top = Math.max(0, topOfRun());
+    if (window.pageYOffset > top + 1) { window.scrollTo(0, top); }
+  }
+
+  function revealVerdict() {
+    var v = $('#verdict');
+    var box = v.getBoundingClientRect();
+    if (box.bottom <= window.innerHeight) { return; }          // и так видно
+    var want = box.bottom - window.innerHeight + 16;
+    window.scrollTo(0, window.pageYOffset + want);
+  }
+
   function show(what) {
     $('#screen-start').hidden = what !== 'start';
     $('#screen-run').hidden = what !== 'run';
@@ -165,6 +185,7 @@
     btn.disabled = true;
     $('#act-skip').hidden = false;
     bindOptions();
+    anchorQuestion();
   }
 
   function bindOptions() {
@@ -217,6 +238,7 @@
     btn.textContent = run.pos + 1 < run.items.length ? 'Дальше' : 'Итог';
     $('#act-skip').hidden = true;
     render_dots();
+    revealVerdict();
   }
 
   function render_dots() {

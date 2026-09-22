@@ -33,6 +33,8 @@ FRAGMENT = os.path.join(SRC, '_fragment.html')
 TITLE = 'Проверка знаний Yii 2'
 DESCRIPTION = ('Вопросы по Yii 2 с разбором: быстрый прогон, экзамен, тренировка по теме '
                'и работа над ошибками. Ответы к вопросам про код проверены на самом фреймворке.')
+MIN_PER_CHAPTER = 3          # ниже этого главу считаем непокрытой
+
 GROUP_COLOR = {
     'http': 'var(--g-http)',
     'data': 'var(--g-data)',
@@ -112,6 +114,15 @@ def check(questions, pages, nodes):
         by_topic[q['topic']] = by_topic.get(q['topic'], 0) + 1
     for t in data.TOPICS:
         assert by_topic.get(t['id']), 'тема «%s» осталась без вопросов' % t['id']
+
+    # ради этого всё и затевалось: у каждой главы курса должны быть вопросы
+    by_page = {}
+    for q in questions:
+        by_page[q['ref'][0]] = by_page.get(q['ref'][0], 0) + 1
+    empty = sorted(p for p in pages if not by_page.get(p))
+    assert not empty, 'главы курса без единого вопроса: %s' % ', '.join(empty)
+    thin = sorted(p for p in pages if by_page.get(p, 0) < MIN_PER_CHAPTER)
+    assert not thin, 'меньше %d вопросов на главу: %s' % (MIN_PER_CHAPTER, ', '.join(thin))
 
 
 def payload(questions, nodes):
@@ -235,16 +246,18 @@ def build_page():
       <div id="q-code" hidden></div>
       <div class="opts" id="opts"></div>
 
-      <div class="verdict" id="verdict" hidden>
-        <h3 id="v-head"></h3>
-        <p id="v-why"></p>
-        <div class="vlinks" id="v-links"></div>
-      </div>
-
+      <!-- кнопки стоят выше разбора: иначе разбор выталкивал бы их вниз
+           ровно в тот момент, когда по ним кликают -->
       <div class="acts">
         <button type="button" class="btn" id="act-main" disabled>Проверить</button>
         <button type="button" class="btn ghost" id="act-skip">Не знаю</button>
         <span class="kbd-hint">цифры — выбор, Enter — дальше</span>
+      </div>
+
+      <div class="verdict" id="verdict" hidden>
+        <h3 id="v-head"></h3>
+        <p id="v-why"></p>
+        <div class="vlinks" id="v-links"></div>
       </div>
     </div>
   </section>
@@ -288,9 +301,12 @@ window.QUIZ=%s;
 def main():
     head, body = build_page()
     size = catalog.write_page(OUT, FRAGMENT, TITLE, DESCRIPTION, head, body)
-    print('Вопросов: %d, тем: %d, с кодом: %d'
+    pages = course_pages()
+    covered = len({q['ref'][0] for q in data.QUESTIONS})
+    print('Вопросов: %d, тем: %d, с кодом: %d, глав курса покрыто: %d/%d'
           % (len(data.QUESTIONS), len(data.TOPICS),
-             sum(1 for q in data.QUESTIONS if q.get('code'))))
+             sum(1 for q in data.QUESTIONS if q.get('code')),
+             covered, len(pages)))
     print('Готово: %s (%.0f КБ)' % (OUT, size / 1024.0))
     return 0
 
