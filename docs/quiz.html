@@ -264,7 +264,10 @@ code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
    окне то занимал одну строку, то две — и вся карточка прыгала следом. */
 .dots {
   display: flex; gap: 4px; flex: 1 1 auto; min-width: 0;
-  flex-wrap: nowrap; height: 9px; overflow: hidden;
+  flex-wrap: nowrap;
+  /* кольцо у текущего вопроса шире самой точки на 2px с каждой стороны,
+     поэтому ряду нужна высота с запасом — иначе кольцо обрезается */
+  height: 14px; align-items: center;
 }
 /* точкам разрешено сжиматься, поэтому они помещаются в строку при любой ширине */
 .dot {
