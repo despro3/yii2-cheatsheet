@@ -240,7 +240,14 @@ code, kbd, pre, .opt.mono .opt-t, .score-n, .dot, .kbd-hint {
 
 .run { max-width: 760px; margin: 0 auto; padding-top: 22px; }
 
-.runbar { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+/* Высота строки прогресса задана жёстко. В самой странице нет ни таймеров,
+   ни анимаций, но если что-то постороннее (расширение браузера, переводчик,
+   обвязка просмотрщика) вставит сюда свой элемент — он будет обрезан и
+   карточку с вопросом вниз не утащит. */
+.runbar {
+  display: flex; align-items: center; gap: 14px; margin-bottom: 18px;
+  height: 20px; overflow: hidden;
+}
 .runbar .rb-t { font-family: var(--font-mono); font-size: 12px; color: var(--muted); white-space: nowrap; }
 /* Счётчик резервирует место под самое широкое значение: без этого переход
    «9 / 10» → «10 / 10» отнимал у точек несколько пикселей. */
