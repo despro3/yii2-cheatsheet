@@ -138,6 +138,10 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+/* JetBrains Mono склеивает === => -> ?? |> // в один знак: `===` выглядит как ≡,
+   а это уже другой оператор. Правило стоит на html и наследуется, поэтому
+   накрывает любой элемент — и код, и подписи, и то, что появится позже. */
+html { font-variant-ligatures: none; }
 [hidden] { display: none !important; }
 
 body {

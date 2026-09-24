@@ -171,7 +171,10 @@
    База
    -------------------------------------------------------------------------- */
 *, *::before, *::after { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* JetBrains Mono склеивает === => -> ?? |> // в один знак: `===` выглядит как ≡,
+   а это уже другой оператор. Правило стоит на html и наследуется, поэтому
+   накрывает любой элемент — и код, и подписи, и то, что появится позже. */
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; font-variant-ligatures: none; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; animation: none !important; } }
 body {
   margin: 0;

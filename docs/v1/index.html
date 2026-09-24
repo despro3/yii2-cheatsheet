@@ -1,3 +1,9 @@
+<!doctype html>
+<!-- Файл раньше был фрагментом для просмотрщика артефактов, который сам
+     дописывал doctype. На GitHub Pages он отдаётся как есть — и без doctype
+     браузер включал режим совместимости: таблицы в нём не наследуют шрифтовые
+     свойства, поэтому отключение лигатур до кода в таблицах не доходило. -->
+<html lang="ru">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Выжимка по Yii 2</title>
@@ -120,9 +126,15 @@
 
 * { box-sizing: border-box; }
 
+/* JetBrains Mono склеивает === => -> ?? |> // в один знак: `===` выглядит как ≡,
+   а это уже другой оператор. Правило стоит на html и наследуется, поэтому
+   накрывает любой элемент — и код, и подписи, и то, что появится позже. */
 html {
   scroll-padding-top: calc(var(--topbar-h) + 16px + env(safe-area-inset-top, 0px));
+  font-variant-ligatures: none;
 }
+/* кнопки и поля браузер по умолчанию не наследуют шрифтовые свойства */
+button, input, select, textarea { font-variant-ligatures: inherit; }
 
 .doc > section, h2[id], h3[id] {
   scroll-margin-top: calc(var(--topbar-h) + 16px + env(safe-area-inset-top, 0px));
@@ -4159,3 +4171,4 @@ window.YII_INDEX=[{"s":0,"a":"intro","t":"Старт","d":1,"x":"Что тако
   resolveHash(false);
 })();
 </script>
+</html>
